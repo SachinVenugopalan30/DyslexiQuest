@@ -1,0 +1,262 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+/* Import dyslexia-friendly fonts */
+@import url('https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap');
+
+/* Screen reader only class */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  :root {
+    --text-color: #ffffff;
+    --bg-color: #000000;
+    --accent-color: #ffff00;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Custom scrollbar for retro theme */
+.retro-scrollbar::-webkit-scrollbar {
+  width: 12px;
+}
+
+.retro-scrollbar::-webkit-scrollbar-track {
+  background: #000000;
+}
+
+.retro-scrollbar::-webkit-scrollbar-thumb {
+  background: #00ff00;
+  border: 1px solid #000000;
+}
+
+.retro-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #00cc00;
+}
+
+/* Typewriter effect */
+.typewriter {
+  overflow: hidden;
+  border-right: 2px solid;
+  white-space: nowrap;
+  margin: 0 auto;
+  animation: 
+    typewriter 2s steps(var(--chars, 40), end),
+    blink 1s step-end infinite;
+}
+
+/* Focus styles for accessibility */
+.focus-visible:focus {
+  outline: 2px solid #4a9eff;
+  outline-offset: 2px;
+}
+
+/* Retro terminal styling */
+.retro-terminal {
+  background: linear-gradient(
+    180deg,
+    rgba(0, 255, 0, 0.1) 0%,
+    rgba(0, 255, 0, 0.05) 50%,
+    rgba(0, 255, 0, 0.1) 100%
+  );
+  box-shadow: 
+    inset 0 0 20px rgba(0, 255, 0, 0.1),
+    0 0 20px rgba(0, 255, 0, 0.2);
+}
+
+/* Accessible button styles */
+.btn-accessible {
+  @apply px-4 py-2 rounded-md font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2;
+}
+
+.btn-primary {
+  @apply btn-accessible bg-retro-green text-retro-black hover:bg-retro-dark-green focus-visible:ring-retro-green;
+}
+
+.btn-secondary {
+  @apply btn-accessible border-2 border-retro-green text-retro-green hover:bg-retro-green hover:text-retro-black focus-visible:ring-retro-green;
+}
+
+/* Vocabulary word highlighting */
+.vocabulary-word {
+  position: relative;
+  display: inline;
+  cursor: help;
+  border-bottom: 2px dotted #fbbf24;
+  line-height: 1.5;
+}
+
+.vocabulary-tooltip {
+  position: fixed;
+  bottom: auto;
+  left: auto;
+  right: auto;
+  top: auto;
+  padding: 12px;
+  background: rgba(0, 0, 0, 0.95);
+  border: 1px solid #00ff00;
+  border-radius: 6px;
+  color: #00ff00;
+  font-size: 0.875rem;
+  line-height: 1.4;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.2s ease-in-out, visibility 0.2s ease-in-out;
+  z-index: 99999;
+  
+  /* Fixed dimensions to prevent overflow */
+  width: 250px;
+  max-width: calc(100vw - 40px);
+  white-space: normal;
+  word-wrap: break-word;
+  box-shadow: 
+    0 8px 16px rgba(0, 0, 0, 0.4),
+    0 0 0 1px rgba(0, 255, 0, 0.3);
+}
+
+.vocabulary-word:hover .vocabulary-tooltip {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  
+  /* Dynamic positioning using viewport coordinates */
+  position: fixed;
+  z-index: 99999;
+}
+
+/* Use JavaScript to position tooltips dynamically */
+.vocabulary-tooltip.positioned {
+  display: block;
+}
+
+/* Fallback styles for when JavaScript positioning is active */
+.vocabulary-tooltip.tooltip-above {
+  bottom: auto;
+  top: auto;
+}
+
+.vocabulary-tooltip.tooltip-below {
+  top: auto;
+  bottom: auto;
+}
+
+/* Mobile responsive */
+@media (max-width: 640px) {
+  .vocabulary-tooltip {
+    width: 200px;
+    font-size: 0.8rem;
+    padding: 8px;
+  }
+}
+
+/* Loading spinner */
+.loading-spinner {
+  border: 2px solid rgba(0, 255, 0, 0.3);
+  border-top: 2px solid #00ff00;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Game progress bar */
+.progress-bar {
+  @apply w-full bg-retro-black border border-retro-green rounded-full overflow-hidden;
+}
+
+.progress-bar-fill {
+  @apply h-full bg-gradient-to-r from-retro-green to-retro-amber transition-all duration-500 ease-out;
+}
+
+/* Breadcrumb navigation */
+.breadcrumb-item {
+  @apply relative px-3 py-1 text-sm cursor-pointer transition-all duration-200 hover:bg-retro-green hover:text-retro-black;
+}
+
+.breadcrumb-item::after {
+  content: '>';
+  @apply absolute right-0 top-1/2 transform -translate-y-1/2 text-retro-amber;
+}
+
+.breadcrumb-item:last-child::after {
+  display: none;
+}
+
+/* Accessibility improvements for dyslexia */
+.dyslexia-friendly {
+  font-family: 'Atkinson Hyperlegible', 'OpenDyslexic', sans-serif;
+  line-height: 1.6;
+  letter-spacing: 0.05em;
+  word-spacing: 0.16em;
+}
+
+/* High contrast mode */
+.high-contrast {
+  --text-color: #ffffff;
+  --bg-color: #000000;
+  --accent-color: #ffff00;
+  --border-color: #ffffff;
+}
+
+.high-contrast .retro-terminal {
+  background: var(--bg-color);
+  color: var(--text-color);
+  border-color: var(--border-color);
+}
+
+.high-contrast .btn-primary {
+  background-color: var(--accent-color);
+  color: var(--bg-color);
+}
+
+.high-contrast .btn-secondary {
+  border-color: var(--accent-color);
+  color: var(--accent-color);
+}
+
+.high-contrast .btn-secondary:hover {
+  background-color: var(--accent-color);
+  color: var(--bg-color);
+}
+
+/* Animation classes */
+.slide-in {
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
