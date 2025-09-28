@@ -202,10 +202,10 @@ def get_educational_round_prompt(round_number: int, theme: str, difficulty: str)
             "story_elements": "finding magical keys, solving simple puzzles, sharing treasures, learning magic"
         },
         "mystery": {
-            "setting": "cozy town with friendly helpers 🏘️🔍😊",
-            "characters": "nice detective, kind neighbor, helpful friend, caring teacher",
-            "simple_words": ["mystery", "clues", "detective", "helper", "puzzle", "answer", "question", "solve", "discover"],
-            "story_elements": "finding lost pets, helping neighbors, solving simple puzzles, discovering secrets"
+            "setting": "beautiful tropical island with hidden treasures �️🌴�️",
+            "characters": "friendly island guide, helpful parrot, kind fisherman, wise island elder",
+            "simple_words": ["island", "treasure", "tropical", "palm", "ocean", "beach", "coconut", "ancient", "hidden"],
+            "story_elements": "exploring jungle paths, finding hidden caves, discovering ancient treasures, meeting island animals"
         }
     }
     
@@ -225,31 +225,32 @@ INSTRUCTIONS:
 
 CRITICAL REQUIREMENTS:
 - Create a 2-3 sentence mini-story with emojis
-- ONE clear learning question with exactly 3 answer choices
+- ONE clear learning question with exactly 4 answer choices
 - EXACTLY ONE answer must be completely correct based on the story
 - The correct answer must directly match what happened in the story
-- The other 2 choices should be clearly wrong (not mentioned in story)
+- The other 3 choices should be clearly wrong (not mentioned in story)
 - Include a helpful hint for wrong answers
 - Use vocabulary appropriate for 5-10 year olds
 - Keep sentence length under 8 words each
 - Focus on positive, happy scenarios only
 
 ANSWER CHOICE RULES:
-- Choice A, B, or C: ONE must be the exact right answer from the story
-- The other two choices: Should be plausible but clearly incorrect
-- Example: If story says "bird landed close", correct choice is "landed close", wrong choices could be "flew away" or "ate berries"
+- Choice A, B, C, or D: ONE must be the exact right answer from the story
+- The other three choices: Should be plausible but clearly incorrect
+- Example: If story says "bird landed close", correct choice is "landed close", wrong choices could be "flew away", "ate berries", or "sang a song"
 
 FORMAT RESPONSE EXACTLY AS:
 STORY: [2-3 sentences with emojis describing a simple, happy scene]
 QUESTION: [One clear question about the story or a word]
 CHOICE_A: [First answer option - can be correct or wrong]
-CHOICE_B: [Second answer option - can be correct or wrong] 
+CHOICE_B: [Second answer option - can be correct or wrong]
 CHOICE_C: [Third answer option - can be correct or wrong]
-CORRECT: [Write exactly A, B, or C - the letter of the RIGHT answer]
+CHOICE_D: [Fourth answer option - can be correct or wrong]
+CORRECT: [Write exactly A, B, C, or D - the letter of the RIGHT answer]
 HINT: [Helpful hint for children who pick the wrong answer]
 CHALLENGE_WORD: [The main vocabulary word being taught]
 
-IMPORTANT: Look at your STORY and QUESTION. Make sure the CORRECT letter (A, B, or C) points to the choice that ACTUALLY answers the question correctly based on what happens in the story.
+IMPORTANT: Look at your STORY and QUESTION. Make sure the CORRECT letter (A, B, C, or D) points to the choice that ACTUALLY answers the question correctly based on what happens in the story.
 
 Generate a {difficulty} difficulty round {round_number} for {theme} theme now:"""
 
@@ -279,7 +280,7 @@ THEME-SPECIFIC ELEMENTS:
 - Forest: nature harmony, animal friends, discoveries
 - Space: cosmic discoveries, new planets, peaceful exploration  
 - Dungeon: treasure found, puzzles solved, magical rewards
-- Mystery: secrets revealed, problems solved, helpful discoveries
+- Secret Island: treasures discovered, island mysteries solved, new island friends made
 
 Create a heartwarming conclusion that makes the child feel proud of their adventure!"""
 
@@ -332,10 +333,10 @@ def get_dynamic_story_creation_prompt(theme: str) -> str:
             'goals': 'solve magical puzzles, find ancient treasures, help magical beings, unlock mysteries, collect magical items'
         },
         'mystery': {
-            'setting': 'charming towns, cozy libraries, friendly neighborhoods, interesting buildings, and helpful communities',
-            'characters': 'kind detectives, helpful townspeople, wise librarians, friendly shopkeepers, clever children, caring neighbors',
-            'elements': 'mystery clues, hidden messages, secret rooms, interesting books, helpful maps, puzzle boxes',
-            'goals': 'solve friendly mysteries, help community members, find lost items, decode messages, bring people together'
+            'setting': 'tropical paradise islands, hidden jungle temples, crystal-clear lagoons, ancient caves, and pristine beaches',
+            'characters': 'friendly island guides, wise tribal elders, helpful parrots, kind fishermen, island children, gentle sea creatures',
+            'elements': 'treasure maps, ancient totems, hidden caves, tropical fruits, coconut trees, seashells, ancient ruins',
+            'goals': 'discover hidden treasures, explore jungle paths, help island wildlife, solve ancient puzzles, make island friends'
         }
     }
     

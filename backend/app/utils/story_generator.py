@@ -71,10 +71,10 @@ class StorySegmentGenerator:
                 'vocabulary_focus': ['magic', 'treasure', 'crystal', 'puzzle', 'explore', 'discover', 'mystery']
             },
             'mystery': {
-                'name': 'Mystery Adventure',
-                'description': 'A fun detective story where you help solve friendly mysteries, find missing things, and help your community',
-                'themes': ['detective work', 'finding clues', 'helping others', 'solving puzzles', 'community helpers', 'missing pets', 'secret messages'],
-                'vocabulary_focus': ['mystery', 'clues', 'detective', 'solve', 'help', 'discover', 'investigate']
+                'name': 'Secret Island Adventure',
+                'description': 'Explore a mysterious tropical island where you uncover hidden treasures, solve ancient puzzles, and help island friends',
+                'themes': ['tropical island', 'hidden treasures', 'ancient puzzles', 'island wildlife', 'mysterious caves', 'friendly islanders', 'secret maps'],
+                'vocabulary_focus': ['island', 'treasure', 'tropical', 'ancient', 'hidden', 'explore', 'discover']
             }
         }
     

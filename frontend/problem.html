@@ -1,0 +1,2801 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <script type="module">import { injectIntoGlobalHook } from "/@react-refresh";
+injectIntoGlobalHook(window);
+window.$RefreshReg$ = () => {};
+window.$RefreshSig$ = () => (type) => type;</script>
+
+    <script type="module" src="problem_files/client"></script>
+
+    <meta charset="UTF-8">
+    
+    <!-- Favicon and Icons -->
+    <link rel="icon" type="image/svg+xml" href="http://localhost:3000/favicon.svg">
+    <link rel="apple-touch-icon" href="http://localhost:3000/apple-touch-icon.svg">
+    <link rel="manifest" href="http://localhost:3000/manifest.json">
+    
+    <!-- Viewport and basic meta -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="DyslexiQuest: A dyslexia-friendly text adventure game for children aged 5-10. Learn new words through fun stories and simple questions!">
+    <meta name="keywords" content="dyslexia, education, children, reading, adventure game, learning, accessibility">
+    <meta name="author" content="DyslexiQuest Team">
+    
+    <!-- Theme and appearance -->
+    <meta name="theme-color" content="#22c55e">
+    <meta name="color-scheme" content="dark light">
+    
+    <!-- PWA Meta Tags -->
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="DyslexiQuest">
+    
+    <!-- Open Graph / Social Media -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="DyslexiQuest - Dyslexia-Friendly Learning Adventures">
+    <meta property="og:description" content="Help children with dyslexia learn new words through fun, accessible text adventures!">
+    <meta property="og:image" content="/icon-512.svg">
+    <meta property="og:url" content="https://dyslexiquest.com">
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="DyslexiQuest - Dyslexia-Friendly Learning Adventures">
+    <meta name="twitter:description" content="Help children with dyslexia learn new words through fun, accessible text adventures!">
+    <meta name="twitter:image" content="/icon-512.svg">
+    
+    <!-- Accessibility -->
+    <meta name="color-scheme" content="dark light">
+    
+    <!-- Preload dyslexia-friendly fonts -->
+    <link rel="stylesheet" href="problem_files/css2.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap"></noscript>
+    
+    <title>DyslexiQuest - Dyslexia-Friendly Learning Adventures</title>
+  <style type="text/css" data-vite-dev-id="/Users/sachin/Desktop/Codes/Hackathon/dyslexi-quest/frontend/src/styles/index.css">
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap');
+*, ::before, ::after{
+  --tw-border-spacing-x: 0;
+  --tw-border-spacing-y: 0;
+  --tw-translate-x: 0;
+  --tw-translate-y: 0;
+  --tw-rotate: 0;
+  --tw-skew-x: 0;
+  --tw-skew-y: 0;
+  --tw-scale-x: 1;
+  --tw-scale-y: 1;
+  --tw-pan-x:  ;
+  --tw-pan-y:  ;
+  --tw-pinch-zoom:  ;
+  --tw-scroll-snap-strictness: proximity;
+  --tw-gradient-from-position:  ;
+  --tw-gradient-via-position:  ;
+  --tw-gradient-to-position:  ;
+  --tw-ordinal:  ;
+  --tw-slashed-zero:  ;
+  --tw-numeric-figure:  ;
+  --tw-numeric-spacing:  ;
+  --tw-numeric-fraction:  ;
+  --tw-ring-inset:  ;
+  --tw-ring-offset-width: 0px;
+  --tw-ring-offset-color: #fff;
+  --tw-ring-color: rgb(59 130 246 / 0.5);
+  --tw-ring-offset-shadow: 0 0 #0000;
+  --tw-ring-shadow: 0 0 #0000;
+  --tw-shadow: 0 0 #0000;
+  --tw-shadow-colored: 0 0 #0000;
+  --tw-blur:  ;
+  --tw-brightness:  ;
+  --tw-contrast:  ;
+  --tw-grayscale:  ;
+  --tw-hue-rotate:  ;
+  --tw-invert:  ;
+  --tw-saturate:  ;
+  --tw-sepia:  ;
+  --tw-drop-shadow:  ;
+  --tw-backdrop-blur:  ;
+  --tw-backdrop-brightness:  ;
+  --tw-backdrop-contrast:  ;
+  --tw-backdrop-grayscale:  ;
+  --tw-backdrop-hue-rotate:  ;
+  --tw-backdrop-invert:  ;
+  --tw-backdrop-opacity:  ;
+  --tw-backdrop-saturate:  ;
+  --tw-backdrop-sepia:  ;
+  --tw-contain-size:  ;
+  --tw-contain-layout:  ;
+  --tw-contain-paint:  ;
+  --tw-contain-style:  ;
+}
+::backdrop{
+  --tw-border-spacing-x: 0;
+  --tw-border-spacing-y: 0;
+  --tw-translate-x: 0;
+  --tw-translate-y: 0;
+  --tw-rotate: 0;
+  --tw-skew-x: 0;
+  --tw-skew-y: 0;
+  --tw-scale-x: 1;
+  --tw-scale-y: 1;
+  --tw-pan-x:  ;
+  --tw-pan-y:  ;
+  --tw-pinch-zoom:  ;
+  --tw-scroll-snap-strictness: proximity;
+  --tw-gradient-from-position:  ;
+  --tw-gradient-via-position:  ;
+  --tw-gradient-to-position:  ;
+  --tw-ordinal:  ;
+  --tw-slashed-zero:  ;
+  --tw-numeric-figure:  ;
+  --tw-numeric-spacing:  ;
+  --tw-numeric-fraction:  ;
+  --tw-ring-inset:  ;
+  --tw-ring-offset-width: 0px;
+  --tw-ring-offset-color: #fff;
+  --tw-ring-color: rgb(59 130 246 / 0.5);
+  --tw-ring-offset-shadow: 0 0 #0000;
+  --tw-ring-shadow: 0 0 #0000;
+  --tw-shadow: 0 0 #0000;
+  --tw-shadow-colored: 0 0 #0000;
+  --tw-blur:  ;
+  --tw-brightness:  ;
+  --tw-contrast:  ;
+  --tw-grayscale:  ;
+  --tw-hue-rotate:  ;
+  --tw-invert:  ;
+  --tw-saturate:  ;
+  --tw-sepia:  ;
+  --tw-drop-shadow:  ;
+  --tw-backdrop-blur:  ;
+  --tw-backdrop-brightness:  ;
+  --tw-backdrop-contrast:  ;
+  --tw-backdrop-grayscale:  ;
+  --tw-backdrop-hue-rotate:  ;
+  --tw-backdrop-invert:  ;
+  --tw-backdrop-opacity:  ;
+  --tw-backdrop-saturate:  ;
+  --tw-backdrop-sepia:  ;
+  --tw-contain-size:  ;
+  --tw-contain-layout:  ;
+  --tw-contain-paint:  ;
+  --tw-contain-style:  ;
+}
+/*
+! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com
+*/
+/*
+1. Prevent padding and border from affecting element width. (https://github.com/mozdevs/cssremedy/issues/4)
+2. Allow adding a border to an element by just adding a border-width. (https://github.com/tailwindcss/tailwindcss/pull/116)
+*/
+*,
+::before,
+::after {
+  box-sizing: border-box; /* 1 */
+  border-width: 0; /* 2 */
+  border-style: solid; /* 2 */
+  border-color: #e5e7eb; /* 2 */
+}
+::before,
+::after {
+  --tw-content: '';
+}
+/*
+1. Use a consistent sensible line-height in all browsers.
+2. Prevent adjustments of font size after orientation changes in iOS.
+3. Use a more readable tab size.
+4. Use the user's configured `sans` font-family by default.
+5. Use the user's configured `sans` font-feature-settings by default.
+6. Use the user's configured `sans` font-variation-settings by default.
+7. Disable tap highlights on iOS
+*/
+html,
+:host {
+  line-height: 1.5; /* 1 */
+  -webkit-text-size-adjust: 100%; /* 2 */
+  -moz-tab-size: 4; /* 3 */
+  -o-tab-size: 4;
+     tab-size: 4; /* 3 */
+  font-family: Poppins, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Arial, sans-serif; /* 4 */
+  font-feature-settings: normal; /* 5 */
+  font-variation-settings: normal; /* 6 */
+  -webkit-tap-highlight-color: transparent; /* 7 */
+}
+/*
+1. Remove the margin in all browsers.
+2. Inherit line-height from `html` so users can set them as a class directly on the `html` element.
+*/
+body {
+  margin: 0; /* 1 */
+  line-height: inherit; /* 2 */
+}
+/*
+1. Add the correct height in Firefox.
+2. Correct the inheritance of border color in Firefox. (https://bugzilla.mozilla.org/show_bug.cgi?id=190655)
+3. Ensure horizontal rules are visible by default.
+*/
+hr {
+  height: 0; /* 1 */
+  color: inherit; /* 2 */
+  border-top-width: 1px; /* 3 */
+}
+/*
+Add the correct text decoration in Chrome, Edge, and Safari.
+*/
+abbr:where([title]) {
+  -webkit-text-decoration: underline dotted;
+          text-decoration: underline dotted;
+}
+/*
+Remove the default font size and weight for headings.
+*/
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-size: inherit;
+  font-weight: inherit;
+}
+/*
+Reset links to optimize for opt-in styling instead of opt-out.
+*/
+a {
+  color: inherit;
+  text-decoration: inherit;
+}
+/*
+Add the correct font weight in Edge and Safari.
+*/
+b,
+strong {
+  font-weight: bolder;
+}
+/*
+1. Use the user's configured `mono` font-family by default.
+2. Use the user's configured `mono` font-feature-settings by default.
+3. Use the user's configured `mono` font-variation-settings by default.
+4. Correct the odd `em` font sizing in all browsers.
+*/
+code,
+kbd,
+samp,
+pre {
+  font-family: SF Mono, Monaco, Inconsolata, Roboto Mono, Consolas, monospace; /* 1 */
+  font-feature-settings: normal; /* 2 */
+  font-variation-settings: normal; /* 3 */
+  font-size: 1em; /* 4 */
+}
+/*
+Add the correct font size in all browsers.
+*/
+small {
+  font-size: 80%;
+}
+/*
+Prevent `sub` and `sup` elements from affecting the line height in all browsers.
+*/
+sub,
+sup {
+  font-size: 75%;
+  line-height: 0;
+  position: relative;
+  vertical-align: baseline;
+}
+sub {
+  bottom: -0.25em;
+}
+sup {
+  top: -0.5em;
+}
+/*
+1. Remove text indentation from table contents in Chrome and Safari. (https://bugs.chromium.org/p/chromium/issues/detail?id=999088, https://bugs.webkit.org/show_bug.cgi?id=201297)
+2. Correct table border color inheritance in all Chrome and Safari. (https://bugs.chromium.org/p/chromium/issues/detail?id=935729, https://bugs.webkit.org/show_bug.cgi?id=195016)
+3. Remove gaps between table borders by default.
+*/
+table {
+  text-indent: 0; /* 1 */
+  border-color: inherit; /* 2 */
+  border-collapse: collapse; /* 3 */
+}
+/*
+1. Change the font styles in all browsers.
+2. Remove the margin in Firefox and Safari.
+3. Remove default padding in all browsers.
+*/
+button,
+input,
+optgroup,
+select,
+textarea {
+  font-family: inherit; /* 1 */
+  font-feature-settings: inherit; /* 1 */
+  font-variation-settings: inherit; /* 1 */
+  font-size: 100%; /* 1 */
+  font-weight: inherit; /* 1 */
+  line-height: inherit; /* 1 */
+  letter-spacing: inherit; /* 1 */
+  color: inherit; /* 1 */
+  margin: 0; /* 2 */
+  padding: 0; /* 3 */
+}
+/*
+Remove the inheritance of text transform in Edge and Firefox.
+*/
+button,
+select {
+  text-transform: none;
+}
+/*
+1. Correct the inability to style clickable types in iOS and Safari.
+2. Remove default button styles.
+*/
+button,
+input:where([type='button']),
+input:where([type='reset']),
+input:where([type='submit']) {
+  -webkit-appearance: button; /* 1 */
+  background-color: transparent; /* 2 */
+  background-image: none; /* 2 */
+}
+/*
+Use the modern Firefox focus style for all focusable elements.
+*/
+:-moz-focusring {
+  outline: auto;
+}
+/*
+Remove the additional `:invalid` styles in Firefox. (https://github.com/mozilla/gecko-dev/blob/2f9eacd9d3d995c937b4251a5557d95d494c9be1/layout/style/res/forms.css#L728-L737)
+*/
+:-moz-ui-invalid {
+  box-shadow: none;
+}
+/*
+Add the correct vertical alignment in Chrome and Firefox.
+*/
+progress {
+  vertical-align: baseline;
+}
+/*
+Correct the cursor style of increment and decrement buttons in Safari.
+*/
+::-webkit-inner-spin-button,
+::-webkit-outer-spin-button {
+  height: auto;
+}
+/*
+1. Correct the odd appearance in Chrome and Safari.
+2. Correct the outline style in Safari.
+*/
+[type='search'] {
+  -webkit-appearance: textfield; /* 1 */
+  outline-offset: -2px; /* 2 */
+}
+/*
+Remove the inner padding in Chrome and Safari on macOS.
+*/
+::-webkit-search-decoration {
+  -webkit-appearance: none;
+}
+/*
+1. Correct the inability to style clickable types in iOS and Safari.
+2. Change font properties to `inherit` in Safari.
+*/
+::-webkit-file-upload-button {
+  -webkit-appearance: button; /* 1 */
+  font: inherit; /* 2 */
+}
+/*
+Add the correct display in Chrome and Safari.
+*/
+summary {
+  display: list-item;
+}
+/*
+Removes the default spacing and border for appropriate elements.
+*/
+blockquote,
+dl,
+dd,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+hr,
+figure,
+p,
+pre {
+  margin: 0;
+}
+fieldset {
+  margin: 0;
+  padding: 0;
+}
+legend {
+  padding: 0;
+}
+ol,
+ul,
+menu {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+/*
+Reset default styling for dialogs.
+*/
+dialog {
+  padding: 0;
+}
+/*
+Prevent resizing textareas horizontally by default.
+*/
+textarea {
+  resize: vertical;
+}
+/*
+1. Reset the default placeholder opacity in Firefox. (https://github.com/tailwindlabs/tailwindcss/issues/3300)
+2. Set the default placeholder color to the user's configured gray 400 color.
+*/
+input::-moz-placeholder, textarea::-moz-placeholder {
+  opacity: 1; /* 1 */
+  color: #9ca3af; /* 2 */
+}
+input::placeholder,
+textarea::placeholder {
+  opacity: 1; /* 1 */
+  color: #9ca3af; /* 2 */
+}
+/*
+Set the default cursor for buttons.
+*/
+button,
+[role="button"] {
+  cursor: pointer;
+}
+/*
+Make sure disabled buttons don't get the pointer cursor.
+*/
+:disabled {
+  cursor: default;
+}
+/*
+1. Make replaced elements `display: block` by default. (https://github.com/mozdevs/cssremedy/issues/14)
+2. Add `vertical-align: middle` to align replaced elements more sensibly by default. (https://github.com/jensimmons/cssremedy/issues/14#issuecomment-634934210)
+   This can trigger a poorly considered lint error in some tools but is included by design.
+*/
+img,
+svg,
+video,
+canvas,
+audio,
+iframe,
+embed,
+object {
+  display: block; /* 1 */
+  vertical-align: middle; /* 2 */
+}
+/*
+Constrain images and videos to the parent width and preserve their intrinsic aspect ratio. (https://github.com/mozdevs/cssremedy/issues/14)
+*/
+img,
+video {
+  max-width: 100%;
+  height: auto;
+}
+/* Make elements with the HTML hidden attribute stay hidden by default */
+[hidden]:where(:not([hidden="until-found"])) {
+  display: none;
+}
+.container{
+  width: 100%;
+}
+@media (min-width: 640px){
+  .container{
+    max-width: 640px;
+  }
+}
+@media (min-width: 768px){
+  .container{
+    max-width: 768px;
+  }
+}
+@media (min-width: 1024px){
+  .container{
+    max-width: 1024px;
+  }
+}
+@media (min-width: 1280px){
+  .container{
+    max-width: 1280px;
+  }
+}
+@media (min-width: 1536px){
+  .container{
+    max-width: 1536px;
+  }
+}
+.sr-only{
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+.visible{
+  visibility: visible;
+}
+.static{
+  position: static;
+}
+.fixed{
+  position: fixed;
+}
+.absolute{
+  position: absolute;
+}
+.relative{
+  position: relative;
+}
+.inset-0{
+  inset: 0px;
+}
+.bottom-2{
+  bottom: 0.5rem;
+}
+.bottom-4{
+  bottom: 1rem;
+}
+.left-4{
+  left: 1rem;
+}
+.right-0{
+  right: 0px;
+}
+.right-2{
+  right: 0.5rem;
+}
+.right-4{
+  right: 1rem;
+}
+.right-6{
+  right: 1.5rem;
+}
+.top-12{
+  top: 3rem;
+}
+.top-6{
+  top: 1.5rem;
+}
+.z-10{
+  z-index: 10;
+}
+.z-50{
+  z-index: 50;
+}
+.mx-4{
+  margin-left: 1rem;
+  margin-right: 1rem;
+}
+.mx-auto{
+  margin-left: auto;
+  margin-right: auto;
+}
+.my-4{
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+.mb-1{
+  margin-bottom: 0.25rem;
+}
+.mb-2{
+  margin-bottom: 0.5rem;
+}
+.mb-3{
+  margin-bottom: 0.75rem;
+}
+.mb-4{
+  margin-bottom: 1rem;
+}
+.mb-6{
+  margin-bottom: 1.5rem;
+}
+.mb-8{
+  margin-bottom: 2rem;
+}
+.ml-1{
+  margin-left: 0.25rem;
+}
+.ml-2{
+  margin-left: 0.5rem;
+}
+.ml-4{
+  margin-left: 1rem;
+}
+.mr-2{
+  margin-right: 0.5rem;
+}
+.mt-1{
+  margin-top: 0.25rem;
+}
+.mt-2{
+  margin-top: 0.5rem;
+}
+.mt-3{
+  margin-top: 0.75rem;
+}
+.mt-4{
+  margin-top: 1rem;
+}
+.mt-6{
+  margin-top: 1.5rem;
+}
+.mt-8{
+  margin-top: 2rem;
+}
+.block{
+  display: block;
+}
+.inline-block{
+  display: inline-block;
+}
+.\!inline{
+  display: inline !important;
+}
+.inline{
+  display: inline;
+}
+.flex{
+  display: flex;
+}
+.inline-flex{
+  display: inline-flex;
+}
+.grid{
+  display: grid;
+}
+.hidden{
+  display: none;
+}
+.h-12{
+  height: 3rem;
+}
+.h-16{
+  height: 4rem;
+}
+.h-2{
+  height: 0.5rem;
+}
+.h-3{
+  height: 0.75rem;
+}
+.h-4{
+  height: 1rem;
+}
+.h-5{
+  height: 1.25rem;
+}
+.h-6{
+  height: 1.5rem;
+}
+.h-8{
+  height: 2rem;
+}
+.h-full{
+  height: 100%;
+}
+.min-h-screen{
+  min-height: 100vh;
+}
+.w-12{
+  width: 3rem;
+}
+.w-16{
+  width: 4rem;
+}
+.w-2{
+  width: 0.5rem;
+}
+.w-24{
+  width: 6rem;
+}
+.w-3{
+  width: 0.75rem;
+}
+.w-4{
+  width: 1rem;
+}
+.w-5{
+  width: 1.25rem;
+}
+.w-6{
+  width: 1.5rem;
+}
+.w-72{
+  width: 18rem;
+}
+.w-8{
+  width: 2rem;
+}
+.w-80{
+  width: 20rem;
+}
+.w-full{
+  width: 100%;
+}
+.min-w-0{
+  min-width: 0px;
+}
+.min-w-max{
+  min-width: -moz-max-content;
+  min-width: max-content;
+}
+.max-w-48{
+  max-width: 12rem;
+}
+.max-w-4xl{
+  max-width: 56rem;
+}
+.max-w-6xl{
+  max-width: 72rem;
+}
+.max-w-md{
+  max-width: 28rem;
+}
+.max-w-sm{
+  max-width: 24rem;
+}
+.flex-1{
+  flex: 1 1 0%;
+}
+.grow{
+  flex-grow: 1;
+}
+.translate-y-0{
+  --tw-translate-y: 0px;
+  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+}
+.translate-y-4{
+  --tw-translate-y: 1rem;
+  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+}
+.scale-95{
+  --tw-scale-x: .95;
+  --tw-scale-y: .95;
+  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+}
+.transform{
+  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+}
+@keyframes bounce{
+  0%, 100%{
+    transform: translateY(-25%);
+    animation-timing-function: cubic-bezier(0.8,0,1,1);
+  }
+  50%{
+    transform: none;
+    animation-timing-function: cubic-bezier(0,0,0.2,1);
+  }
+}
+.animate-bounce{
+  animation: bounce 1s infinite;
+}
+@keyframes fadeIn{
+  from{
+    opacity: 0;
+  }
+  to{
+    opacity: 1;
+  }
+}
+.animate-fade-in{
+  animation: fadeIn 0.3s ease-in;
+}
+@keyframes pulse{
+  50%{
+    opacity: .5;
+  }
+}
+.animate-pulse{
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+.cursor-not-allowed{
+  cursor: not-allowed;
+}
+.cursor-pointer{
+  cursor: pointer;
+}
+.resize-none{
+  resize: none;
+}
+.resize{
+  resize: both;
+}
+.grid-cols-1{
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+}
+.grid-cols-2{
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.grid-cols-3{
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.flex-col{
+  flex-direction: column;
+}
+.flex-wrap{
+  flex-wrap: wrap;
+}
+.items-start{
+  align-items: flex-start;
+}
+.items-center{
+  align-items: center;
+}
+.justify-end{
+  justify-content: flex-end;
+}
+.justify-center{
+  justify-content: center;
+}
+.justify-between{
+  justify-content: space-between;
+}
+.gap-2{
+  gap: 0.5rem;
+}
+.gap-3{
+  gap: 0.75rem;
+}
+.gap-4{
+  gap: 1rem;
+}
+.gap-6{
+  gap: 1.5rem;
+}
+.space-x-1 > :not([hidden]) ~ :not([hidden]){
+  --tw-space-x-reverse: 0;
+  margin-right: calc(0.25rem * var(--tw-space-x-reverse));
+  margin-left: calc(0.25rem * calc(1 - var(--tw-space-x-reverse)));
+}
+.space-x-2 > :not([hidden]) ~ :not([hidden]){
+  --tw-space-x-reverse: 0;
+  margin-right: calc(0.5rem * var(--tw-space-x-reverse));
+  margin-left: calc(0.5rem * calc(1 - var(--tw-space-x-reverse)));
+}
+.space-x-3 > :not([hidden]) ~ :not([hidden]){
+  --tw-space-x-reverse: 0;
+  margin-right: calc(0.75rem * var(--tw-space-x-reverse));
+  margin-left: calc(0.75rem * calc(1 - var(--tw-space-x-reverse)));
+}
+.space-x-4 > :not([hidden]) ~ :not([hidden]){
+  --tw-space-x-reverse: 0;
+  margin-right: calc(1rem * var(--tw-space-x-reverse));
+  margin-left: calc(1rem * calc(1 - var(--tw-space-x-reverse)));
+}
+.space-y-1 > :not([hidden]) ~ :not([hidden]){
+  --tw-space-y-reverse: 0;
+  margin-top: calc(0.25rem * calc(1 - var(--tw-space-y-reverse)));
+  margin-bottom: calc(0.25rem * var(--tw-space-y-reverse));
+}
+.space-y-2 > :not([hidden]) ~ :not([hidden]){
+  --tw-space-y-reverse: 0;
+  margin-top: calc(0.5rem * calc(1 - var(--tw-space-y-reverse)));
+  margin-bottom: calc(0.5rem * var(--tw-space-y-reverse));
+}
+.space-y-3 > :not([hidden]) ~ :not([hidden]){
+  --tw-space-y-reverse: 0;
+  margin-top: calc(0.75rem * calc(1 - var(--tw-space-y-reverse)));
+  margin-bottom: calc(0.75rem * var(--tw-space-y-reverse));
+}
+.space-y-4 > :not([hidden]) ~ :not([hidden]){
+  --tw-space-y-reverse: 0;
+  margin-top: calc(1rem * calc(1 - var(--tw-space-y-reverse)));
+  margin-bottom: calc(1rem * var(--tw-space-y-reverse));
+}
+.space-y-6 > :not([hidden]) ~ :not([hidden]){
+  --tw-space-y-reverse: 0;
+  margin-top: calc(1.5rem * calc(1 - var(--tw-space-y-reverse)));
+  margin-bottom: calc(1.5rem * var(--tw-space-y-reverse));
+}
+.overflow-auto{
+  overflow: auto;
+}
+.overflow-hidden{
+  overflow: hidden;
+}
+.overflow-x-auto{
+  overflow-x: auto;
+}
+.whitespace-nowrap{
+  white-space: nowrap;
+}
+.whitespace-pre{
+  white-space: pre;
+}
+.whitespace-pre-wrap{
+  white-space: pre-wrap;
+}
+.break-words{
+  overflow-wrap: break-word;
+}
+.rounded{
+  border-radius: 0.25rem;
+}
+.rounded-full{
+  border-radius: 9999px;
+}
+.rounded-lg{
+  border-radius: 0.5rem;
+}
+.rounded-xl{
+  border-radius: 0.75rem;
+}
+.border{
+  border-width: 1px;
+}
+.border-2{
+  border-width: 2px;
+}
+.border-4{
+  border-width: 4px;
+}
+.border-b{
+  border-bottom-width: 1px;
+}
+.border-t{
+  border-top-width: 1px;
+}
+.border-t-2{
+  border-top-width: 2px;
+}
+.border-t-4{
+  border-top-width: 4px;
+}
+.border-blue-400{
+  --tw-border-opacity: 1;
+  border-color: rgb(96 165 250 / var(--tw-border-opacity, 1));
+}
+.border-gray-300{
+  --tw-border-opacity: 1;
+  border-color: rgb(209 213 219 / var(--tw-border-opacity, 1));
+}
+.border-green-400{
+  --tw-border-opacity: 1;
+  border-color: rgb(74 222 128 / var(--tw-border-opacity, 1));
+}
+.border-green-500{
+  --tw-border-opacity: 1;
+  border-color: rgb(34 197 94 / var(--tw-border-opacity, 1));
+}
+.border-primary-green{
+  --tw-border-opacity: 1;
+  border-color: rgb(90 125 124 / var(--tw-border-opacity, 1));
+}
+.border-primary-powder{
+  --tw-border-opacity: 1;
+  border-color: rgb(160 193 209 / var(--tw-border-opacity, 1));
+}
+.border-purple-400{
+  --tw-border-opacity: 1;
+  border-color: rgb(192 132 252 / var(--tw-border-opacity, 1));
+}
+.border-red-300{
+  --tw-border-opacity: 1;
+  border-color: rgb(252 165 165 / var(--tw-border-opacity, 1));
+}
+.border-red-500{
+  --tw-border-opacity: 1;
+  border-color: rgb(239 68 68 / var(--tw-border-opacity, 1));
+}
+.border-retro-amber{
+  --tw-border-opacity: 1;
+  border-color: rgb(160 193 209 / var(--tw-border-opacity, 1));
+}
+.border-retro-green{
+  --tw-border-opacity: 1;
+  border-color: rgb(90 125 124 / var(--tw-border-opacity, 1));
+}
+.border-white{
+  --tw-border-opacity: 1;
+  border-color: rgb(255 255 255 / var(--tw-border-opacity, 1));
+}
+.border-yellow-500{
+  --tw-border-opacity: 1;
+  border-color: rgb(234 179 8 / var(--tw-border-opacity, 1));
+}
+.bg-accessible-bg{
+  --tw-bg-opacity: 1;
+  background-color: rgb(35 44 51 / var(--tw-bg-opacity, 1));
+}
+.bg-black{
+  --tw-bg-opacity: 1;
+  background-color: rgb(0 0 0 / var(--tw-bg-opacity, 1));
+}
+.bg-blue-500{
+  --tw-bg-opacity: 1;
+  background-color: rgb(59 130 246 / var(--tw-bg-opacity, 1));
+}
+.bg-gray-200{
+  --tw-bg-opacity: 1;
+  background-color: rgb(229 231 235 / var(--tw-bg-opacity, 1));
+}
+.bg-gray-50{
+  --tw-bg-opacity: 1;
+  background-color: rgb(249 250 251 / var(--tw-bg-opacity, 1));
+}
+.bg-green-100{
+  --tw-bg-opacity: 1;
+  background-color: rgb(220 252 231 / var(--tw-bg-opacity, 1));
+}
+.bg-green-500{
+  --tw-bg-opacity: 1;
+  background-color: rgb(34 197 94 / var(--tw-bg-opacity, 1));
+}
+.bg-green-600{
+  --tw-bg-opacity: 1;
+  background-color: rgb(22 163 74 / var(--tw-bg-opacity, 1));
+}
+.bg-primary-green{
+  --tw-bg-opacity: 1;
+  background-color: rgb(90 125 124 / var(--tw-bg-opacity, 1));
+}
+.bg-primary-gunmetal{
+  --tw-bg-opacity: 1;
+  background-color: rgb(35 44 51 / var(--tw-bg-opacity, 1));
+}
+.bg-purple-500{
+  --tw-bg-opacity: 1;
+  background-color: rgb(168 85 247 / var(--tw-bg-opacity, 1));
+}
+.bg-red-100{
+  --tw-bg-opacity: 1;
+  background-color: rgb(254 226 226 / var(--tw-bg-opacity, 1));
+}
+.bg-red-600{
+  --tw-bg-opacity: 1;
+  background-color: rgb(220 38 38 / var(--tw-bg-opacity, 1));
+}
+.bg-red-900{
+  --tw-bg-opacity: 1;
+  background-color: rgb(127 29 29 / var(--tw-bg-opacity, 1));
+}
+.bg-retro-amber{
+  --tw-bg-opacity: 1;
+  background-color: rgb(160 193 209 / var(--tw-bg-opacity, 1));
+}
+.bg-retro-black{
+  --tw-bg-opacity: 1;
+  background-color: rgb(35 44 51 / var(--tw-bg-opacity, 1));
+}
+.bg-retro-dark-green{
+  --tw-bg-opacity: 1;
+  background-color: rgb(90 125 124 / var(--tw-bg-opacity, 1));
+}
+.bg-retro-green{
+  --tw-bg-opacity: 1;
+  background-color: rgb(90 125 124 / var(--tw-bg-opacity, 1));
+}
+.bg-white{
+  --tw-bg-opacity: 1;
+  background-color: rgb(255 255 255 / var(--tw-bg-opacity, 1));
+}
+.bg-yellow-100{
+  --tw-bg-opacity: 1;
+  background-color: rgb(254 249 195 / var(--tw-bg-opacity, 1));
+}
+.bg-yellow-500{
+  --tw-bg-opacity: 1;
+  background-color: rgb(234 179 8 / var(--tw-bg-opacity, 1));
+}
+.bg-opacity-10{
+  --tw-bg-opacity: 0.1;
+}
+.bg-opacity-20{
+  --tw-bg-opacity: 0.2;
+}
+.bg-opacity-50{
+  --tw-bg-opacity: 0.5;
+}
+.bg-opacity-80{
+  --tw-bg-opacity: 0.8;
+}
+.bg-gradient-to-b{
+  background-image: linear-gradient(to bottom, var(--tw-gradient-stops));
+}
+.bg-gradient-to-br{
+  background-image: linear-gradient(to bottom right, var(--tw-gradient-stops));
+}
+.bg-gradient-to-r{
+  background-image: linear-gradient(to right, var(--tw-gradient-stops));
+}
+.from-blue-100{
+  --tw-gradient-from: #dbeafe var(--tw-gradient-from-position);
+  --tw-gradient-to: rgb(219 234 254 / 0) var(--tw-gradient-to-position);
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
+}
+.from-blue-50{
+  --tw-gradient-from: #eff6ff var(--tw-gradient-from-position);
+  --tw-gradient-to: rgb(239 246 255 / 0) var(--tw-gradient-to-position);
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
+}
+.from-green-400{
+  --tw-gradient-from: #4ade80 var(--tw-gradient-from-position);
+  --tw-gradient-to: rgb(74 222 128 / 0) var(--tw-gradient-to-position);
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
+}
+.from-pink-100{
+  --tw-gradient-from: #fce7f3 var(--tw-gradient-from-position);
+  --tw-gradient-to: rgb(252 231 243 / 0) var(--tw-gradient-to-position);
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
+}
+.from-purple-100{
+  --tw-gradient-from: #f3e8ff var(--tw-gradient-from-position);
+  --tw-gradient-to: rgb(243 232 255 / 0) var(--tw-gradient-to-position);
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
+}
+.from-yellow-100{
+  --tw-gradient-from: #fef9c3 var(--tw-gradient-from-position);
+  --tw-gradient-to: rgb(254 249 195 / 0) var(--tw-gradient-to-position);
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
+}
+.to-blue-100{
+  --tw-gradient-to: #dbeafe var(--tw-gradient-to-position);
+}
+.to-blue-500{
+  --tw-gradient-to: #3b82f6 var(--tw-gradient-to-position);
+}
+.to-orange-100{
+  --tw-gradient-to: #ffedd5 var(--tw-gradient-to-position);
+}
+.to-purple-100{
+  --tw-gradient-to: #f3e8ff var(--tw-gradient-to-position);
+}
+.to-purple-50{
+  --tw-gradient-to: #faf5ff var(--tw-gradient-to-position);
+}
+.p-2{
+  padding: 0.5rem;
+}
+.p-3{
+  padding: 0.75rem;
+}
+.p-4{
+  padding: 1rem;
+}
+.p-6{
+  padding: 1.5rem;
+}
+.p-8{
+  padding: 2rem;
+}
+.px-1{
+  padding-left: 0.25rem;
+  padding-right: 0.25rem;
+}
+.px-2{
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+}
+.px-3{
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
+}
+.px-4{
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+.px-6{
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+}
+.px-8{
+  padding-left: 2rem;
+  padding-right: 2rem;
+}
+.py-1{
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
+}
+.py-2{
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+}
+.py-3{
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
+}
+.py-8{
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+}
+.pt-4{
+  padding-top: 1rem;
+}
+.text-left{
+  text-align: left;
+}
+.text-center{
+  text-align: center;
+}
+.font-dyslexic{
+  font-family: OpenDyslexic, Poppins, sans-serif;
+}
+.font-mono{
+  font-family: SF Mono, Monaco, Inconsolata, Roboto Mono, Consolas, monospace;
+}
+.font-poppins{
+  font-family: Poppins, system-ui, sans-serif;
+}
+.text-2xl{
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+.text-3xl{
+  font-size: 1.875rem;
+  line-height: 2.25rem;
+}
+.text-6xl{
+  font-size: 3.75rem;
+  line-height: 1;
+}
+.text-base{
+  font-size: 1rem;
+  line-height: 1.5rem;
+}
+.text-lg{
+  font-size: 1.125rem;
+  line-height: 1.75rem;
+}
+.text-sm{
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+.text-xl{
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+}
+.text-xs{
+  font-size: 0.75rem;
+  line-height: 1rem;
+}
+.font-bold{
+  font-weight: 700;
+}
+.font-medium{
+  font-weight: 500;
+}
+.font-semibold{
+  font-weight: 600;
+}
+.leading-relaxed{
+  line-height: 1.625;
+}
+.text-accessible-text{
+  --tw-text-opacity: 1;
+  color: rgb(218 223 247 / var(--tw-text-opacity, 1));
+}
+.text-black{
+  --tw-text-opacity: 1;
+  color: rgb(0 0 0 / var(--tw-text-opacity, 1));
+}
+.text-blue-600{
+  --tw-text-opacity: 1;
+  color: rgb(37 99 235 / var(--tw-text-opacity, 1));
+}
+.text-current{
+  color: currentColor;
+}
+.text-gray-500{
+  --tw-text-opacity: 1;
+  color: rgb(107 114 128 / var(--tw-text-opacity, 1));
+}
+.text-gray-600{
+  --tw-text-opacity: 1;
+  color: rgb(75 85 99 / var(--tw-text-opacity, 1));
+}
+.text-gray-800{
+  --tw-text-opacity: 1;
+  color: rgb(31 41 55 / var(--tw-text-opacity, 1));
+}
+.text-green-400{
+  --tw-text-opacity: 1;
+  color: rgb(74 222 128 / var(--tw-text-opacity, 1));
+}
+.text-green-600{
+  --tw-text-opacity: 1;
+  color: rgb(22 163 74 / var(--tw-text-opacity, 1));
+}
+.text-green-800{
+  --tw-text-opacity: 1;
+  color: rgb(22 101 52 / var(--tw-text-opacity, 1));
+}
+.text-orange-700{
+  --tw-text-opacity: 1;
+  color: rgb(194 65 12 / var(--tw-text-opacity, 1));
+}
+.text-primary-gray{
+  --tw-text-opacity: 1;
+  color: rgb(181 178 194 / var(--tw-text-opacity, 1));
+}
+.text-primary-green{
+  --tw-text-opacity: 1;
+  color: rgb(90 125 124 / var(--tw-text-opacity, 1));
+}
+.text-primary-lavender{
+  --tw-text-opacity: 1;
+  color: rgb(218 223 247 / var(--tw-text-opacity, 1));
+}
+.text-primary-powder{
+  --tw-text-opacity: 1;
+  color: rgb(160 193 209 / var(--tw-text-opacity, 1));
+}
+.text-purple-500{
+  --tw-text-opacity: 1;
+  color: rgb(168 85 247 / var(--tw-text-opacity, 1));
+}
+.text-purple-600{
+  --tw-text-opacity: 1;
+  color: rgb(147 51 234 / var(--tw-text-opacity, 1));
+}
+.text-purple-700{
+  --tw-text-opacity: 1;
+  color: rgb(126 34 206 / var(--tw-text-opacity, 1));
+}
+.text-red-100{
+  --tw-text-opacity: 1;
+  color: rgb(254 226 226 / var(--tw-text-opacity, 1));
+}
+.text-red-300{
+  --tw-text-opacity: 1;
+  color: rgb(252 165 165 / var(--tw-text-opacity, 1));
+}
+.text-red-600{
+  --tw-text-opacity: 1;
+  color: rgb(220 38 38 / var(--tw-text-opacity, 1));
+}
+.text-red-800{
+  --tw-text-opacity: 1;
+  color: rgb(153 27 27 / var(--tw-text-opacity, 1));
+}
+.text-retro-amber{
+  --tw-text-opacity: 1;
+  color: rgb(160 193 209 / var(--tw-text-opacity, 1));
+}
+.text-retro-black{
+  --tw-text-opacity: 1;
+  color: rgb(35 44 51 / var(--tw-text-opacity, 1));
+}
+.text-retro-green{
+  --tw-text-opacity: 1;
+  color: rgb(90 125 124 / var(--tw-text-opacity, 1));
+}
+.text-white{
+  --tw-text-opacity: 1;
+  color: rgb(255 255 255 / var(--tw-text-opacity, 1));
+}
+.text-yellow-400{
+  --tw-text-opacity: 1;
+  color: rgb(250 204 21 / var(--tw-text-opacity, 1));
+}
+.text-yellow-600{
+  --tw-text-opacity: 1;
+  color: rgb(202 138 4 / var(--tw-text-opacity, 1));
+}
+.text-yellow-700{
+  --tw-text-opacity: 1;
+  color: rgb(161 98 7 / var(--tw-text-opacity, 1));
+}
+.underline{
+  text-decoration-line: underline;
+}
+.placeholder-retro-green::-moz-placeholder{
+  --tw-placeholder-opacity: 1;
+  color: rgb(90 125 124 / var(--tw-placeholder-opacity, 1));
+}
+.placeholder-retro-green::placeholder{
+  --tw-placeholder-opacity: 1;
+  color: rgb(90 125 124 / var(--tw-placeholder-opacity, 1));
+}
+.placeholder-opacity-50::-moz-placeholder{
+  --tw-placeholder-opacity: 0.5;
+}
+.placeholder-opacity-50::placeholder{
+  --tw-placeholder-opacity: 0.5;
+}
+.opacity-0{
+  opacity: 0;
+}
+.opacity-100{
+  opacity: 1;
+}
+.opacity-30{
+  opacity: 0.3;
+}
+.opacity-50{
+  opacity: 0.5;
+}
+.opacity-60{
+  opacity: 0.6;
+}
+.opacity-75{
+  opacity: 0.75;
+}
+.opacity-80{
+  opacity: 0.8;
+}
+.opacity-90{
+  opacity: 0.9;
+}
+.shadow-2xl{
+  --tw-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+  --tw-shadow-colored: 0 25px 50px -12px var(--tw-shadow-color);
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+}
+.shadow-lg{
+  --tw-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --tw-shadow-colored: 0 10px 15px -3px var(--tw-shadow-color), 0 4px 6px -4px var(--tw-shadow-color);
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+}
+.shadow-md{
+  --tw-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --tw-shadow-colored: 0 4px 6px -1px var(--tw-shadow-color), 0 2px 4px -2px var(--tw-shadow-color);
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+}
+.blur{
+  --tw-blur: blur(8px);
+  filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
+}
+.filter{
+  filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
+}
+.transition{
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+.transition-all{
+  transition-property: all;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+.transition-colors{
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+.delay-0{
+  transition-delay: 0s;
+}
+.delay-200{
+  transition-delay: 200ms;
+}
+.duration-200{
+  transition-duration: 200ms;
+}
+.duration-300{
+  transition-duration: 300ms;
+}
+.ease-out{
+  transition-timing-function: cubic-bezier(0, 0, 0.2, 1);
+}
+/* Import fonts */
+/* OpenDyslexic font face definitions */
+@font-face {
+  font-family: 'OpenDyslexic';
+  src: url('https://cdn.jsdelivr.net/npm/opendyslexic@1.0.3/fonts/opendyslexic-regular.woff2') format('woff2'),
+       url('https://cdn.jsdelivr.net/npm/opendyslexic@1.0.3/fonts/opendyslexic-regular.woff') format('woff');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'OpenDyslexic';
+  src: url('https://cdn.jsdelivr.net/npm/opendyslexic@1.0.3/fonts/opendyslexic-bold.woff2') format('woff2'),
+       url('https://cdn.jsdelivr.net/npm/opendyslexic@1.0.3/fonts/opendyslexic-bold.woff') format('woff');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+/* Base styles with new color scheme */
+:root {
+  --color-primary-green: #5A7D7C;
+  --color-lavender: #DADFF7;
+  --color-gunmetal: #232C33;
+  --color-powder: #A0C1D1;
+  --color-gray: #B5B2C2;
+}
+/* Set Poppins as default font */
+body {
+  font-family: 'Poppins', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+}
+/* Screen reader only class */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  :root {
+    --text-color: #DADFF7;
+    --bg-color: #232C33;
+    --accent-color: #A0C1D1;
+  }
+}
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+/* Custom scrollbar with new color scheme */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 12px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #232C33;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #5A7D7C;
+  border: 1px solid #232C33;
+  border-radius: 6px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #A0C1D1;
+}
+/* Typewriter effect */
+.typewriter {
+  overflow: hidden;
+  border-right: 2px solid;
+  white-space: nowrap;
+  margin: 0 auto;
+  animation: 
+    typewriter 2s steps(var(--chars, 40), end),
+    blink 1s step-end infinite;
+}
+/* Focus styles for accessibility */
+.focus-visible:focus {
+  outline: 2px solid #4a9eff;
+  outline-offset: 2px;
+}
+/* Retro terminal styling */
+.retro-terminal {
+  background: linear-gradient(
+    180deg,
+    rgba(0, 255, 0, 0.1) 0%,
+    rgba(0, 255, 0, 0.05) 50%,
+    rgba(0, 255, 0, 0.1) 100%
+  );
+  box-shadow: 
+    inset 0 0 20px rgba(0, 255, 0, 0.1),
+    0 0 20px rgba(0, 255, 0, 0.2);
+  
+  /* Fixed sizing and text wrapping */
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  hyphens: auto;
+  white-space: pre-wrap;
+}
+/* Prevent layout shifts during typewriter effect */
+.story-content {
+  word-wrap: break-word;
+  overflow-wrap: anywhere;
+  hyphens: auto;
+  white-space: pre-wrap;
+}
+/* Fixed story container to prevent expansion */
+.story-container-fixed {
+  height: 24rem !important;
+  min-height: 24rem !important;
+  max-height: 24rem !important;
+  width: 100% !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  box-sizing: border-box !important;
+  contain: layout style size !important;
+  display: block !important;
+  position: relative !important;
+}
+.story-container-fixed * {
+  max-width: 100% !important;
+  word-break: break-word !important;
+  overflow-wrap: break-word !important;
+}
+.story-container-fixed .prose {
+  max-width: none !important;
+}
+/* Settings modal override to ensure it's always on top */
+.settings-modal-overlay {
+  z-index: 2147483647 !important;
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  isolation: isolate !important;
+}
+.settings-modal-content {
+  z-index: 2147483647 !important;
+  position: relative !important;
+  isolation: isolate !important;
+}
+/* Force modal above all game content */
+body.modal-open {
+  overflow: hidden !important;
+}
+/* Aggressively reduce z-index of all game content when modal is open */
+body.modal-open .relative.z-10 {
+  z-index: 1 !important;
+}
+body.modal-open [class*="z-"] {
+  z-index: 1 !important;
+}
+/* Target specific game window elements */
+body.modal-open .retro-terminal {
+  z-index: 1 !important;
+  position: relative !important;
+}
+body.modal-open .story-container-fixed {
+  z-index: 1 !important;
+  position: relative !important;
+}
+body.modal-open .story-content {
+  z-index: 1 !important;
+  position: relative !important;
+}
+body.modal-open .story-box-themed {
+  z-index: 1 !important;
+  position: relative !important;
+}
+body.modal-open .game-content-overlay {
+  z-index: 1 !important;
+  position: relative !important;
+}
+/* Target any fixed positioned elements in game */
+body.modal-open .fixed {
+  z-index: 1 !important;
+}
+/* Target error notifications specifically */
+body.modal-open .z-50 {
+  z-index: 1 !important;
+}
+/* Force any potential stacking contexts to be low */
+body.modal-open * {
+  z-index: auto !important;
+}
+/* But preserve normal document flow for non-positioned elements */
+body.modal-open *:not([style*="position"]):not(.fixed):not(.absolute):not(.relative) {
+  z-index: auto !important;
+}
+.settings-modal-overlay * {
+  z-index: inherit !important;
+}
+/* Modal container - ensure it's always rendered last and on top */
+#settings-modal-container {
+  z-index: 9999 !important;
+}
+/* Portal modal - appears above lowered game content */
+.portal-settings-modal {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  z-index: 1000 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background-color: rgba(0, 0, 0, 0.75) !important;
+  pointer-events: auto !important;
+}
+.portal-settings-modal-content {
+  position: relative !important;
+  z-index: 1001 !important;
+  max-width: 32rem !important;
+  width: 100% !important;
+  margin: 1rem !important;
+  pointer-events: auto !important;
+}
+/* Accessible button styles with new color scheme */
+.btn-accessible {
+  padding: 1rem 1.5rem;
+  border-radius: 0.375rem;
+  font-weight: 500;
+  font-family: 'Poppins', sans-serif;
+  transition: all 0.2s ease;
+  outline: none;
+}
+.btn-accessible:focus-visible {
+  outline: 2px solid #A0C1D1;
+  outline-offset: 2px;
+}
+.btn-primary {
+  background-color: #5A7D7C;
+  color: #DADFF7;
+  border: 2px solid #5A7D7C;
+}
+.btn-primary:hover {
+  background-color: #A0C1D1;
+  color: #232C33;
+  border-color: #A0C1D1;
+}
+.btn-secondary {
+  background-color: transparent;
+  color: #5A7D7C;
+  border: 2px solid #5A7D7C;
+}
+.btn-secondary:hover {
+  background-color: #5A7D7C;
+  color: #DADFF7;
+}
+/* Vocabulary word highlighting with new colors */
+.vocabulary-word {
+  position: relative;
+  display: inline;
+  cursor: help;
+  border-bottom: 2px dotted #A0C1D1;
+  line-height: 1.5;
+}
+.vocabulary-tooltip {
+  position: fixed;
+  bottom: auto;
+  left: auto;
+  right: auto;
+  top: auto;
+  padding: 12px;
+  background: rgba(35, 44, 51, 0.95);
+  border: 1px solid #5A7D7C;
+  border-radius: 6px;
+  color: #DADFF7;
+  font-size: 0.875rem;
+  font-family: 'Poppins', sans-serif;
+  line-height: 1.4;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.2s ease-in-out, visibility 0.2s ease-in-out;
+  z-index: 99999;
+  
+  /* Fixed dimensions to prevent overflow */
+  width: 250px;
+  max-width: calc(100vw - 40px);
+  white-space: normal;
+  word-wrap: break-word;
+  box-shadow: 
+    0 8px 16px rgba(35, 44, 51, 0.4),
+    0 0 0 1px rgba(90, 125, 124, 0.3);
+}
+.vocabulary-word:hover .vocabulary-tooltip {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  
+  /* Dynamic positioning using viewport coordinates */
+  position: fixed;
+  z-index: 99999;
+}
+/* Use JavaScript to position tooltips dynamically */
+.vocabulary-tooltip.positioned {
+  display: block;
+}
+/* Fallback styles for when JavaScript positioning is active */
+.vocabulary-tooltip.tooltip-above {
+  bottom: auto;
+  top: auto;
+}
+.vocabulary-tooltip.tooltip-below {
+  top: auto;
+  bottom: auto;
+}
+/* Mobile responsive */
+@media (max-width: 640px) {
+  .vocabulary-tooltip {
+    width: 200px;
+    font-size: 0.8rem;
+    padding: 8px;
+  }
+}
+/* Loading spinner with new colors */
+.loading-spinner {
+  border: 2px solid rgba(90, 125, 124, 0.3);
+  border-top: 2px solid #5A7D7C;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+/* Game progress bar with new colors */
+.progress-bar {
+  width: 100%;
+  background-color: #232C33;
+  border: 1px solid #5A7D7C;
+  border-radius: 9999px;
+  overflow: hidden;
+}
+.progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(to right, #5A7D7C, #A0C1D1);
+  transition: all 0.5s ease-out;
+}
+/* Breadcrumb navigation with new colors */
+.breadcrumb-item {
+  position: relative;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.breadcrumb-item:hover {
+  background-color: #5A7D7C;
+  color: #DADFF7;
+}
+.breadcrumb-item::after {
+  content: '>';
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #A0C1D1;
+}
+.breadcrumb-item:last-child::after {
+  display: none;
+}
+/* Accessibility improvements for dyslexia */
+.dyslexia-friendly {
+  font-family: 'OpenDyslexic', 'Poppins', sans-serif;
+  line-height: 1.6;
+  letter-spacing: 0.05em;
+  word-spacing: 0.16em;
+}
+/* Font switching classes */
+.font-poppins {
+  font-family: 'Poppins', system-ui, sans-serif !important;
+}
+.font-dyslexic {
+  font-family: 'OpenDyslexic', 'Poppins', sans-serif !important;
+  line-height: 1.6;
+  letter-spacing: 0.05em;
+  word-spacing: 0.16em;
+}
+.font-hyperlegible {
+  font-family: 'Atkinson Hyperlegible', 'Poppins', sans-serif !important;
+  line-height: 1.6;
+}
+/* High contrast mode with new color scheme */
+.high-contrast {
+  --text-color: #DADFF7;
+  --bg-color: #232C33;
+  --accent-color: #A0C1D1;
+  --border-color: #5A7D7C;
+}
+.high-contrast .game-container {
+  background: var(--bg-color);
+  color: var(--text-color);
+  border-color: var(--border-color);
+}
+.high-contrast .btn-primary {
+  background-color: var(--accent-color);
+  color: var(--bg-color);
+  border-color: var(--accent-color);
+}
+.high-contrast .btn-secondary {
+  border-color: var(--accent-color);
+  color: var(--accent-color);
+}
+.high-contrast .btn-secondary:hover {
+  background-color: var(--accent-color);
+  color: var(--bg-color);
+}
+/* Animation classes */
+.slide-in {
+  animation: slideIn 0.3s ease-out;
+}
+.fade-in-up {
+  animation: fadeInUp 0.8s ease-out forwards;
+  opacity: 0;
+  transform: translateY(30px);
+}
+.fade-in-up-delay-1 {
+  animation: fadeInUp 0.8s ease-out 0.5s forwards;
+  opacity: 0;
+  transform: translateY(30px);
+}
+.fade-in-up-delay-2 {
+  animation: fadeInUp 0.8s ease-out 1s forwards;
+  opacity: 0;
+  transform: translateY(30px);
+}
+.fade-in-up-delay-3 {
+  animation: fadeInUp 0.8s ease-out 1.5s forwards;
+  opacity: 0;
+  transform: translateY(30px);
+}
+.glitch-effect {
+  position: relative;
+  animation: glitch 2s infinite;
+}
+.glitch-effect::before,
+.glitch-effect::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+.glitch-effect::before {
+  animation: glitch-1 2s infinite;
+  color: #ff0000;
+  z-index: -1;
+}
+.glitch-effect::after {
+  animation: glitch-2 2s infinite;
+  color: #00ff00;
+  z-index: -2;
+}
+@keyframes slideIn {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes glitch {
+  0%, 100% { transform: translate(0); }
+  20% { transform: translate(-2px, 2px); }
+  40% { transform: translate(-2px, -2px); }
+  60% { transform: translate(2px, 2px); }
+  80% { transform: translate(2px, -2px); }
+}
+@keyframes glitch-1 {
+  0%, 100% { transform: translate(0); }
+  20% { transform: translate(-1px, 1px); }
+  40% { transform: translate(-1px, -1px); }
+  60% { transform: translate(1px, 1px); }
+  80% { transform: translate(1px, -1px); }
+}
+@keyframes glitch-2 {
+  0%, 100% { transform: translate(0); }
+  20% { transform: translate(1px, -1px); }
+  40% { transform: translate(1px, 1px); }
+  60% { transform: translate(-1px, -1px); }
+  80% { transform: translate(-1px, 1px); }
+}
+/* Page transition animations */
+.page-transition {
+  transition: all var(--transition-duration, 400ms) cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+.page-transition-enter {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+.page-transition-exit {
+  opacity: 0;
+  transform: translateY(20px) scale(0.98);
+}
+/* Smooth fade transitions */
+.smooth-fade-in {
+  animation: smoothFadeIn 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+.smooth-fade-out {
+  animation: smoothFadeOut 0.4s cubic-bezier(0.55, 0.085, 0.68, 0.53) forwards;
+}
+@keyframes smoothFadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(30px) scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+@keyframes smoothFadeOut {
+  0% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-20px) scale(0.98);
+  }
+}
+/* Choice button animations */
+.choice-button {
+  transition: all 0.2s ease;
+  transform: translateY(0);
+  opacity: 1;
+}
+.choice-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(90, 125, 124, 0.3);
+}
+.choice-button-enter {
+  animation: choiceButtonEnter 0.4s ease-out forwards;
+}
+.choice-button-loading {
+  animation: pulse 1.5s ease-in-out infinite;
+}
+@keyframes choiceButtonEnter {
+  0% {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+/* Story content animations */
+.story-content {
+  animation: storyContentEnter 0.6s ease-out forwards;
+}
+@keyframes storyContentEnter {
+  0% {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+/* Loading state animations */
+.loading-transition {
+  transition: all 0.3s ease;
+}
+.loading-enter {
+  opacity: 1;
+  transform: scale(1);
+}
+.loading-exit {
+  opacity: 0;
+  transform: scale(0.95);
+}
+/* Smooth typewriter cursor animation */
+@keyframes smoothBlink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}
+.smooth-blink {
+  animation: smoothBlink 1.2s ease-in-out infinite;
+}
+/* Component entrance animations */
+.component-enter {
+  animation: componentEnter 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+.component-enter-delay-1 {
+  animation: componentEnter 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.2s forwards;
+  opacity: 0;
+}
+.component-enter-delay-2 {
+  animation: componentEnter 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.4s forwards;
+  opacity: 0;
+}
+.component-enter-delay-3 {
+  animation: componentEnter 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.6s forwards;
+  opacity: 0;
+}
+@keyframes componentEnter {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .page-transition,
+  .component-enter,
+  .component-enter-delay-1,
+  .component-enter-delay-2,
+  .component-enter-delay-3,
+  .choice-button-enter,
+  .story-content,
+  .smooth-fade-in,
+  .smooth-fade-out {
+    animation: none !important;
+    transition: none !important;
+  }
+  
+  .page-transition-enter,
+  .page-transition-exit {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+/* ===== ADVENTURE BACKGROUND THEMES ===== */
+/* Adventure-specific background images for game window */
+.game-forest-bg {
+  background-image: url('/src/assets/forest_friend_background.png');
+}
+.game-space-bg {
+  background-image: url('/src/assets/galaxy_quest_background.png');
+}
+.game-magical-bg {
+  background-image: url('/src/assets/magical_castle_background.png');
+}
+.game-mystery-bg {
+  background-image: url('/src/assets/secret_island_background.png');
+}
+/* Enhanced text readability over backgrounds */
+.game-content-overlay {
+  background: rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(1px);
+  border-radius: 8px;
+  padding: 1rem;
+}
+.game-text-readable {
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+  background: rgba(0, 0, 0, 0.1);
+  padding: 0.5rem;
+  border-radius: 4px;
+}
+/* Story content box with better contrast */
+.story-box-themed {
+  background: rgba(0, 0, 0, 0.85);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(5px);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin: 1rem 0;
+}
+/* Choice buttons themed styling */
+.choice-button-themed {
+  background: rgba(255, 255, 255, 0.95);
+  border: 2px solid rgba(0, 0, 0, 0.2);
+  color: #333;
+  backdrop-filter: blur(3px);
+  transition: all 0.3s ease;
+}
+.choice-button-themed:hover {
+  background: rgba(255, 255, 255, 1);
+  border-color: rgba(0, 0, 0, 0.4);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+.choice-button-correct {
+  background: rgba(34, 197, 94, 0.9) !important;
+  border-color: #16a34a !important;
+  color: white !important;
+}
+.choice-button-incorrect {
+  background: rgba(239, 68, 68, 0.9) !important;
+  border-color: #dc2626 !important;
+  color: white !important;
+}
+/* Disable backgrounds in high contrast mode */
+.high-contrast .game-forest-bg,
+.high-contrast .game-space-bg,
+.high-contrast .game-magical-bg,
+.high-contrast .game-mystery-bg {
+  background-image: none !important;
+  background-color: var(--bg-color) !important;
+}
+/* ===== WELCOME SCREEN STYLES ===== */
+/* Styles adapted from mockup design with accessibility improvements */
+.welcome-container {
+  min-height: 100vh;
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.welcome-content {
+  width: 100%;
+  max-width: 1200px;
+  text-align: center;
+}
+.welcome-banner {
+  background: #B7D5E5;
+  border-radius: 20px;
+  padding: 30px;
+  margin-bottom: 20px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+.sun-icon, .moon-icon {
+  width: 250px;
+  height: 250px;
+  -o-object-fit: cover;
+     object-fit: cover;
+  border-radius: 50%;
+  transition: transform 0.3s ease;
+}
+.sun-icon {
+  margin-left: 80px;
+  animation: sunFloat 4s ease-in-out infinite;
+}
+.moon-icon {
+  margin-right: 80px;
+  animation: moonFloat 4s ease-in-out infinite;
+  animation-delay: -2s;
+}
+@keyframes sunFloat {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-10px) rotate(5deg);
+  }
+}
+@keyframes moonFloat {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+.title-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0 20px;
+  text-align: center;
+}
+.welcome-title {
+  font-family: 'Arial Black', 'Arial Bold', sans-serif;
+  font-size: 3rem;
+  font-weight: 900;
+  color: #000;
+  padding: 0;
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  line-height: 1.1;
+  text-align: center;
+}
+.selection-banner {
+  background: #B7D5E5;
+  border-radius: 15px;
+  padding: 20px;
+  margin-bottom: 30px;
+}
+.selection-title {
+  font-family: 'Arial Black', 'Arial Bold', sans-serif;
+  font-size: 3rem;
+  font-weight: 900;
+  color: #000;
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+.adventure-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 40px;
+  padding: 30px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.adventure-card {
+  background: white;
+  border-radius: 20px;
+  padding: 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: left;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  min-height: 300px;
+  position: relative;
+  overflow: hidden;
+}
+.adventure-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  border-color: #B7D5E5;
+}
+.adventure-card:focus {
+  outline: 2px solid #A0C1D1;
+  outline-offset: 2px;
+}
+.adventure-card.selected {
+  border-color: #5A7D7C;
+  background-color: #f0f8ff;
+}
+.adventure-card.disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.adventure-illustration {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 65%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 0 20px 20px 0;
+  background: #f8f9fa;
+}
+.adventure-image {
+  width: 100%;
+  height: 100%;
+  -o-object-fit: cover;
+     object-fit: cover;
+  -o-object-position: right center;
+     object-position: right center;
+}
+.adventure-content {
+  width: 35%;
+  position: relative;
+  z-index: 1;
+}
+.adventure-name {
+  font-family: 'Arial Black', 'Arial Bold', sans-serif;
+  font-size: 1.3rem;
+  font-weight: 900;
+  color: #000;
+  margin: 10px 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  line-height: 1.2;
+  word-spacing: 100vw; /* Makes each word break to new line */
+}
+.adventure-description {
+  font-size: 0.875rem;
+  color: #666;
+  line-height: 1.4;
+  margin: 10px 0;
+}
+.loading-indicator {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+  color: #5A7D7C;
+}
+.settings-container {
+  margin: 20px 0;
+}
+.settings-button {
+  background: #5A7D7C;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+.settings-button:hover {
+  background: #A0C1D1;
+  color: #232C33;
+}
+.settings-button:focus {
+  outline: 2px solid #A0C1D1;
+  outline-offset: 2px;
+}
+.instructions-container {
+  margin: 30px 0;
+  padding: 20px;
+  background: rgba(90, 125, 124, 0.1);
+  border-radius: 15px;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.instructions-title {
+  color: #5A7D7C;
+  font-weight: bold;
+  margin-bottom: 15px;
+  font-size: 1.1rem;
+}
+.instructions-list {
+  text-align: left;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.instructions-list li {
+  margin: 8px 0;
+  color: #333;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+.accessibility-notice {
+  margin-top: 20px;
+  padding: 15px;
+  color: #5A7D7C;
+  font-size: 0.85rem;
+  background: rgba(160, 193, 209, 0.1);
+  border-radius: 10px;
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+}
+/* Responsive design */
+@media (max-width: 768px) {
+  .welcome-title {
+    font-size: 2rem;
+  }
+  
+  .selection-title {
+    font-size: 1.8rem;
+  }
+  
+  .welcome-content {
+    padding: 20px;
+  }
+  
+  .welcome-banner {
+    flex-direction: column;
+    gap: 15px;
+    padding: 20px;
+  }
+  
+  .sun-icon, .moon-icon {
+    width: 150px;
+    height: 150px;
+    margin: 0;
+  }
+  
+  .adventure-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+    padding: 20px;
+  }
+  
+  .adventure-card {
+    min-height: 200px;
+  }
+  
+  .adventure-illustration {
+    width: 50%;
+  }
+  
+  .adventure-content {
+    width: 50%;
+  }
+  
+  .adventure-name {
+    font-size: 1rem;
+  }
+}
+.before\:pointer-events-none::before{
+  content: var(--tw-content);
+  pointer-events: none;
+}
+.before\:absolute::before{
+  content: var(--tw-content);
+  position: absolute;
+}
+.before\:inset-0::before{
+  content: var(--tw-content);
+  inset: 0px;
+}
+.before\:bg-black::before{
+  content: var(--tw-content);
+  --tw-bg-opacity: 1;
+  background-color: rgb(0 0 0 / var(--tw-bg-opacity, 1));
+}
+.before\:bg-opacity-20::before{
+  content: var(--tw-content);
+  --tw-bg-opacity: 0.2;
+}
+.hover\:transform:hover{
+  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+}
+.hover\:border-blue-400:hover{
+  --tw-border-opacity: 1;
+  border-color: rgb(96 165 250 / var(--tw-border-opacity, 1));
+}
+.hover\:border-retro-amber:hover{
+  --tw-border-opacity: 1;
+  border-color: rgb(160 193 209 / var(--tw-border-opacity, 1));
+}
+.hover\:bg-blue-50:hover{
+  --tw-bg-opacity: 1;
+  background-color: rgb(239 246 255 / var(--tw-bg-opacity, 1));
+}
+.hover\:bg-gray-200:hover{
+  --tw-bg-opacity: 1;
+  background-color: rgb(229 231 235 / var(--tw-bg-opacity, 1));
+}
+.hover\:bg-gray-800:hover{
+  --tw-bg-opacity: 1;
+  background-color: rgb(31 41 55 / var(--tw-bg-opacity, 1));
+}
+.hover\:bg-primary-green:hover{
+  --tw-bg-opacity: 1;
+  background-color: rgb(90 125 124 / var(--tw-bg-opacity, 1));
+}
+.hover\:bg-primary-powder:hover{
+  --tw-bg-opacity: 1;
+  background-color: rgb(160 193 209 / var(--tw-bg-opacity, 1));
+}
+.hover\:bg-purple-600:hover{
+  --tw-bg-opacity: 1;
+  background-color: rgb(147 51 234 / var(--tw-bg-opacity, 1));
+}
+.hover\:bg-retro-amber:hover{
+  --tw-bg-opacity: 1;
+  background-color: rgb(160 193 209 / var(--tw-bg-opacity, 1));
+}
+.hover\:bg-retro-dark-green:hover{
+  --tw-bg-opacity: 1;
+  background-color: rgb(90 125 124 / var(--tw-bg-opacity, 1));
+}
+.hover\:bg-retro-green:hover{
+  --tw-bg-opacity: 1;
+  background-color: rgb(90 125 124 / var(--tw-bg-opacity, 1));
+}
+.hover\:bg-opacity-10:hover{
+  --tw-bg-opacity: 0.1;
+}
+.hover\:text-gray-300:hover{
+  --tw-text-opacity: 1;
+  color: rgb(209 213 219 / var(--tw-text-opacity, 1));
+}
+.hover\:text-gray-700:hover{
+  --tw-text-opacity: 1;
+  color: rgb(55 65 81 / var(--tw-text-opacity, 1));
+}
+.hover\:text-primary-gunmetal:hover{
+  --tw-text-opacity: 1;
+  color: rgb(35 44 51 / var(--tw-text-opacity, 1));
+}
+.hover\:text-primary-lavender:hover{
+  --tw-text-opacity: 1;
+  color: rgb(218 223 247 / var(--tw-text-opacity, 1));
+}
+.hover\:text-red-100:hover{
+  --tw-text-opacity: 1;
+  color: rgb(254 226 226 / var(--tw-text-opacity, 1));
+}
+.hover\:text-red-800:hover{
+  --tw-text-opacity: 1;
+  color: rgb(153 27 27 / var(--tw-text-opacity, 1));
+}
+.hover\:text-retro-amber:hover{
+  --tw-text-opacity: 1;
+  color: rgb(160 193 209 / var(--tw-text-opacity, 1));
+}
+.hover\:text-retro-black:hover{
+  --tw-text-opacity: 1;
+  color: rgb(35 44 51 / var(--tw-text-opacity, 1));
+}
+.hover\:text-retro-green:hover{
+  --tw-text-opacity: 1;
+  color: rgb(90 125 124 / var(--tw-text-opacity, 1));
+}
+.hover\:shadow-md:hover{
+  --tw-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --tw-shadow-colored: 0 4px 6px -1px var(--tw-shadow-color), 0 2px 4px -2px var(--tw-shadow-color);
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+}
+.focus\:not-sr-only:focus{
+  position: static;
+  width: auto;
+  height: auto;
+  padding: 0;
+  margin: 0;
+  overflow: visible;
+  clip: auto;
+  white-space: normal;
+}
+.focus\:absolute:focus{
+  position: absolute;
+}
+.focus\:left-4:focus{
+  left: 1rem;
+}
+.focus\:top-4:focus{
+  top: 1rem;
+}
+.focus\:z-50:focus{
+  z-index: 50;
+}
+.focus\:border:focus{
+  border-width: 1px;
+}
+.focus\:border-black:focus{
+  --tw-border-opacity: 1;
+  border-color: rgb(0 0 0 / var(--tw-border-opacity, 1));
+}
+.focus\:border-transparent:focus{
+  border-color: transparent;
+}
+.focus\:bg-white:focus{
+  --tw-bg-opacity: 1;
+  background-color: rgb(255 255 255 / var(--tw-bg-opacity, 1));
+}
+.focus\:px-4:focus{
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+.focus\:py-2:focus{
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+}
+.focus\:text-black:focus{
+  --tw-text-opacity: 1;
+  color: rgb(0 0 0 / var(--tw-text-opacity, 1));
+}
+.focus\:outline-none:focus{
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+}
+.focus\:ring-2:focus{
+  --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
+  --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color);
+  box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000);
+}
+.focus\:ring-4:focus{
+  --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
+  --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(4px + var(--tw-ring-offset-width)) var(--tw-ring-color);
+  box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000);
+}
+.focus\:ring-blue-200:focus{
+  --tw-ring-opacity: 1;
+  --tw-ring-color: rgb(191 219 254 / var(--tw-ring-opacity, 1));
+}
+.focus\:ring-primary-powder:focus{
+  --tw-ring-opacity: 1;
+  --tw-ring-color: rgb(160 193 209 / var(--tw-ring-opacity, 1));
+}
+.focus\:ring-retro-amber:focus{
+  --tw-ring-opacity: 1;
+  --tw-ring-color: rgb(160 193 209 / var(--tw-ring-opacity, 1));
+}
+.focus\:ring-retro-green:focus{
+  --tw-ring-opacity: 1;
+  --tw-ring-color: rgb(90 125 124 / var(--tw-ring-opacity, 1));
+}
+.focus\:ring-offset-2:focus{
+  --tw-ring-offset-width: 2px;
+}
+.focus\:ring-offset-retro-black:focus{
+  --tw-ring-offset-color: #232C33;
+}
+.disabled\:cursor-not-allowed:disabled{
+  cursor: not-allowed;
+}
+.disabled\:opacity-50:disabled{
+  opacity: 0.5;
+}
+@media (min-width: 640px){
+  .sm\:block{
+    display: block;
+  }
+  .sm\:flex-row{
+    flex-direction: row;
+  }
+  .sm\:items-center{
+    align-items: center;
+  }
+  .sm\:justify-between{
+    justify-content: space-between;
+  }
+  .sm\:space-x-4 > :not([hidden]) ~ :not([hidden]){
+    --tw-space-x-reverse: 0;
+    margin-right: calc(1rem * var(--tw-space-x-reverse));
+    margin-left: calc(1rem * calc(1 - var(--tw-space-x-reverse)));
+  }
+  .sm\:space-y-0 > :not([hidden]) ~ :not([hidden]){
+    --tw-space-y-reverse: 0;
+    margin-top: calc(0px * calc(1 - var(--tw-space-y-reverse)));
+    margin-bottom: calc(0px * var(--tw-space-y-reverse));
+  }
+  .sm\:text-sm{
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+@media (min-width: 768px){
+  .md\:grid-cols-2{
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .md\:grid-cols-4{
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+  .md\:text-base{
+    font-size: 1rem;
+    line-height: 1.5rem;
+  }
+}
+@media (min-width: 1024px){
+  .lg\:col-span-2{
+    grid-column: span 2 / span 2;
+  }
+  .lg\:grid-cols-3{
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+</style><script id="simplify-jobs-page-script" src="problem_files/pageScript.bundle.js"></script></head>
+  <body>
+    <div id="root"><div class="min-h-screen bg-primary-gunmetal text-primary-lavender font-dyslexic dyslexia-friendly text-base transition-all duration-300" role="main" aria-label="DyslexiQuest"><div class="page-transition page-transition-enter " style="--transition-duration: 600ms;"><div class="game-space-bg relative before:absolute before:inset-0 before:bg-black before:bg-opacity-20 before:pointer-events-none min-h-screen" style="background-size: cover; background-position: center center; background-repeat: no-repeat; background-attachment: fixed;"><div class="relative z-10"><div class="min-h-screen flex flex-col"><div class="
+        opacity-100 transform translate-y-0
+        transition-all ease-out
+        
+      " style="transition-duration: 600ms; transition-delay: 0ms;"><header class="
+          border-b border-retro-green p-4
+          game-content-overlay
+        "><div class="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-2 sm:space-y-0"><div><h1 class="text-xl font-bold text-retro-amber">GALAXY QUEST Adventure</h1><p class="text-sm">Turn 1 of 10</p></div><div class="flex items-center space-x-3"><div class="progress-bar w-24 h-2 hidden sm:block"><div class="progress-bar-fill" style="width: 10%;" role="progressbar" aria-valuenow="1" aria-valuemin="0" aria-valuemax="10" aria-label="Game progress: 1 of 10 turns"></div></div><button class="btn-secondary text-sm px-3 py-1 whitespace-nowrap" aria-label="Start a new adventure">NEW GAME</button><div class="relative"><button class="p-2 bg-primary-gunmetal border-2 border-primary-green text-primary-lavender hover:bg-primary-green hover:text-primary-gunmetal focus:outline-none focus:ring-2 focus:ring-primary-powder transition-all duration-200 rounded " aria-label="Close accessibility settings" aria-expanded="true" aria-controls="accessibility-panel"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-settings"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path><circle cx="12" cy="12" r="3"></circle></svg></button><div id="accessibility-panel" class="absolute top-12 right-0 max-w-sm w-72 bg-primary-gunmetal border-2 border-primary-green p-4 rounded shadow-lg z-50" role="region" aria-labelledby="accessibility-title"><h2 id="accessibility-title" class="text-primary-powder font-bold mb-4 text-lg">ACCESSIBILITY SETTINGS</h2><div class="mb-4"><label class="block text-primary-lavender text-sm font-medium mb-2"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="inline w-4 h-4 mr-2"><polyline points="4 7 4 4 20 4 20 7"></polyline><line x1="9" x2="15" y1="20" y2="20"></line><line x1="12" x2="12" y1="4" y2="20"></line></svg>Text Size</label><div class="grid grid-cols-3 gap-2"><button class="px-3 py-2 border border-primary-green text-sm font-medium transition-all duration-200 text-primary-lavender hover:bg-primary-green hover:text-primary-gunmetal" aria-pressed="false">Small</button><button class="px-3 py-2 border border-primary-green text-sm font-medium transition-all duration-200 bg-primary-green text-primary-lavender" aria-pressed="true">Medium</button><button class="px-3 py-2 border border-primary-green text-sm font-medium transition-all duration-200 text-primary-lavender hover:bg-primary-green hover:text-primary-gunmetal" aria-pressed="false">Large</button></div></div><div class="mb-4"><label class="block text-primary-lavender text-sm font-medium mb-2"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="inline w-4 h-4 mr-2"><circle cx="13.5" cy="6.5" r=".5"></circle><circle cx="17.5" cy="10.5" r=".5"></circle><circle cx="8.5" cy="7.5" r=".5"></circle><circle cx="6.5" cy="12.5" r=".5"></circle><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"></path></svg>Display Theme</label><div class="grid grid-cols-2 gap-2"><button class="px-3 py-2 border border-primary-green text-sm font-medium transition-all duration-200 bg-primary-green text-primary-lavender" aria-pressed="true">Elegant Modern</button><button class="px-3 py-2 border border-primary-green text-sm font-medium transition-all duration-200 text-primary-lavender hover:bg-primary-green hover:text-primary-gunmetal" aria-pressed="false">High Contrast</button></div></div><div class="mb-4"><label class="block text-primary-green text-sm font-medium mb-2"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="inline w-4 h-4 mr-2"><polyline points="4 7 4 4 20 4 20 7"></polyline><line x1="9" x2="15" y1="20" y2="20"></line><line x1="12" x2="12" y1="4" y2="20"></line></svg>Dyslexia-Friendly Font</label><button class="w-full px-3 py-2 border border-primary-green text-sm font-medium transition-all duration-200 flex items-center justify-between text-primary-green hover:bg-primary-green hover:text-primary-lavender" aria-pressed="false"><span>Poppins (Default)</span><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4"><path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"></path><path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"></path><path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"></path><line x1="2" x2="22" y1="2" y2="22"></line></svg></button><p class="text-xs text-primary-gray mt-1">OpenDyslexic is designed to increase reading proficiency for people with dyslexia</p></div><div class="mb-4"><label class="block text-primary-lavender text-sm font-medium mb-2"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="inline w-4 h-4 mr-2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path><path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path></svg>Animations</label><button class="w-full px-3 py-2 border border-primary-green text-sm font-medium transition-all duration-200 flex items-center justify-between bg-primary-green text-primary-lavender" aria-pressed="true"><span>Typing Animation</span><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path><path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path></svg></button></div><div class="border-t border-primary-green pt-4"><h3 class="text-primary-powder text-sm font-medium mb-2">Keyboard Shortcuts</h3><div class="text-xs text-primary-gray space-y-1"><div><kbd class="bg-primary-green text-primary-lavender px-1 rounded">Tab</kbd> Navigate elements</div><div><kbd class="bg-primary-green text-primary-lavender px-1 rounded">Enter</kbd> Activate buttons</div><div><kbd class="bg-primary-green text-primary-lavender px-1 rounded">Esc</kbd> Close panels</div><div><kbd class="bg-primary-green text-primary-lavender px-1 rounded">↑↓</kbd> Navigate options</div></div></div><button class="w-full mt-4 px-3 py-2 border border-primary-powder text-primary-powder hover:bg-primary-powder hover:text-primary-gunmetal focus:outline-none focus:ring-2 focus:ring-primary-powder transition-all duration-200 text-sm" aria-label="Close accessibility settings">CLOSE</button></div><div class="sr-only" aria-live="polite">Accessibility settings panel opened. Use Tab to navigate through options.</div></div></div></div></header></div><div class="
+        opacity-100 transform translate-y-0
+        transition-all ease-out
+        
+      " style="transition-duration: 600ms; transition-delay: 200ms;"></div><main class="flex-1 flex flex-col w-full px-8"><div class="
+        opacity-100 transform translate-y-0
+        transition-all ease-out
+        w-full p-4
+      " style="transition-duration: 600ms; transition-delay: 400ms;"><div style="position: relative; z-index: 100;"><div class="
+                retro-terminal retro-scrollbar w-full mx-4 p-8 rounded story-container-fixed
+                story-box-themed
+              " role="log" aria-live="polite" aria-label="Game story output" style="height: 24rem; min-height: 24rem; max-height: 24rem; overflow-wrap: break-word; hyphens: auto; box-sizing: border-box;"><div class="mb-6"><div class="mb-4"><div><div class="leading-relaxed break-words whitespace-pre-wrap" style="overflow-wrap: anywhere;">Friendly alien Zorp flew his shiny rocket. 🚀 He found a sparkling space flower! 🌸 Zorp smiled big. 😊
+
+🤔 What did Zorp find?</div></div></div></div><div></div></div></div><div class="
+        opacity-100 transform translate-y-0
+        transition-all ease-out
+        
+      " style="transition-duration: 600ms; transition-delay: 600ms;"><div class="
+                  mt-6 p-8 rounded-lg w-full mx-4 story-content
+                  story-box-themed
+                "><h3 class="text-retro-amber text-xl font-semibold mb-6 text-center">🤔 What did Zorp find?</h3><div class="grid grid-cols-1 md:grid-cols-2 gap-4"><button class="choice-button p-4 rounded border-2 text-left font-medium text-lg transition-all focus:outline-none focus:ring-2 focus:ring-retro-amber disabled:opacity-50 disabled:cursor-not-allowed choice-button-themed hover:transform hover:translateY(-2px) choice-button-enter " style="animation-delay: 0ms; animation-fill-mode: both;" aria-label="Choice 1"><div class="flex items-center space-x-3"><div class="
+          w-8 h-8 rounded-full flex items-center justify-center font-bold transition-all
+          bg-black bg-opacity-20 text-current
+        ">1</div><span class="flex-1">His shiny rocket.</span></div></button><button class="choice-button p-4 rounded border-2 text-left font-medium text-lg transition-all focus:outline-none focus:ring-2 focus:ring-retro-amber disabled:opacity-50 disabled:cursor-not-allowed choice-button-themed hover:transform hover:translateY(-2px) choice-button-enter " style="animation-delay: 100ms; animation-fill-mode: both;" aria-label="Choice 2"><div class="flex items-center space-x-3"><div class="
+          w-8 h-8 rounded-full flex items-center justify-center font-bold transition-all
+          bg-black bg-opacity-20 text-current
+        ">2</div><span class="flex-1">A sparkling space flower.</span></div></button><button class="choice-button p-4 rounded border-2 text-left font-medium text-lg transition-all focus:outline-none focus:ring-2 focus:ring-retro-amber disabled:opacity-50 disabled:cursor-not-allowed choice-button-themed hover:transform hover:translateY(-2px) choice-button-enter " style="animation-delay: 200ms; animation-fill-mode: both;" aria-label="Choice 3"><div class="flex items-center space-x-3"><div class="
+          w-8 h-8 rounded-full flex items-center justify-center font-bold transition-all
+          bg-black bg-opacity-20 text-current
+        ">3</div><span class="flex-1">A funny space rock.</span></div></button></div></div></div><div class="
+        opacity-100 transform translate-y-0
+        transition-all ease-out
+        
+      " style="transition-duration: 600ms; transition-delay: 800ms;"><div class="mt-8 w-full mx-4"><div class="
+                  p-8 rounded-lg
+                  story-box-themed
+                "><div class="space-y-4"><h2 class="text-retro-amber text-lg font-bold flex items-center space-x-2"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg><span>VOCABULARY PROGRESS</span></h2><div class="bg-retro-black border-2 border-retro-green p-4 rounded"><div class="grid grid-cols-2 gap-4 text-sm"><div class="text-center"><div class="text-2xl font-bold text-retro-green mb-1">0</div><div class="text-xs text-retro-amber">Words Learned</div></div><div class="text-center"><div class="text-2xl font-bold text-retro-green mb-1">0</div><div class="text-xs text-retro-amber">Words Mastered</div></div><div class="text-center"><div class="text-2xl font-bold text-retro-green mb-1">0</div><div class="text-xs text-retro-amber flex items-center justify-center space-x-1"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3 h-3"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline><polyline points="16 7 22 7 22 13"></polyline></svg><span>Current Streak</span></div></div><div class="text-center"><div class="text-2xl font-bold text-retro-green mb-1">0</div><div class="text-xs text-retro-amber flex items-center justify-center space-x-1"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3 h-3"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path><path d="M4 22h16"></path><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"></path><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"></path><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"></path></svg><span>Best Streak</span></div></div></div><div class="mt-4"><div class="flex justify-between text-xs text-retro-amber mb-1"><span>Learning Progress</span><span>0%</span></div><div class="progress-bar"><div class="progress-bar-fill" style="width: 0%;" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" aria-label="Vocabulary learning progress: 0% complete"></div></div></div></div></div></div></div></div></div></main></div></div></div></div><div id="game-announcements" class="sr-only" aria-live="polite" aria-atomic="true"></div></div></div>
+    <script type="module" src="problem_files/main.tsx"></script>
+    
+    <!-- Screen reader announcements -->
+    <div id="sr-announcements" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+  
+
+</body></html>

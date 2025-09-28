@@ -6,20 +6,25 @@ import { VocabularyTracker } from './VocabularyTracker';
 import { AccessibilityControls } from './AccessibilityControls';
 import { AnimatedChoiceButton } from './AnimatedChoiceButton';
 import { AnimatedComponent } from './AnimatedComponent';
+import { BackgroundTheme } from './BackgroundTheme';
 import { highlightVocabularyWords } from '../utils/vocabulary';
+import { AdventureTheme } from '../types/adventure';
 
 interface GameWindowProps {
   gameState: UseGameStateReturn;
   settings: GameSettings;
   onSettingChange: <K extends keyof GameSettings>(key: K, value: GameSettings[K]) => void;
+  selectedAdventure?: AdventureTheme | null;
+  onNewGame?: () => void;
 }
 
-export const GameWindow: React.FC<GameWindowProps> = ({ gameState, settings, onSettingChange }) => {
+export const GameWindow: React.FC<GameWindowProps> = ({ gameState, settings, onSettingChange, selectedAdventure, onNewGame }) => {
   const [isTyping, setIsTyping] = useState(false);
   const [displayedText, setDisplayedText] = useState('');
   const [showChoices, setShowChoices] = useState(false);
   const [contentKey, setContentKey] = useState(0);
   const [isGameWindowMounted, setIsGameWindowMounted] = useState(false);
+  const [selectedChoiceIndex, setSelectedChoiceIndex] = useState<number | null>(null);
   const outputRef = useRef<HTMLDivElement>(null);
   const endOfContentRef = useRef<HTMLDivElement>(null);
 
@@ -32,6 +37,13 @@ export const GameWindow: React.FC<GameWindowProps> = ({ gameState, settings, onS
     }, 100);
     return () => clearTimeout(timer);
   }, []);
+
+  // Reset selected choice index when loading is complete
+  useEffect(() => {
+    if (!gameState.isLoading) {
+      setSelectedChoiceIndex(null);
+    }
+  }, [gameState.isLoading]);
 
   // Auto-scroll to show latest content when new responses are added
   useEffect(() => {
@@ -163,14 +175,25 @@ export const GameWindow: React.FC<GameWindowProps> = ({ gameState, settings, onS
   }
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <BackgroundTheme 
+      adventure={selectedAdventure || null} 
+      enabled={settings.backgroundsEnabled}
+      className="min-h-screen"
+    >
+      <div className="min-h-screen flex flex-col">
       {/* Header with game info */}
       <AnimatedComponent delay={0} skipAnimations={settings.skipAnimations}>
-        <header className="border-b border-retro-green p-4">
+        <header className={`
+          border-b border-retro-green p-4
+          ${selectedAdventure && settings.backgroundsEnabled 
+            ? 'game-content-overlay' 
+            : ''
+          }
+        `}>
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-2 sm:space-y-0">
           <div>
             <h1 className="text-xl font-bold text-retro-amber">
-              {gameState.gameState.genre.charAt(0).toUpperCase() + gameState.gameState.genre.slice(1)} Adventure
+              {selectedAdventure?.name || gameState.gameState.genre.charAt(0).toUpperCase() + gameState.gameState.genre.slice(1)} Adventure
             </h1>
             <p className="text-sm">
               Turn {gameState.gameState.turn} of 10
@@ -193,7 +216,7 @@ export const GameWindow: React.FC<GameWindowProps> = ({ gameState, settings, onS
             
             {/* New Game button */}
             <button
-              onClick={gameState.newGame}
+              onClick={onNewGame || gameState.newGame}
               className="btn-secondary text-sm px-3 py-1 whitespace-nowrap"
               aria-label="Start a new adventure"
             >
@@ -221,20 +244,44 @@ export const GameWindow: React.FC<GameWindowProps> = ({ gameState, settings, onS
       </AnimatedComponent>
 
       {/* Main game content */}
-      <main className="flex-1 flex flex-col lg:flex-row">
-        {/* Story output area - always full width on top */}
+      <main className="flex-1 flex flex-col w-full px-8">
+        {/* Story output area - centered with max width */}
         <AnimatedComponent delay={400} skipAnimations={settings.skipAnimations} className="w-full p-4">
           {/* Wrapper for tooltip positioning context */}
           <div style={{ position: 'relative', zIndex: 100 }}>
             <div 
               ref={outputRef}
-              className="retro-terminal retro-scrollbar max-w-none prose prose-invert bg-retro-black border-2 border-retro-green p-6 rounded min-h-96 max-h-96 lg:max-h-screen-75 overflow-y-auto"
+              className={`
+                retro-terminal retro-scrollbar w-full mx-4 p-8 rounded story-container-fixed
+                ${selectedAdventure && settings.backgroundsEnabled 
+                  ? 'story-box-themed' 
+                  : 'bg-retro-black border-2 border-retro-green'
+                }
+              `}
               role="log"
               aria-live="polite"
               aria-label="Game story output"
+              style={{ 
+                height: '24rem', 
+                minHeight: '24rem', 
+                maxHeight: '24rem',
+                wordWrap: 'break-word', 
+                overflowWrap: 'break-word', 
+                hyphens: 'auto',
+                boxSizing: 'border-box'
+              }}
             >
+              {/* Initial loading placeholder to prevent layout shift */}
+              {(!gameState.gameState.history || gameState.gameState.history.length === 0) && (
+                <div className="flex items-center justify-center h-full">
+                  <div className="text-retro-amber font-mono">
+                    Loading your adventure...
+                  </div>
+                </div>
+              )}
+              
               {/* Game history */}
-              {gameState.gameState.history.map((turn, index) => (
+              {gameState.gameState.history && gameState.gameState.history.map((turn, index) => (
                 <div key={index} className="mb-6">
                   {/* AI Response */}
                   <div className="mb-4">
@@ -242,7 +289,8 @@ export const GameWindow: React.FC<GameWindowProps> = ({ gameState, settings, onS
                       // Current turn with typewriter effect
                       <div>
                         <div 
-                          className="leading-relaxed"
+                          className="leading-relaxed break-words whitespace-pre-wrap"
+                          style={{ wordWrap: 'break-word', overflowWrap: 'anywhere' }}
                           dangerouslySetInnerHTML={{
                             __html: highlightVocabularyWords(displayedText, gameState.vocabularyManager)
                           }}
@@ -256,7 +304,8 @@ export const GameWindow: React.FC<GameWindowProps> = ({ gameState, settings, onS
                     ) : (
                       // Previous turns
                       <div 
-                        className="leading-relaxed opacity-80"
+                        className="leading-relaxed opacity-80 break-words whitespace-pre-wrap"
+                        style={{ wordWrap: 'break-word', overflowWrap: 'anywhere' }}
                         dangerouslySetInnerHTML={{
                           __html: highlightVocabularyWords(turn.ai_response, gameState.vocabularyManager)
                         }}
@@ -295,45 +344,60 @@ export const GameWindow: React.FC<GameWindowProps> = ({ gameState, settings, onS
           )}
 
           {/* Choice Selection Box - Below the story */}
-          {!gameState.gameState.game_over && !isTyping && showChoices && (
-            <div 
-              key={contentKey}
-              className="mt-6 p-6 border-2 border-retro-amber rounded-lg bg-retro-black max-w-4xl mx-auto story-content"
-            >
-              <h3 className="text-retro-amber text-xl font-semibold mb-6 text-center">
-                🤔 {gameState.gameState.current_question || "What do you want to do next?"}
-              </h3>
-              
-              {/* 4 Choice buttons in a 2x2 grid on larger screens */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {(gameState.gameState.current_choices || [
-                  "1. Continue exploring ✨",
-                  "2. Look around carefully 👀", 
-                  "3. Move forward slowly 👣",
-                  "4. Stay where you are 🛑"
-                ]).map((choice, index) => (
-                  <AnimatedChoiceButton
-                    key={`${contentKey}-${index}`}
-                    choice={choice}
-                    index={index}
-                    onClick={() => gameState.sendInput(choice)}
-                    disabled={gameState.isLoading}
-                    delay={index * 100}
-                    skipAnimations={settings.skipAnimations}
-                  />
-                ))}
-              </div>
+          {!gameState.gameState.game_over && (
+            <AnimatedComponent delay={600} skipAnimations={settings.skipAnimations}>
+              <div 
+                className={`
+                  mt-6 p-8 rounded-lg w-full mx-4 story-content relative
+                  ${selectedAdventure && settings.backgroundsEnabled 
+                    ? 'story-box-themed' 
+                    : 'border-2 border-retro-amber bg-retro-black'
+                  }
+                `}
+              >
+                {!isTyping && showChoices ? (
+                  <>
+                    <h3 className="text-retro-amber text-xl font-semibold mb-6 text-center">
+                      🤔 {gameState.gameState.current_question || "What do you want to do next?"}
+                    </h3>
+                    
+                    {/* 4 Choice buttons in a 2x2 grid on larger screens */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {(gameState.gameState.current_choices || [
+                        "1. Continue exploring ✨",
+                        "2. Look around carefully 👀", 
+                        "3. Move forward slowly 👣",
+                        "4. Stay where you are 🛑"
+                      ]).map((choice, index) => (
+                        <AnimatedChoiceButton
+                          key={`${contentKey}-${index}`}
+                          choice={choice}
+                          index={index}
+                          onClick={() => {
+                            setSelectedChoiceIndex(index);
+                            gameState.sendInput(choice);
+                          }}
+                          disabled={gameState.isLoading}
+                          isLoading={gameState.isLoading && selectedChoiceIndex === index}
+                          delay={index * 100}
+                          skipAnimations={settings.skipAnimations}
+                          useThemedStyling={selectedAdventure !== null}
+                          feedbackState="none"
+                        />
+                      ))}
+                    </div>
 
-              {/* Loading indicator */}
-              {gameState.isLoading && (
-                <div className="text-center mt-6 loading-transition loading-enter">
-                  <div className="inline-flex items-center space-x-2 text-retro-amber">
-                    <div className="loading-spinner w-5 h-5" />
-                    <span className="font-medium">Creating your next adventure...</span>
+
+                  </>
+                ) : (
+                  <div className="flex items-center justify-center py-8">
+                    <div className="text-retro-amber font-mono">
+                      {isTyping ? "✍️ Story in progress..." : "🤔 Preparing choices..."}
+                    </div>
                   </div>
-                </div>
-              )}
-            </div>
+                )}
+              </div>
+            </AnimatedComponent>
           )}
 
           {/* Game Over below story */}
@@ -355,11 +419,23 @@ export const GameWindow: React.FC<GameWindowProps> = ({ gameState, settings, onS
               </div>
             </div>
           )}
-        </AnimatedComponent>
 
-        {/* Vocabulary sidebar */}
-        <AnimatedComponent delay={600} skipAnimations={settings.skipAnimations} className="lg:w-80 border-t lg:border-t-0 lg:border-l border-retro-green p-4">
-          <VocabularyTracker vocabularyManager={gameState.vocabularyManager} />
+          {/* Vocabulary Progress - Only show after choices are visible */}
+          {!gameState.gameState.game_over && showChoices && (
+            <AnimatedComponent delay={800} skipAnimations={settings.skipAnimations}>
+              <div className="mt-8 w-full mx-4">
+                <div className={`
+                  p-8 rounded-lg
+                  ${selectedAdventure && settings.backgroundsEnabled 
+                    ? 'story-box-themed' 
+                    : 'border-2 border-retro-green bg-retro-black'
+                  }
+                `}>
+                  <VocabularyTracker vocabularyManager={gameState.vocabularyManager} />
+                </div>
+              </div>
+            </AnimatedComponent>
+          )}
         </AnimatedComponent>
       </main>
 
@@ -382,6 +458,7 @@ export const GameWindow: React.FC<GameWindowProps> = ({ gameState, settings, onS
           </div>
         </div>
       )}
-    </div>
+      </div>
+    </BackgroundTheme>
   );
 };

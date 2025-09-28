@@ -4,6 +4,7 @@ const STORAGE_KEYS = {
   GAME_STATE: 'retro-adventure-game-state',
   GAME_SETTINGS: 'retro-adventure-settings',
   VOCABULARY_PROGRESS: 'retro-adventure-vocabulary',
+  SELECTED_ADVENTURE: 'retro-adventure-selected-theme',
 } as const;
 
 // Save game state to localStorage
@@ -173,6 +174,36 @@ export const getStorageInfo = (): { used: number; available: boolean } => {
   }
 
   return { used, available: true };
+};
+
+// Save selected adventure theme
+export const saveSelectedAdventure = (adventure: any): void => {
+  try {
+    const serializedAdventure = JSON.stringify(adventure);
+    localStorage.setItem(STORAGE_KEYS.SELECTED_ADVENTURE, serializedAdventure);
+  } catch (error) {
+    console.error('Failed to save selected adventure:', error);
+  }
+};
+
+// Load selected adventure theme
+export const loadSelectedAdventure = (): any | null => {
+  try {
+    const serializedAdventure = localStorage.getItem(STORAGE_KEYS.SELECTED_ADVENTURE);
+    return serializedAdventure ? JSON.parse(serializedAdventure) : null;
+  } catch (error) {
+    console.error('Failed to load selected adventure:', error);
+    return null;
+  }
+};
+
+// Clear selected adventure theme
+export const clearSelectedAdventure = (): void => {
+  try {
+    localStorage.removeItem(STORAGE_KEYS.SELECTED_ADVENTURE);
+  } catch (error) {
+    console.error('Failed to clear selected adventure:', error);
+  }
 };
 
 // Clean up old game states (keep only the most recent)

@@ -423,8 +423,8 @@ Create an engaging story introduction that starts the adventure. Include a clear
                 'vocab_words': 'magic, treasure, crystal, puzzle, explore, discover, mystery, ancient, enchanted, wisdom'
             },
             'mystery': {
-                'emojis': '🔍🕵️📚❓🔐💡📜🏛️🎯🧩',
-                'vocab_words': 'mystery, clues, detective, solve, help, discover, investigate, evidence, puzzle, solution'
+                'emojis': '🏝️🌴�️��⚓🦜��️�',
+                'vocab_words': 'island, treasure, tropical, ancient, hidden, explore, discover, ocean, palm, coconut'
             }
         }
         
@@ -572,20 +572,27 @@ CRITICAL REQUIREMENTS:
 - Use simple words and include 1 vocabulary word from: {', '.join(vocab_sample[:8])}
 - Add visual emoji cues (✨🌟🏰🌳🦋🔑)
 - Never be scary or violent - keep it magical and safe
-- All 4 choices should lead to different but equally interesting story paths
-- Each choice should be 3-6 words maximum
-- Make choices clear and different from each other
-- Keep language neutral - avoid encouraging phrases
 - NEVER include encouraging phrases like "Great choice!" or "Excellent!" - keep responses neutral and factual
-        - If this is turn {turn} of 10, start building toward a satisfying conclusion
-        - If this is turn 8-10, wrap up the story with a happy endingFORMAT EXAMPLE:
+- If this is turn {turn} of 10, start building toward a satisfying conclusion
+- If this is turn 8-10, wrap up the story with a happy ending
+
+CHOICE REQUIREMENTS:
+- Generate 4 choices that DIRECTLY relate to the current story situation
+- Each choice should be a logical next action based on what just happened
+- Choices should be 3-6 words maximum
+- Make choices clear, different, and contextually relevant
+- All choices should lead to different but equally interesting story paths
+
+FORMAT EXAMPLE:
 [Your 2-3 sentence story response that directly responds to their choice with emojis]
 
 What happens next in your adventure?
-1. [Choice that builds on the player's decision] 🦋
-2. [Different path that respects their choice] 💰  
-3. [Another interesting direction] 🧙‍♂️
-4. [Creative alternative based on their action] 🌺
+1. [Contextual choice based on current situation] 🦋
+2. [Different contextual action for current scene] 💰  
+3. [Another relevant option for this moment] 🧙‍♂️
+4. [Fourth contextual choice for current situation] 🌺
+
+CRITICAL: Generate choices that make sense for the CURRENT story situation, not generic adventure choices!
 
 ADAPT YOUR STORY TO THE PLAYER'S CHOICE: {user_input}"""
     
@@ -684,7 +691,7 @@ Generate a similar hint for this challenge."""
             
             "adventure": "Ahoy, treasure hunter! You've discovered an old map leading to a mysterious island. Your ship has just reached the sandy shore. Palm trees sway gently, and you can see a cave in the distance. Where do you want to start your expedition?",
             
-            "mystery": "Hello, detective! You've arrived at a curious mansion where something mysterious has happened. The friendly butler greets you with a warm smile. There are interesting clues waiting to be found. Which room would you like to investigate first?",
+            "mystery": "Welcome to Paradise Island! 🏝️ You've just washed up on the shores of a beautiful tropical island after your boat was caught in a storm. Colorful parrots chirp overhead, and you can see ancient stone ruins in the jungle. A friendly island guide approaches to help you explore. Where would you like to start your island adventure?",
             
             "sci-fi": "Greetings, space explorer! Your spaceship has landed on a beautiful alien planet with purple skies and silver trees. Strange but friendly creatures watch you curiously from behind crystal rocks. Your scanner detects something interesting nearby. What do you want to discover first?"
         }
@@ -779,7 +786,6 @@ Generate a similar hint for this challenge."""
             line = line.strip()
             if not line:
                 continue
-                
             if line.startswith("STORY:"):
                 round_data["story"] = line.replace("STORY:", "").strip()
             elif line.startswith("QUESTION:"):
@@ -790,6 +796,8 @@ Generate a similar hint for this challenge."""
                 round_data["choices"].append(line.replace("CHOICE_B:", "").strip())
             elif line.startswith("CHOICE_C:"):
                 round_data["choices"].append(line.replace("CHOICE_C:", "").strip())
+            elif line.startswith("CHOICE_D:"):
+                round_data["choices"].append(line.replace("CHOICE_D:", "").strip())
             elif line.startswith("CORRECT:"):
                 correct_letter = line.replace("CORRECT:", "").strip().upper()
                 if correct_letter == 'A':
@@ -798,6 +806,8 @@ Generate a similar hint for this challenge."""
                     round_data["correct"] = 1
                 elif correct_letter == 'C':
                     round_data["correct"] = 2
+                elif correct_letter == 'D':
+                    round_data["correct"] = 3
                 else:
                     # Default to first choice if parsing fails
                     logger.warning(f"Could not parse correct answer '{correct_letter}', defaulting to A")
@@ -806,23 +816,23 @@ Generate a similar hint for this challenge."""
                 round_data["hint"] = line.replace("HINT:", "").strip()
             elif line.startswith("CHALLENGE_WORD:"):
                 round_data["word"] = line.replace("CHALLENGE_WORD:", "").strip()
-        
+
         # Ensure we have all required data
         if not round_data["choices"]:
-            round_data["choices"] = ["Option A", "Option B", "Option C"]
-        
-        if len(round_data["choices"]) < 3:
-            while len(round_data["choices"]) < 3:
+            round_data["choices"] = ["Option A", "Option B", "Option C", "Option D"]
+
+        if len(round_data["choices"]) < 4:
+            while len(round_data["choices"]) < 4:
                 round_data["choices"].append("Try again")
-        
+
         # Validate correct index
         if round_data["correct"] >= len(round_data["choices"]):
             logger.warning(f"Correct index {round_data['correct']} is out of range for {len(round_data['choices'])} choices, setting to 0")
             round_data["correct"] = 0
-        
+
         # Log the parsed data for debugging
         logger.info(f"Parsed educational round: question='{round_data['question']}', choices={round_data['choices']}, correct={round_data['correct']}")
-        
+
         return round_data
     
     def _get_fallback_educational_round(self, round_number: int, theme: str, difficulty: str) -> Dict[str, Any]:
@@ -899,7 +909,7 @@ Generate a similar hint for this challenge."""
             "forest": "🌲✨ Your forest adventure comes to a wonderful end! The wise animals thank you for your kindness, and the magical trees share their ancient wisdom with you. You return home with new friends and amazing memories! 🦋🌟",
             "space": "🚀🌌 What an incredible space adventure! You've explored distant planets and made friends with peaceful aliens. Your cosmic journey ends as you pilot your ship back to Earth, filled with wonder about the universe! ⭐💫",
             "dungeon": "🏰💎 Your dungeon quest reaches a magical conclusion! The ancient puzzles are solved, and you've discovered the greatest treasure of all - knowledge and courage. The castle celebrates your wisdom! ✨🎉",
-            "mystery": "🔍💡 Mystery solved! Your detective skills have uncovered all the secrets and helped everyone involved. The grateful community celebrates your clever thinking and kind heart! 🎯🌟"
+            "mystery": "🏝️🌴 What an amazing island adventure! You've discovered ancient treasures, made friends with tropical wildlife, and uncovered all the island's secrets. As the sun sets over the paradise, you feel grateful for this magical journey! 🥥✨"
         }
         
         return completions.get(theme, completions["forest"])
