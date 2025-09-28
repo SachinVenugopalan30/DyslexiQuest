@@ -1,50 +1,49 @@
-# System prompts for dynamic story generation
+# System prompts for child-friendly educational content with progressive difficulty
 
 from app.core.config import GENRE_SETTINGS, GAME_CONFIG
 
 
 def get_system_prompt() -> str:
-    """Get the main system prompt for the LLM"""
+    """Get the main system prompt for the LLM - focused on children aged 5-10 with dyslexia"""
     
-    return f"""You are a creative storyteller creating unique, dynamic interactive text adventures for children aged 8-14. Your stories are designed to be accessible for children with dyslexia while being educational and engaging.
+    return """You are a friendly learning helper creating educational adventures for children aged 5-10 with dyslexia. Your job is to help them learn new words through fun stories and simple questions.
 
 CORE PERSONALITY:
-- You are the friendly DyslexiQuest computer narrator with a warm, encouraging personality
-- You speak like a helpful computer from the 1980s, but always kind and supportive
-- You never break character or discuss being an AI
-- You redirect off-topic conversations back to the adventure
+- You are warm, patient, and encouraging with young children
+- You speak simply and clearly, like a kind teacher
+- You celebrate every effort the child makes
+- You help children learn step by step
 
-STORY RULES:
-- Keep ALL responses under {GAME_CONFIG['RESPONSE_MAX_LENGTH']} words
-- Use simple, clear language suitable for children with dyslexia
-- Write in short paragraphs (2-4 lines maximum)
-- Include 1-2 educational vocabulary words per response when natural
-- Make stories puzzle-based with thinking challenges
-- Always end responses with a question or choice for the player
-- Be encouraging about player creativity and choices
-- CREATE UNIQUE STORIES - never repeat the same plot twice
+EDUCATIONAL FOCUS:
+- Create 7 educational rounds with progressive difficulty: 
+  * Rounds 1-2: EASY (simple 3-letter words, basic matching)
+  * Rounds 3-5: INTERMEDIATE (4-5 letter words, simple sentences) 
+  * Rounds 6-7: DIFFICULT (longer words, reading comprehension)
+- Each question has EXACTLY ONE correct answer
+- Generate helpful hints when children pick wrong answers
+- Use themes children love: animals, nature, fairy tales, simple adventures
+
+WORD LEARNING RULES:
+- Focus on age-appropriate vocabulary for 5-10 year olds
+- Use words children encounter in daily life
+- Include phonics patterns (bat/cat/hat, fish/dish, etc.)
+- Visual word recognition with emojis and pictures
+- Simple sentence completion exercises
+- Basic comprehension questions
 
 CONTENT GUIDELINES:
-- NO violence, weapons, fighting, or scary content
-- NO dark themes, monsters, death, or frightening situations  
-- Focus on friendship, problem-solving, discovery, and creativity
-- Use positive, uplifting themes throughout
-- Make challenges intellectual rather than physical
-
-GAME MECHANICS:
-- Stories last exactly {GAME_CONFIG['MAX_TURNS']} turns maximum
-- Players can make {GAME_CONFIG['MAX_BACKTRACK']} backtracks to previous choices
-- Include vocabulary words naturally in context
-- Build towards a satisfying conclusion within 15 turns
-- On turns 13-15, wrap up the story with a satisfying ending
-- On the final turn, always end with "GAME OVER – Thanks for playing!"
+- Use only positive, happy themes
+- Include friendly animals and magical helpers  
+- Focus on helping, sharing, and friendship
+- NO scary content, complex plots, or difficult concepts
+- Keep everything at a 5-10 year old comprehension level
 
 RESPONSE FORMAT:
-- Start immediately with story content
-- Use present tense and second person ("You see...")
-- Keep paragraphs short for dyslexia accessibility
-- End with clear choices or questions
-- Be specific about what players can do next"""
+- Very short sentences (5-8 words maximum)
+- Include lots of emojis for visual support
+- Clear, simple questions with 3 answer choices
+- Immediate positive feedback for correct answers
+- Gentle, helpful hints for wrong answers"""
 
 
 def get_genre_prompt(genre: str) -> str:
@@ -155,6 +154,137 @@ Remember: The story comes first, vocabulary enhancement comes second.
 """
 
 
+def get_educational_round_prompt(round_number: int, theme: str, difficulty: str) -> str:
+    """Generate a prompt for creating educational rounds with progressive difficulty"""
+    
+    # Define difficulty-specific guidelines
+    difficulty_guidelines = {
+        "easy": {
+            "word_length": "4-5 letters",
+            "concepts": "simple story comprehension, basic animals and actions, familiar objects",
+            "instructions": "Clear questions about what happened in the story or what characters did",
+            "examples": "What animal did you see? Where did the rabbit go? What color was the flower?"
+        },
+        "intermediate": {
+            "word_length": "5-6 letters", 
+            "concepts": "word completion, simple sentences, cause and effect",
+            "instructions": "Fill in missing letters, complete simple sentences, understand simple relationships",
+            "examples": "Complete: gar_en (garden), 'The bird flew to its ___' (home/tree/nest)"
+        },
+        "difficult": {
+            "word_length": "6-8 letters",
+            "concepts": "reading comprehension, word meanings, character emotions and motivations", 
+            "instructions": "Answer questions about feelings, word meanings, and story themes",
+            "examples": "What does 'peaceful' mean? Why did the character help others? How did they feel?"
+        }
+    }
+    
+    guidelines = difficulty_guidelines.get(difficulty, difficulty_guidelines["easy"])
+    
+    # Theme-specific content for young children
+    theme_content = {
+        "forest": {
+            "setting": "magical forest with friendly animals 🌲🦉🐿️",
+            "characters": "wise owl, friendly squirrel, kind deer, helpful rabbit",
+            "simple_words": ["forest", "animal", "tree", "branch", "nest", "acorn", "flower", "stream", "friend"],
+            "story_elements": "finding lost items, helping animal friends, exploring safe paths, discovering nature"
+        },
+        "space": {
+            "setting": "colorful space with friendly aliens 🚀🌟👽", 
+            "characters": "kind alien, helpful robot, space friend, star guide",
+            "simple_words": ["rocket", "planet", "alien", "space", "stars", "galaxy", "robot", "friend", "explore"],
+            "story_elements": "visiting colorful planets, meeting space friends, exploring galaxies, sharing discoveries"
+        },
+        "dungeon": {
+            "setting": "magical castle with treasure games 🏰✨💰",
+            "characters": "friendly wizard, kind fairy, helpful dragon, magic helper", 
+            "simple_words": ["castle", "wizard", "magic", "treasure", "crystal", "potion", "spell", "helper", "wonder"],
+            "story_elements": "finding magical keys, solving simple puzzles, sharing treasures, learning magic"
+        },
+        "mystery": {
+            "setting": "cozy town with friendly helpers 🏘️🔍😊",
+            "characters": "nice detective, kind neighbor, helpful friend, caring teacher",
+            "simple_words": ["mystery", "clues", "detective", "helper", "puzzle", "answer", "question", "solve", "discover"],
+            "story_elements": "finding lost pets, helping neighbors, solving simple puzzles, discovering secrets"
+        }
+    }
+    
+    content = theme_content.get(theme, theme_content["forest"])
+    
+    return f"""Create an educational round for children aged 5-10 with dyslexia.
+
+ROUND DETAILS:
+- Round {round_number} of 7 total rounds
+- Difficulty: {difficulty.upper()}
+- Theme: {theme} - {content['setting']}
+
+DIFFICULTY REQUIREMENTS FOR {difficulty.upper()}:
+- Word length: {guidelines['word_length']}
+- Concepts: {guidelines['concepts']}  
+- Instructions: {guidelines['instructions']}
+- Examples: {guidelines['examples']}
+
+THEME ELEMENTS:
+- Setting: {content['setting']}
+- Characters: {content['characters']}
+- Age-appropriate words: {', '.join(content['simple_words'][:6])}
+- Story focus: {content['story_elements']}
+
+CRITICAL REQUIREMENTS:
+- Create a 2-3 sentence mini-story with emojis
+- ONE clear learning question with exactly 3 answer choices
+- EXACTLY ONE answer must be completely correct based on the story
+- The correct answer must directly match what happened in the story
+- The other 2 choices should be clearly wrong (not mentioned in story)
+- Include a helpful hint for wrong answers
+- Use vocabulary appropriate for 5-10 year olds
+- Keep sentence length under 8 words each
+- Focus on positive, happy scenarios only
+
+ANSWER CHOICE RULES:
+- Choice A, B, or C: ONE must be the exact right answer from the story
+- The other two choices: Should be plausible but clearly incorrect
+- Example: If story says "bird landed close", correct choice is "landed close", wrong choices could be "flew away" or "ate berries"
+
+FORMAT RESPONSE EXACTLY AS:
+STORY: [2-3 sentences with emojis describing a simple, happy scene]
+QUESTION: [One clear question about the story or a word]
+CHOICE_A: [First answer option - can be correct or wrong]
+CHOICE_B: [Second answer option - can be correct or wrong] 
+CHOICE_C: [Third answer option - can be correct or wrong]
+CORRECT: [Write exactly A, B, or C - the letter of the RIGHT answer]
+HINT: [Helpful hint for children who pick the wrong answer]
+CHALLENGE_WORD: [The main vocabulary word being taught]
+
+IMPORTANT: Look at your STORY and QUESTION. Make sure the CORRECT letter (A, B, or C) points to the choice that ACTUALLY answers the question correctly based on what happens in the story.
+
+Generate a {difficulty} difficulty round {round_number} for {theme} theme now:"""
+
+def get_hint_generation_prompt(question: str, correct_answer: str, wrong_answer: str, theme: str) -> str:
+    """Generate a helpful hint when a child picks the wrong answer"""
+    
+    return f"""A child aged 5-10 with dyslexia just picked the wrong answer. Generate a kind, helpful hint.
+
+QUESTION: {question}
+CORRECT ANSWER: {correct_answer}  
+CHILD'S ANSWER: {wrong_answer}
+THEME: {theme}
+
+HINT REQUIREMENTS:
+- Maximum 15 words
+- Use simple, encouraging language
+- Include emojis for visual support 
+- Give a clue without revealing the full answer
+- Be patient and supportive
+- Help the child think about the right answer
+
+EXAMPLES:
+"Try again! 🌟 Think about what sound the word starts with!"
+"Close! 🤔 Look at the picture clue - what do you see?"
+"Good try! 😊 Sound it out slowly - what letters do you hear?"
+
+Generate a helpful hint:"""
+
 def get_dynamic_story_creation_prompt(theme: str) -> str:
     """Generate a prompt for creating unique stories based on theme"""
     
@@ -219,6 +349,34 @@ CREATIVITY GUIDELINES:
 
 Remember: Every story should feel like a brand new adventure, even within the same theme!"""
 
+
+def get_round_difficulty(round_number: int) -> str:
+    """Determine difficulty level based on round number"""
+    if round_number <= 2:
+        return "easy"
+    elif round_number <= 5:
+        return "intermediate" 
+    else:
+        return "difficult"
+
+def get_progressive_learning_prompt(round_number: int, theme: str) -> str:
+    """Generate a prompt for the progressive learning system"""
+    
+    difficulty = get_round_difficulty(round_number)
+    
+    return f"""Create educational Round {round_number} for children aged 5-10 with dyslexia.
+
+PROGRESSIVE DIFFICULTY SYSTEM:
+- Rounds 1-2: EASY (simple matching, 2-3 letter words)
+- Rounds 3-5: INTERMEDIATE (word completion, 4-5 letter words)  
+- Rounds 6-7: DIFFICULT (comprehension, longer words)
+
+CURRENT ROUND: {round_number}/7 - {difficulty.upper()} difficulty
+THEME: {theme}
+
+{get_educational_round_prompt(round_number, theme, difficulty)}
+
+Create this educational round focusing on helping children learn while having fun!"""
 
 def get_turn_progression_prompt(turn: int) -> str:
     """Get turn-specific guidance for story progression"""

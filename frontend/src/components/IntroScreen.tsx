@@ -83,31 +83,6 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
           a journey full of puzzles, new words, and amazing discoveries!
         </p>
 
-        {/* Game Features */}
-        <div className="bg-retro-black border-2 border-retro-green p-6 mb-8 rounded">
-          <h2 className="text-retro-amber text-xl font-bold mb-4 text-center">
-            🎮 GAME FEATURES 🎮
-          </h2>
-          <div className="grid md:grid-cols-2 gap-4 text-sm">
-            <div className="flex items-center space-x-2">
-              <span className="text-retro-green">📚</span>
-              <span>Learn new vocabulary words</span>
-            </div>
-            <div className="flex items-center space-x-2">
-              <span className="text-retro-green">🧩</span>
-              <span>Solve fun puzzles and riddles</span>
-            </div>
-            <div className="flex items-center space-x-2">
-              <span className="text-retro-green">🔄</span>
-              <span>Go back and try different choices</span>
-            </div>
-            <div className="flex items-center space-x-2">
-              <span className="text-retro-green">♿</span>
-              <span>Dyslexia-friendly design</span>
-            </div>
-          </div>
-        </div>
-
         {/* Genre Selection */}
         <div className="space-y-4">
           <h2 className="text-2xl font-bold text-center mb-6 text-retro-green">

@@ -48,6 +48,7 @@ class StorySegment(BaseModel):
     """Short story segment (2-3 sentences)"""
     id: str
     text: str  # 2-3 sentences, dyslexia-friendly
+    question: Optional[str] = None  # Educational question about the story
     visual_cues: List[VisualCue] = []
     multiple_choices: List[MultipleChoice]
     word_challenge: Optional[WordChallenge] = None
@@ -84,7 +85,7 @@ class GameTurn(BaseModel):
 
 
 class GameState(BaseModel):
-    """Complete educational game state for dyslexia support"""
+    """Complete educational game state for progressive learning for children aged 5-10 with dyslexia"""
     session_id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     turn: int = 0
     genre: Literal['forest', 'space', 'dungeon', 'mystery']
@@ -95,9 +96,12 @@ class GameState(BaseModel):
     vocabulary_learned: List[str] = []
     game_over: bool = False
     backtrack_count: int = 0
-    session_limit: int = Field(default=8, ge=5, le=10)  # 7-10 segments per session
+    session_limit: int = Field(default=7, ge=5, le=7)  # Fixed 7 rounds for progressive learning
     adaptive_difficulty: bool = True
     text_to_speech_enabled: bool = False
+    current_round: int = Field(default=1, ge=1, le=7)  # Current educational round (1-7)
+    progressive_mode: bool = Field(default=True)  # Enable progressive difficulty system
+    hints_shown: Dict[str, str] = Field(default_factory=dict)  # Track hints shown per segment
     created_at: datetime = Field(default_factory=datetime.now)
     last_active: datetime = Field(default_factory=datetime.now)
 
@@ -148,6 +152,7 @@ class GameNextResponse(BaseModel):
     vocabulary_words: List[str]
     game_over: bool
     choices: List[str] = []  # Dynamic choices for the current story segment
+    question: Optional[str] = None  # Educational question about the story
 
 
 class TraditionalGameStartResponse(BaseModel):
@@ -167,6 +172,8 @@ class GameInteractionResponse(BaseModel):
     player_progress: PlayerProgress
     game_over: bool = False
     session_complete: bool = False
+    current_round: int = 1  # Which educational round (1-7)
+    difficulty_level: str = "easy"  # Current difficulty: easy, intermediate, difficult
 
 
 class GameBacktrackRequest(BaseModel):

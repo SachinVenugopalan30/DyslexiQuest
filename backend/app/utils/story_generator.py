@@ -7,7 +7,7 @@ from app.models.game import StorySegment, MultipleChoice, WordChallenge, VisualC
 
 
 class StorySegmentGenerator:
-    """Generate educational story segments with dyslexia support and LLM integration"""
+    """Generate educational story segments with progressive difficulty for children aged 5-10 with dyslexia"""
     
     def __init__(self):
         self.visual_icons = {
@@ -37,7 +37,25 @@ class StorySegmentGenerator:
             'clues': '🔍',
             'mystery': '❓',
             'animals': '🦌',
-            'trees': '🌳'
+            'trees': '🌳',
+            'cat': '🐱',
+            'dog': '🐶',
+            'bird': '🐦',
+            'fish': '🐟',
+            'home': '🏠',
+            'tree': '🌳',
+            'flower': '🌸',
+            'help': '🤝',
+            'friend': '👫',
+            'safe': '🛡️'
+        }
+        
+        # Map old genre names to new categories for backward compatibility
+        self.genre_mapping = {
+            'fantasy': 'dungeon',  # Map fantasy to magical dungeon
+            'adventure': 'forest',  # Map adventure to forest
+            'sci-fi': 'space',     # Map sci-fi to space
+            'mystery': 'mystery'   # Keep mystery as mystery
         }
         
         # Adventure category descriptions for LLM prompts
@@ -68,13 +86,218 @@ class StorySegmentGenerator:
             }
         }
         
-        # Map old genre names to new categories for backward compatibility
-        self.genre_mapping = {
-            'fantasy': 'dungeon',  # Map fantasy to magical dungeon
-            'adventure': 'forest',  # Map adventure to forest
-            'sci-fi': 'space',     # Map sci-fi to space
-            'mystery': 'mystery'   # Keep mystery as mystery
+        # Educational rounds with progressive difficulty
+        self.educational_rounds = {
+            'forest': [
+                # Easy rounds (1-2)
+                {
+                    'story': "A wise owl 🦉 sits on a tall tree branch. The owl hoots softly and watches the forest below.",
+                    'question': "Where does the wise owl sit?",
+                    'choices': ['tree branch 🌳', 'flower bed 🌸', 'rock pile 🪨'],
+                    'correct': 0,
+                    'hint': "Look at the story! 🌳 Where do owls like to rest high up?",
+                    'word': 'branch',
+                    'difficulty': 'easy'
+                },
+                {
+                    'story': "A happy squirrel 🐿️ gathers acorns for winter. It carries them to its cozy nest in the oak tree.",
+                    'question': "What does the squirrel gather for winter?",
+                    'choices': ['acorns 🌰', 'flowers 🌸', 'stones �'],
+                    'correct': 0,
+                    'hint': "Think about what squirrels eat! 🌰 What do they collect from oak trees?",
+                    'word': 'acorns',
+                    'difficulty': 'easy'
+                },
+                # Intermediate rounds (3-5)
+                {
+                    'story': "A deer 🦌 walks to the stream. It wants to drink water. The water is clean and fresh.",
+                    'question': "Why did the deer go to the stream?",
+                    'choices': ['to drink 💧', 'to play 🎮', 'to sleep 😴'],
+                    'correct': 0,
+                    'hint': "When you're thirsty, what do you do? 💧 Think about what the deer needs!",
+                    'word': 'drink',
+                    'difficulty': 'intermediate'
+                },
+                {
+                    'story': "Complete this word: The rabbit found a safe h_me under the big tree 🌳",
+                    'question': "Complete the word: h_me",
+                    'choices': ['home 🏠', 'hope 🌟', 'hole 🕳️'],
+                    'correct': 0,
+                    'hint': "Where do you live? 🏠 What place keeps you safe and warm?",
+                    'word': 'home',
+                    'difficulty': 'intermediate'
+                },
+                {
+                    'story': "The forest animals work together. They help each other find food and stay safe.",
+                    'question': "What do the animals do together?",
+                    'choices': ['help each other 🤝', 'sleep all day 😴', 'run away 🏃'],
+                    'correct': 0,
+                    'hint': "Good friends do this! 🤝 They care for each other and work as a team.",
+                    'word': 'help',
+                    'difficulty': 'intermediate'
+                },
+                # Difficult rounds (6-7)
+                {
+                    'story': "The wise owl teaches young animals about forest safety. 'Always stay together,' says the owl. 'Help your friends when they need you.'",
+                    'question': "What is the owl's main message about staying safe?",
+                    'choices': ['stay together with friends 👫', 'climb the highest tree 🌲', 'collect shiny things ✨'],
+                    'correct': 0,
+                    'hint': "Safety comes from friendship! 👫 What keeps you safer - being alone or with friends?",
+                    'word': 'together',
+                    'difficulty': 'difficult'
+                },
+                {
+                    'story': "Every morning, the forest animals gather in a peaceful circle. They share stories and plan adventures for the day ahead.",
+                    'question': "What does 'peaceful' mean in this story?",
+                    'choices': ['calm and quiet 🕊️', 'loud and busy 📢', 'dark and scary 🌑'],
+                    'correct': 0,
+                    'hint': "Think of a quiet, happy moment! 🕊️ When everyone feels calm and safe together.",
+                    'word': 'peaceful',
+                    'difficulty': 'difficult'
+                }
+            ],
+            'space': [
+                # Easy rounds (1-2)
+                {
+                    'story': "A friendly alien 👽 lands on a colorful planet. The alien explores the purple mountains and silver rivers.",
+                    'question': "What does the alien explore on the planet?",
+                    'choices': ['mountains 🏔️', 'cookies 🍪', 'pencils ✏️'],
+                    'correct': 0,
+                    'hint': "Look at the story! 🏔️ What tall things does the alien see on the planet?",
+                    'word': 'mountains',
+                    'difficulty': 'easy'
+                },
+                {
+                    'story': "A shiny rocket 🚀 travels through space to visit distant planets. The rocket carries friendly explorers.",
+                    'question': "What does the rocket visit in space?",
+                    'choices': ['planets 🪐', 'houses �', 'cars 🚗'],
+                    'correct': 0,
+                    'hint': "Think about space! 🪐 What round objects float in space that rockets can visit?",
+                    'word': 'planets',
+                    'difficulty': 'easy'
+                }
+                # More rounds would be added here...
+            ]
         }
+    
+    async def generate_educational_round(self, round_number: int, theme: str) -> StorySegment:
+        """Generate an educational round with progressive difficulty"""
+        
+        # Determine difficulty based on round number
+        if round_number <= 2:
+            difficulty = "easy"
+        elif round_number <= 5:
+            difficulty = "intermediate"
+        else:
+            difficulty = "difficult"
+        
+        # Try LLM generation first
+        try:
+            from app.core.llm import gemini_client
+            round_data = await gemini_client.generate_educational_round(
+                round_number=round_number,
+                theme=theme,
+                difficulty=difficulty
+            )
+            return self._create_educational_segment(round_data, round_number)
+            
+        except Exception as e:
+            print(f"LLM round generation failed: {e}")
+            # Use fallback educational content
+            return self._create_fallback_educational_round(round_number, theme, difficulty)
+    
+    def _create_educational_segment(self, round_data: Dict[str, Any], round_number: int) -> StorySegment:
+        """Create a StorySegment from educational round data"""
+        
+        # Create multiple choice options - only one is correct
+        choices = []
+        correct_index = round_data.get("correct", 0)
+        
+        # Debug: Log the round data to help diagnose issues
+        print(f"DEBUG: Creating educational segment with correct_index={correct_index}, choices={round_data.get('choices', [])}")
+        
+        for i, choice_text in enumerate(round_data.get("choices", [])):
+            is_correct = (i == correct_index)
+            
+            choice = MultipleChoice(
+                id=f"choice_{i}",
+                text=choice_text,
+                is_correct=is_correct,
+                feedback="Great job! 🌟" if is_correct else round_data.get("hint", "Try again! 🤔"),
+                visual_cue=VisualCue(
+                    icon=self._get_icon_for_text(choice_text),
+                    description=f"Visual cue for {choice_text}",
+                    position='before'
+                ),
+                difficulty_adjustment=0
+            )
+            choices.append(choice)
+        
+        # Create word challenge based on the educational content
+        challenge_word = round_data.get("word", "help")
+        
+        word_challenge = WordChallenge(
+            type='completion',  # Default to completion for educational rounds
+            instruction=round_data.get("question", "What did you learn?"),
+            word=challenge_word,
+            correct_answer=challenge_word,
+            hint=round_data.get("hint", "Sound it out slowly! 🔤"),
+            visual_cue=VisualCue(
+                icon=self.visual_icons.get(challenge_word, '✨'),
+                description=f"Visual for {challenge_word}",
+                position='before'
+            ),
+            difficulty_level=1 if round_data.get("difficulty") == "easy" else 2 if round_data.get("difficulty") == "intermediate" else 3
+        )
+        
+        # Create visual cues for the story
+        visual_cues = self._extract_visual_cues(round_data.get("story", ""))
+        
+        # Combine story text with question to show in AI response
+        story_text = round_data.get("story", "Let's learn together! 📚")
+        question_text = round_data.get("question", "What do you want to do next?")
+        combined_text = f"{story_text}\n\n🤔 {question_text}"
+        
+        segment = StorySegment(
+            id=str(uuid.uuid4()),
+            text=combined_text,
+            question=question_text,
+            visual_cues=visual_cues,
+            multiple_choices=choices,
+            word_challenge=word_challenge,
+            vocabulary_words=[challenge_word],
+            difficulty_level=1 if round_data.get("difficulty") == "easy" else 2 if round_data.get("difficulty") == "intermediate" else 3,
+            estimated_reading_time=self._estimate_reading_time(combined_text)
+        )
+        
+        return segment
+    
+    def _create_fallback_educational_round(self, round_number: int, theme: str, difficulty: str) -> StorySegment:
+        """Create fallback educational round when LLM is unavailable"""
+        
+        # Get predefined educational rounds for the theme
+        theme_rounds = self.educational_rounds.get(theme, self.educational_rounds['forest'])
+        
+        # Select appropriate round based on round number and difficulty
+        selected_round = None
+        for round_data in theme_rounds:
+            if round_data['difficulty'] == difficulty:
+                selected_round = round_data
+                break
+        
+        # If no round found for difficulty, use the first available
+        if not selected_round:
+            selected_round = theme_rounds[0] if theme_rounds else {
+                'story': "Let's learn together! 📚 Every day we discover something new.",
+                'question': "What do we do every day?",
+                'choices': ['learn 📚', 'sleep 😴', 'cry 😢'],
+                'correct': 0,
+                'hint': "Think about growing and getting smarter! 📚",
+                'word': 'learn',
+                'difficulty': difficulty
+            }
+        
+        return self._create_educational_segment(selected_round, round_number)
     
     async def generate_segment_with_llm(self, genre: str, difficulty: int, segment_index: int, previous_choices: Optional[List[str]] = None, story_context: Optional[List[str]] = None) -> StorySegment:
         """Generate a story segment using LLM for adaptive content"""
@@ -264,6 +487,7 @@ class StorySegmentGenerator:
         segment = StorySegment(
             id=str(uuid.uuid4()),
             text=content['text'],
+            question="What do you want to do next?",  # Default question for fallback segments
             visual_cues=visual_cues,
             multiple_choices=choices,
             word_challenge=word_challenge,

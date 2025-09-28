@@ -267,7 +267,7 @@ export const GameWindow: React.FC<GameWindowProps> = ({ gameState, settings, onS
           {!gameState.gameState.game_over && !isTyping && (
             <div className="mt-6 p-6 border-2 border-retro-amber rounded-lg bg-retro-black max-w-4xl mx-auto">
               <h3 className="text-retro-amber text-xl font-semibold mb-6 text-center">
-                🤔 What do you want to do next?
+                🤔 {gameState.gameState.current_question || "What do you want to do next?"}
               </h3>
               
               {/* 4 Choice buttons in a 2x2 grid on larger screens */}

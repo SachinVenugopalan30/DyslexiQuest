@@ -30,6 +30,7 @@ interface WordChallenge {
 interface StorySegment {
   id: string;
   text: string;
+  question?: string;
   visual_cues: VisualCue[];
   multiple_choices: MultipleChoice[];
   word_challenge?: WordChallenge;
@@ -195,7 +196,7 @@ export const StorySegmentDisplay: React.FC<StorySegmentProps> = ({
       {!showChallenge && (
         <div className="multiple-choices">
           <h3 className="text-retro-amber font-bold mb-4 text-lg">
-            What would you like to do?
+            {segment.question || "What would you like to do?"}
           </h3>
           
           <div className="space-y-3">

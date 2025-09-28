@@ -6,8 +6,12 @@ export interface GameStartRequest {
 export interface GameStartResponse {
   session_id: string;
   story_intro: string;
+  question?: string;
   turn: number;
   choices?: string[];
+  round?: number;
+  difficulty?: string;
+  progressive_mode?: boolean;
 }
 
 export interface GameNextRequest {
@@ -18,10 +22,14 @@ export interface GameNextRequest {
 
 export interface GameNextResponse {
   response: string;
+  question?: string;
   turn: number;
   vocabulary_words: string[];
   game_over: boolean;
   choices?: string[];
+  round?: number;
+  difficulty?: string;
+  progressive_mode?: boolean;
 }
 
 export interface GameBacktrackRequest {
@@ -48,6 +56,10 @@ export interface GameState {
   game_over: boolean;
   backtrack_count: number;
   current_choices?: string[];
+  current_question?: string;
+  round?: number;
+  difficulty?: string;
+  progressive_mode?: boolean;
 }
 
 export interface GameTurn {

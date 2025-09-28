@@ -79,6 +79,10 @@ export const useGameState = (): UseGameStateReturn => {
           "3. Move forward slowly 👣",
           "4. Stay where you are 🛑"
         ],
+        current_question: response.question,
+        round: response.round,
+        difficulty: response.difficulty,
+        progressive_mode: response.progressive_mode,
       };
 
       setGameState(newGameState);
@@ -149,6 +153,10 @@ export const useGameState = (): UseGameStateReturn => {
           "3. Move forward slowly 👣",
           "4. Stay where you are 🛑"
         ],
+        current_question: response.question,
+        round: response.round,
+        difficulty: response.difficulty,
+        progressive_mode: response.progressive_mode,
       };
 
       setGameState(updatedGameState);

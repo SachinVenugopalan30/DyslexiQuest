@@ -229,6 +229,7 @@ Generate a completely unique {theme} adventure beginning now:"""
         story_segment = StorySegment(
             id=str(uuid.uuid4()),
             text=segment_data.get("story", "Your adventure begins!"),
+            question=segment_data.get("question", "What do you want to do next?"),
             multiple_choices=choices,
             word_challenge=word_challenge,
             visual_cues=[],
@@ -239,6 +240,52 @@ Generate a completely unique {theme} adventure beginning now:"""
         
         return story_segment
     
+    async def generate_educational_round(self, round_number: int, theme: str, difficulty: str) -> Dict[str, Any]:
+        """Generate an educational round with progressive difficulty for children aged 5-10"""
+        
+        from app.api.prompts import get_educational_round_prompt
+        
+        prompt = get_educational_round_prompt(round_number, theme, difficulty)
+        
+        try:
+            if not self.is_available or not self.model:
+                return self._get_fallback_educational_round(round_number, theme, difficulty)
+            
+            response = self.model.generate_content(prompt)
+            
+            if response and response.text:
+                # Parse the structured response
+                round_data = self._parse_educational_round_response(response.text.strip(), round_number, theme, difficulty)
+                return round_data
+            else:
+                return self._get_fallback_educational_round(round_number, theme, difficulty)
+                
+        except Exception as e:
+            logger.error(f"Error generating educational round: {e}")
+            return self._get_fallback_educational_round(round_number, theme, difficulty)
+
+    async def generate_hint_for_wrong_answer(self, question: str, correct_answer: str, wrong_answer: str, theme: str) -> str:
+        """Generate a helpful hint when child picks wrong answer"""
+        
+        from app.api.prompts import get_hint_generation_prompt
+        
+        prompt = get_hint_generation_prompt(question, correct_answer, wrong_answer, theme)
+        
+        try:
+            if not self.is_available or not self.model:
+                return self._get_fallback_hint_for_child(correct_answer)
+            
+            response = self.model.generate_content(prompt)
+            
+            if response and response.text:
+                return response.text.strip()[:100]  # Keep hints very short for children
+            else:
+                return self._get_fallback_hint_for_child(correct_answer)
+                
+        except Exception as e:
+            logger.error(f"Error generating hint: {e}")
+            return self._get_fallback_hint_for_child(correct_answer)
+
     async def generate_adaptive_hint(self, challenge_type: str, difficulty: str, context: str) -> str:
         """Generate adaptive hints for word challenges based on player performance"""
         prompt = self._create_hint_prompt(challenge_type, difficulty, context)
@@ -391,6 +438,7 @@ DYNAMIC STORY GENERATION REQUIREMENTS:
 
 FORMAT YOUR RESPONSE EXACTLY AS:
 STORY: [2-3 sentences that continue the adventure with emojis]
+QUESTION: [A clear, simple question about what happened in the story - max 8 words]
 CHOICE1: [Option A - 3-6 words with emoji]
 CHOICE2: [Option B - 3-6 words with emoji]  
 CHOICE3: [Option C - 3-6 words with emoji]
@@ -398,6 +446,8 @@ CHOICE4: [Option D - 3-6 words with emoji]
 CHALLENGE_TYPE: completion
 CHALLENGE_WORD: [vocabulary word related to the theme]
 CHALLENGE_PROMPT: [Simple word completion challenge]
+
+IMPORTANT: The QUESTION should be directly related to the STORY content and have ONE clear correct answer among the choices.
 
 Generate the next unique segment of this {adventure_category} adventure:"""
     
@@ -550,6 +600,7 @@ Generate a similar hint for this challenge."""
             "segment_number": segment_number,
             "theme": theme,
             "story": "",
+            "question": "",
             "choices": [],
             "challenge": None
         }
@@ -566,6 +617,8 @@ Generate a similar hint for this challenge."""
             if line.startswith("STORY:"):
                 segment_data["story"] = line.replace("STORY:", "").strip()
                 found_choices = True  # Mark that we're now in structured mode
+            elif line.startswith("QUESTION:"):
+                segment_data["question"] = line.replace("QUESTION:", "").strip()
             elif line.startswith("CHOICE1:"):
                 segment_data["choices"].append({"id": "A", "text": line.replace("CHOICE1:", "").strip(), "is_correct": True})
                 found_choices = True
@@ -734,6 +787,139 @@ Generate a similar hint for this challenge."""
         }
         
         return hints.get(challenge_type, "You're doing great! 🌟 Take your time and try your best!")
+    
+    def _parse_educational_round_response(self, response_text: str, round_number: int, theme: str, difficulty: str) -> Dict[str, Any]:
+        """Parse the LLM response for educational rounds"""
+        
+        lines = response_text.split('\n')
+        round_data = {
+            "round_number": round_number,
+            "theme": theme,
+            "difficulty": difficulty,
+            "story": "",
+            "question": "",
+            "choices": [],
+            "correct": 0,
+            "hint": "",
+            "word": ""
+        }
+        
+        for line in lines:
+            line = line.strip()
+            if not line:
+                continue
+                
+            if line.startswith("STORY:"):
+                round_data["story"] = line.replace("STORY:", "").strip()
+            elif line.startswith("QUESTION:"):
+                round_data["question"] = line.replace("QUESTION:", "").strip()
+            elif line.startswith("CHOICE_A:"):
+                round_data["choices"].append(line.replace("CHOICE_A:", "").strip())
+            elif line.startswith("CHOICE_B:"):
+                round_data["choices"].append(line.replace("CHOICE_B:", "").strip())
+            elif line.startswith("CHOICE_C:"):
+                round_data["choices"].append(line.replace("CHOICE_C:", "").strip())
+            elif line.startswith("CORRECT:"):
+                correct_letter = line.replace("CORRECT:", "").strip().upper()
+                if correct_letter == 'A':
+                    round_data["correct"] = 0
+                elif correct_letter == 'B':
+                    round_data["correct"] = 1
+                elif correct_letter == 'C':
+                    round_data["correct"] = 2
+                else:
+                    # Default to first choice if parsing fails
+                    logger.warning(f"Could not parse correct answer '{correct_letter}', defaulting to A")
+                    round_data["correct"] = 0
+            elif line.startswith("HINT:"):
+                round_data["hint"] = line.replace("HINT:", "").strip()
+            elif line.startswith("CHALLENGE_WORD:"):
+                round_data["word"] = line.replace("CHALLENGE_WORD:", "").strip()
+        
+        # Ensure we have all required data
+        if not round_data["choices"]:
+            round_data["choices"] = ["Option A", "Option B", "Option C"]
+        
+        if len(round_data["choices"]) < 3:
+            while len(round_data["choices"]) < 3:
+                round_data["choices"].append("Try again")
+        
+        # Validate correct index
+        if round_data["correct"] >= len(round_data["choices"]):
+            logger.warning(f"Correct index {round_data['correct']} is out of range for {len(round_data['choices'])} choices, setting to 0")
+            round_data["correct"] = 0
+        
+        # Log the parsed data for debugging
+        logger.info(f"Parsed educational round: question='{round_data['question']}', choices={round_data['choices']}, correct={round_data['correct']}")
+        
+        return round_data
+    
+    def _get_fallback_educational_round(self, round_number: int, theme: str, difficulty: str) -> Dict[str, Any]:
+        """Get fallback educational round when API is unavailable"""
+        
+        # Simple fallback rounds based on difficulty and theme
+        if difficulty == "easy":
+            if theme == "forest":
+                return {
+                    "round_number": round_number,
+                    "theme": theme,
+                    "difficulty": difficulty,
+                    "story": "A wise owl 🦉 sits on a tall tree branch. The owl watches over the peaceful forest below.",
+                    "question": "Where does the owl sit?",
+                    "choices": ["tree branch 🌳", "flower bed 🌸", "rock pile 🪨"],
+                    "correct": 0,
+                    "hint": "Look at the story! 🌳 Where do owls perch high up in the forest?",
+                    "word": "branch"
+                }
+            else:  # space theme
+                return {
+                    "round_number": round_number,
+                    "theme": theme,
+                    "difficulty": difficulty,
+                    "story": "A shiny rocket 🚀 travels through space to explore distant planets and meet alien friends.",
+                    "question": "What does the rocket explore in space?",
+                    "choices": ["planets 🪐", "houses �", "books 📚"],
+                    "correct": 0,
+                    "hint": "Think about space! 🪐 What round objects does the rocket visit far from Earth?",
+                    "word": "planets"
+                }
+        elif difficulty == "intermediate":
+            return {
+                "round_number": round_number,
+                "theme": theme,
+                "difficulty": difficulty,
+                "story": "Complete this word: The cat wants to go h_me 🏠",
+                "question": "Complete the word: h_me",
+                "choices": ["home 🏠", "hope 🌟", "hole 🕳️"],
+                "correct": 0,
+                "hint": "Where do you live? 🏠 A safe, warm place!",
+                "word": "home"
+            }
+        else:  # difficult
+            return {
+                "round_number": round_number,
+                "theme": theme,
+                "difficulty": difficulty,
+                "story": "The animals work together to help each other. They are kind and caring friends.",
+                "question": "What does 'together' mean?",
+                "choices": ["with friends 👫", "all alone 😔", "far away 🏃"],
+                "correct": 0,
+                "hint": "Think about friendship! 👫 When people help each other.",
+                "word": "together"
+            }
+    
+    def _get_fallback_hint_for_child(self, correct_answer: str) -> str:
+        """Get fallback hint for children when API is unavailable"""
+        
+        encouraging_hints = [
+            f"Try again! 🌟 Think about the word '{correct_answer}'.",
+            f"Good try! 🤔 Sound out '{correct_answer}' slowly.",
+            f"You're learning! 😊 The answer is about '{correct_answer}'.",
+            f"Keep trying! 💪 What do you know about '{correct_answer}'?"
+        ]
+        
+        import random
+        return random.choice(encouraging_hints)
 
 
 # Global Gemini client instance
