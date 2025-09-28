@@ -1,17 +1,28 @@
 import { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { ErrorBoundary } from './components/ErrorBoundary';
-import { IntroScreen } from './components/IntroScreen';
+import { WelcomeScreen } from './components/WelcomeScreen';
 import { GameWindow } from './components/GameWindow';
 import { AccessibilityControls } from './components/AccessibilityControls';
 import { PageTransition } from './components/PageTransition';
+import { ThemedLoadingScreen } from './components/ThemedLoadingScreen';
 import { useGameState } from './hooks/useGameState';
 import { setupTooltipPositioning } from './utils/tooltipPositioning';
+import { AdventureTheme, genreMapping } from './types/adventure';
+import { saveSelectedAdventure, loadSelectedAdventure, clearSelectedAdventure } from './utils/localStorage';
+import { SettingsModal } from './components/SettingsModal';
 
 export interface GameSettings {
-  fontSize: 'small' | 'medium' | 'large';
-  theme: 'retro' | 'accessible';
+  fontSize: 'small' | 'medium' | 'large' | 'x-large';
+  theme: 'retro' | 'accessible' | 'modern';
   skipAnimations: boolean;
-  fontFamily: 'poppins' | 'dyslexic';
+  fontFamily: 'opendyslexic' | 'poppins';
+  backgroundsEnabled: boolean;
+  highContrast: boolean;
+}
+
+export interface ExtendedGameSettings extends GameSettings {
+  selectedAdventure?: AdventureTheme;
 }
 
 function App() {
@@ -19,11 +30,31 @@ function App() {
     fontSize: 'medium',
     theme: 'retro',
     skipAnimations: false,
-    fontFamily: 'poppins'
+    fontFamily: 'opendyslexic',
+    backgroundsEnabled: true,
+    highContrast: false
   });
 
   const [showGameWindow, setShowGameWindow] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
+  const [selectedAdventure, setSelectedAdventure] = useState<AdventureTheme | null>(null);
+  const [isTransitioningHome, setIsTransitioningHome] = useState(false);
   const gameState = useGameState();
+
+  // Load selected adventure on mount
+  useEffect(() => {
+    const savedAdventure = loadSelectedAdventure();
+    if (savedAdventure) {
+      setSelectedAdventure(savedAdventure);
+    }
+  }, []);
+
+  // Save selected adventure whenever it changes
+  useEffect(() => {
+    if (selectedAdventure) {
+      saveSelectedAdventure(selectedAdventure);
+    }
+  }, [selectedAdventure]);
 
   // Handle smooth transition from loading to game
   useEffect(() => {
@@ -50,20 +81,54 @@ function App() {
     setGameSettings(prev => ({ ...prev, [key]: value }));
   };
 
+  const handleAdventureSelect = async (adventure: AdventureTheme) => {
+    setSelectedAdventure(adventure);
+    // Map adventure to backend genre
+    const genre = genreMapping[adventure.id];
+    await gameState.startGame(genre);
+  };
+
+  const handleNewGame = () => {
+    setIsTransitioningHome(true);
+    setTimeout(() => {
+      gameState.newGame();
+      setSelectedAdventure(null);
+      clearSelectedAdventure();
+      setShowGameWindow(false); // Hide game window immediately
+      setTimeout(() => {
+        setIsTransitioningHome(false);
+      }, 400); // Match PageTransition duration
+    }, 300); // Fade out duration before switching
+  };
+
+  const handleOpenSettings = () => {
+    setShowSettings(true);
+  };
+
+  const handleCloseSettings = () => {
+    setShowSettings(false);
+  };
+
   // Apply theme classes based on settings
-  const themeClasses = gameSettings.theme === 'retro' 
-    ? 'bg-primary-gunmetal text-primary-lavender' 
-    : 'bg-accessible-bg text-accessible-text high-contrast';
+  const themeClasses = 
+    gameSettings.highContrast 
+      ? 'bg-black text-white high-contrast' 
+      : gameSettings.theme === 'retro' 
+        ? 'bg-primary-gunmetal text-primary-lavender' 
+        : gameSettings.theme === 'accessible'
+          ? 'bg-accessible-bg text-accessible-text'
+          : 'bg-white text-black'; // Modern theme
     
   const fontClasses = {
-    poppins: 'font-poppins',
-    dyslexic: 'font-dyslexic dyslexia-friendly'
+    opendyslexic: 'font-dyslexic dyslexia-friendly',
+    poppins: 'font-poppins'
   }[gameSettings.fontFamily];
 
   const sizeClasses = {
     small: 'text-sm',
     medium: 'text-base',
-    large: 'text-lg'
+    large: 'text-lg',
+    'x-large': 'text-xl'
   }[gameSettings.fontSize];
 
   return (
@@ -73,60 +138,35 @@ function App() {
         role="main"
         aria-label="DyslexiQuest"
       >
-        {!gameState.isGameStarted ? (
+        {/* Home screen (Welcome) with transition */}
+        <PageTransition show={!gameState.isGameStarted && !isTransitioningHome} duration={400}>
           <>
             <AccessibilityControls 
               settings={gameSettings}
               onSettingChange={handleSettingChange}
             />
-            <PageTransition show={!gameState.isLoading} duration={400}>
-              <IntroScreen 
-                onStartGame={gameState.startGame}
-                settings={gameSettings}
-              />
-            </PageTransition>
-            <PageTransition show={gameState.isLoading} duration={400}>
-              <div className="min-h-screen flex items-center justify-center">
-                <div className="text-center max-w-md mx-auto p-8">
-                  <div className="mb-8">
-                    <div className="loading-spinner w-16 h-16 mx-auto mb-6"></div>
-                    <h2 className="text-2xl font-bold text-primary-powder mb-4">
-                      🎭 Creating Your Adventure!
-                    </h2>
-                    <p className="text-primary-lavender leading-relaxed mb-4">
-                      Our AI storyteller is crafting a unique adventure just for you...
-                    </p>
-                    <div className="text-sm text-primary-gray opacity-80">
-                      <p>✨ Generating story elements</p>
-                      <p>🎯 Setting up challenges</p>
-                      <p>📚 Preparing vocabulary words</p>
-                    </div>
-                  </div>
-                  
-                  {/* Animated dots to show activity */}
-                  <div className="flex justify-center space-x-2 mb-4">
-                    <div className="w-2 h-2 bg-primary-green rounded-full animate-pulse delay-0"></div>
-                    <div className="w-2 h-2 bg-primary-green rounded-full animate-pulse delay-200"></div>
-                    <div className="w-2 h-2 bg-primary-green rounded-full animate-pulse delay-400"></div>
-                  </div>
-                  
-                  <p className="text-xs text-primary-gray opacity-60">
-                    This usually takes 3-5 seconds
-                  </p>
-                </div>
-              </div>
-            </PageTransition>
-          </>
-        ) : (
-          <PageTransition show={showGameWindow} duration={600}>
-            <GameWindow 
-              gameState={gameState}
+            <WelcomeScreen 
+              onAdventureSelect={handleAdventureSelect}
+              onOpenSettings={handleOpenSettings}
               settings={gameSettings}
-              onSettingChange={handleSettingChange}
             />
-          </PageTransition>
-        )}
-        
+          </>
+        </PageTransition>
+        {/* Loading screen - only show during initial game start, not during choice selections */}
+        <PageTransition show={gameState.isLoading && !gameState.isGameStarted} duration={400}>
+          <ThemedLoadingScreen selectedAdventure={selectedAdventure} />
+        </PageTransition>
+        {/* Game window with transition */}
+        <PageTransition show={gameState.isGameStarted && showGameWindow && !isTransitioningHome} duration={600}>
+          <GameWindow 
+            gameState={gameState}
+            settings={gameSettings}
+            onSettingChange={handleSettingChange}
+            selectedAdventure={selectedAdventure}
+            onNewGame={handleNewGame}
+          />
+        </PageTransition>
+
         {/* Screen reader announcements */}
         <div 
           id="game-announcements" 
@@ -134,7 +174,16 @@ function App() {
           aria-live="polite" 
           aria-atomic="true"
         />
+
       </div>
+
+      {/* Settings Modal - Rendered as Portal */}
+      <SettingsModal
+        isOpen={showSettings}
+        onClose={handleCloseSettings}
+        settings={gameSettings}
+        onSettingChange={handleSettingChange}
+      />
     </ErrorBoundary>
   );
 }

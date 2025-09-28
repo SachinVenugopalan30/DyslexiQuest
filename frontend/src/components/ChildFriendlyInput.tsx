@@ -30,16 +30,19 @@ export const ChildFriendlyInput: React.FC<ChildFriendlyInputProps> = ({
   ]
 }) => {
   const [selectedChoice, setSelectedChoice] = useState<string>('');
+  const [selectedChoiceIndex, setSelectedChoiceIndex] = useState<number | null>(null);
 
-  const handleChoiceSelect = async (_choiceNumber: number, choiceText: string) => {
+  const handleChoiceSelect = async (choiceNumber: number, choiceText: string) => {
     if (!isDisabled) {
       setSelectedChoice(choiceText);
+      setSelectedChoiceIndex(choiceNumber - 1); // Convert to 0-based index
       if (error) {
         onClearError();
       }
       // Submit the choice immediately when clicked
       await onSubmit(choiceText);
       setSelectedChoice('');
+      setSelectedChoiceIndex(null);
     }
   };
 
@@ -83,6 +86,8 @@ export const ChildFriendlyInput: React.FC<ChildFriendlyInputProps> = ({
             const choiceNumber = index + 1;
             const isSelected = selectedChoice === choice;
             
+            const isCurrentlyLoading = isLoading && selectedChoiceIndex === index;
+            
             return (
               <button
                 key={index}
@@ -92,7 +97,9 @@ export const ChildFriendlyInput: React.FC<ChildFriendlyInputProps> = ({
                   p-4 rounded-xl border-2 text-left font-medium text-lg transition-all
                   ${isSelected 
                     ? 'bg-green-100 border-green-400 text-green-800' 
-                    : 'bg-gray-50 border-gray-300 text-gray-800 hover:bg-blue-50 hover:border-blue-400'
+                    : isCurrentlyLoading
+                      ? 'bg-blue-100 border-blue-400 text-blue-800'
+                      : 'bg-gray-50 border-gray-300 text-gray-800 hover:bg-blue-50 hover:border-blue-400'
                   }
                   ${isDisabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:shadow-md'}
                   focus:outline-none focus:ring-4 focus:ring-blue-200
@@ -102,26 +109,19 @@ export const ChildFriendlyInput: React.FC<ChildFriendlyInputProps> = ({
                 <div className="flex items-center space-x-3">
                   <div className={`
                     w-8 h-8 rounded-full flex items-center justify-center font-bold text-white
-                    ${isSelected ? 'bg-green-500' : 'bg-blue-500'}
+                    ${isSelected ? 'bg-green-500' : isCurrentlyLoading ? 'bg-blue-600' : 'bg-blue-500'}
                   `}>
                     {choiceNumber}
                   </div>
                   <span className="flex-1">{choice.replace(/^\d+\.\s*/, '')}</span>
+                  {isCurrentlyLoading && (
+                    <div className="loading-spinner w-5 h-5" />
+                  )}
                 </div>
               </button>
             );
           })}
         </div>
-
-        {/* Loading indicator */}
-        {isLoading && (
-          <div className="text-center">
-            <div className="inline-flex items-center space-x-2 text-purple-600">
-              <div className="loading-spinner w-5 h-5" />
-              <span className="font-medium">Creating your next adventure...</span>
-            </div>
-          </div>
-        )}
 
         {/* Encouragement message */}
         <div className="bg-gradient-to-r from-yellow-100 to-orange-100 rounded-xl p-4 text-center">

@@ -23,11 +23,11 @@ FALLBACK_INTROS: Dict[str, List[str]] = {
     ],
     
     "mystery": [
-        "Hello, detective! You've arrived at a curious mansion where something mysterious has happened. The friendly butler greets you with a warm smile. There are interesting clues waiting to be found. Which room would you like to investigate first?",
+        "Welcome to Paradise Island! 🏝️ You've just washed up on the shores of a beautiful tropical island after your boat was caught in a storm. Colorful parrots chirp overhead, and you can see ancient stone ruins in the jungle. A friendly island guide approaches to help you explore. Where would you like to start your island adventure?",
         
-        "Welcome, young investigator! You're at a charming library where books seem to move by themselves. The helpful librarian mentions that some volumes contain special puzzles. What would you like to examine first?",
+        "Ahoy, island explorer! You've discovered a hidden lagoon with crystal-clear water and ancient treasure chests buried in the sand. Friendly dolphins splash nearby, and you notice mysterious symbols carved into palm trees. What would you like to investigate first?",
         
-        "Greetings, puzzle solver! You've discovered an old clock tower where time seems to work differently. Friendly townspeople mention strange but wonderful things happening here. What mystery would you like to solve first?"
+        "Greetings, treasure hunter! You're on a magical tropical island where ancient secrets wait to be discovered. Wise island elders offer to share stories of hidden caves and buried treasures. Gentle sea turtles watch from the shore. Which path would you like to take?"
     ],
     
     "sci-fi": [
