@@ -24,7 +24,7 @@ export const AccessibilityControls: React.FC<AccessibilityControlsProps> = ({
       {/* Settings Toggle Button */}
       <button
         onClick={togglePanel}
-        className={`${inline ? 'p-2' : 'p-3'} bg-retro-black border-2 border-retro-green text-retro-green hover:bg-retro-green hover:text-retro-black focus:outline-none focus:ring-2 focus:ring-retro-green transition-all duration-200 rounded ${!inline ? 'shadow-lg' : ''}`}
+        className={`${inline ? 'p-2' : 'p-3'} bg-primary-gunmetal border-2 border-primary-green text-primary-lavender hover:bg-primary-green hover:text-primary-gunmetal focus:outline-none focus:ring-2 focus:ring-primary-powder transition-all duration-200 rounded ${!inline ? 'shadow-lg' : ''}`}
         aria-label={isOpen ? 'Close accessibility settings' : 'Open accessibility settings'}
         aria-expanded={isOpen}
         aria-controls="accessibility-panel"
@@ -36,20 +36,20 @@ export const AccessibilityControls: React.FC<AccessibilityControlsProps> = ({
       {isOpen && (
         <div
           id="accessibility-panel"
-          className={`absolute ${inline ? 'top-12 right-0 max-w-sm' : 'top-12 right-0 w-80'} ${inline ? 'w-72' : 'w-80'} bg-retro-black border-2 border-retro-green p-4 rounded shadow-lg z-50`}
+          className={`absolute ${inline ? 'top-12 right-0 max-w-sm' : 'top-12 right-0 w-80'} ${inline ? 'w-72' : 'w-80'} bg-primary-gunmetal border-2 border-primary-green p-4 rounded shadow-lg z-50`}
           role="region"
           aria-labelledby="accessibility-title"
         >
           <h2 
             id="accessibility-title"
-            className="text-retro-amber font-bold mb-4 text-lg"
+            className="text-primary-powder font-bold mb-4 text-lg"
           >
             ACCESSIBILITY SETTINGS
           </h2>
 
           {/* Font Size Control */}
           <div className="mb-4">
-            <label className="block text-retro-green text-sm font-medium mb-2">
+            <label className="block text-primary-lavender text-sm font-medium mb-2">
               <Type className="inline w-4 h-4 mr-2" />
               Text Size
             </label>
@@ -58,10 +58,10 @@ export const AccessibilityControls: React.FC<AccessibilityControlsProps> = ({
                 <button
                   key={size}
                   onClick={() => onSettingChange('fontSize', size)}
-                  className={`px-3 py-2 border border-retro-green text-sm font-medium transition-all duration-200 ${
+                  className={`px-3 py-2 border border-primary-green text-sm font-medium transition-all duration-200 ${
                     settings.fontSize === size
-                      ? 'bg-retro-green text-retro-black'
-                      : 'text-retro-green hover:bg-retro-green hover:text-retro-black'
+                      ? 'bg-primary-green text-primary-lavender'
+                      : 'text-primary-lavender hover:bg-primary-green hover:text-primary-gunmetal'
                   }`}
                   aria-pressed={settings.fontSize === size}
                 >
@@ -73,28 +73,28 @@ export const AccessibilityControls: React.FC<AccessibilityControlsProps> = ({
 
           {/* Theme Control */}
           <div className="mb-4">
-            <label className="block text-retro-green text-sm font-medium mb-2">
+            <label className="block text-primary-lavender text-sm font-medium mb-2">
               <Palette className="inline w-4 h-4 mr-2" />
               Display Theme
             </label>
             <div className="grid grid-cols-2 gap-2">
               <button
                 onClick={() => onSettingChange('theme', 'retro')}
-                className={`px-3 py-2 border border-retro-green text-sm font-medium transition-all duration-200 ${
+                className={`px-3 py-2 border border-primary-green text-sm font-medium transition-all duration-200 ${
                   settings.theme === 'retro'
-                    ? 'bg-retro-green text-retro-black'
-                    : 'text-retro-green hover:bg-retro-green hover:text-retro-black'
+                    ? 'bg-primary-green text-primary-lavender'
+                    : 'text-primary-lavender hover:bg-primary-green hover:text-primary-gunmetal'
                 }`}
                 aria-pressed={settings.theme === 'retro'}
               >
-                Retro MS-DOS
+                Elegant Modern
               </button>
               <button
                 onClick={() => onSettingChange('theme', 'accessible')}
-                className={`px-3 py-2 border border-retro-green text-sm font-medium transition-all duration-200 ${
+                className={`px-3 py-2 border border-primary-green text-sm font-medium transition-all duration-200 ${
                   settings.theme === 'accessible'
-                    ? 'bg-retro-green text-retro-black'
-                    : 'text-retro-green hover:bg-retro-green hover:text-retro-black'
+                    ? 'bg-primary-green text-primary-lavender'
+                    : 'text-primary-lavender hover:bg-primary-green hover:text-primary-gunmetal'
                 }`}
                 aria-pressed={settings.theme === 'accessible'}
               >
@@ -103,45 +103,47 @@ export const AccessibilityControls: React.FC<AccessibilityControlsProps> = ({
             </div>
           </div>
 
-          {/* Font Family Control */}
+          {/* Dyslexia-Friendly Font Toggle */}
           <div className="mb-4">
-            <label className="block text-retro-green text-sm font-medium mb-2">
-              Font Style
+            <label className="block text-primary-green text-sm font-medium mb-2">
+              <Type className="inline w-4 h-4 mr-2" />
+              Dyslexia-Friendly Font
             </label>
-            <div className="space-y-2">
-              {[
-                { value: 'mono', label: 'Monospace (Traditional)' },
-                { value: 'dyslexic', label: 'OpenDyslexic (Dyslexia-Friendly)' },
-                { value: 'accessible', label: 'Atkinson Hyperlegible (Clear)' },
-              ].map(({ value, label }) => (
-                <button
-                  key={value}
-                  onClick={() => onSettingChange('fontFamily', value as GameSettings['fontFamily'])}
-                  className={`w-full text-left px-3 py-2 border border-retro-green text-sm font-medium transition-all duration-200 ${
-                    settings.fontFamily === value
-                      ? 'bg-retro-green text-retro-black'
-                      : 'text-retro-green hover:bg-retro-green hover:text-retro-black'
-                  }`}
-                  aria-pressed={settings.fontFamily === value}
-                >
-                  {label}
-                </button>
-              ))}
-            </div>
+            <button
+              onClick={() => onSettingChange('fontFamily', settings.fontFamily === 'dyslexic' ? 'poppins' : 'dyslexic')}
+              className={`w-full px-3 py-2 border border-primary-green text-sm font-medium transition-all duration-200 flex items-center justify-between ${
+                settings.fontFamily === 'dyslexic'
+                  ? 'bg-primary-green text-primary-lavender'
+                  : 'text-primary-green hover:bg-primary-green hover:text-primary-lavender'
+              }`}
+              aria-pressed={settings.fontFamily === 'dyslexic'}
+            >
+              <span>
+                {settings.fontFamily === 'dyslexic' ? 'OpenDyslexic (Active)' : 'Poppins (Default)'}
+              </span>
+              {settings.fontFamily === 'dyslexic' ? (
+                <Eye className="w-4 h-4" />
+              ) : (
+                <EyeOff className="w-4 h-4" />
+              )}
+            </button>
+            <p className="text-xs text-primary-gray mt-1">
+              OpenDyslexic is designed to increase reading proficiency for people with dyslexia
+            </p>
           </div>
 
           {/* Animation Control */}
           <div className="mb-4">
-            <label className="block text-retro-green text-sm font-medium mb-2">
+            <label className="block text-primary-lavender text-sm font-medium mb-2">
               <Volume2 className="inline w-4 h-4 mr-2" />
               Animations
             </label>
             <button
               onClick={() => onSettingChange('skipAnimations', !settings.skipAnimations)}
-              className={`w-full px-3 py-2 border border-retro-green text-sm font-medium transition-all duration-200 flex items-center justify-between ${
+              className={`w-full px-3 py-2 border border-primary-green text-sm font-medium transition-all duration-200 flex items-center justify-between ${
                 !settings.skipAnimations
-                  ? 'bg-retro-green text-retro-black'
-                  : 'text-retro-green hover:bg-retro-green hover:text-retro-black'
+                  ? 'bg-primary-green text-primary-lavender'
+                  : 'text-primary-lavender hover:bg-primary-green hover:text-primary-gunmetal'
               }`}
               aria-pressed={!settings.skipAnimations}
             >
@@ -155,22 +157,22 @@ export const AccessibilityControls: React.FC<AccessibilityControlsProps> = ({
           </div>
 
           {/* Keyboard Shortcuts Info */}
-          <div className="border-t border-retro-green pt-4">
-            <h3 className="text-retro-amber text-sm font-medium mb-2">
+          <div className="border-t border-primary-green pt-4">
+            <h3 className="text-primary-powder text-sm font-medium mb-2">
               Keyboard Shortcuts
             </h3>
-            <div className="text-xs text-retro-green space-y-1">
-              <div><kbd className="bg-retro-green text-retro-black px-1 rounded">Tab</kbd> Navigate elements</div>
-              <div><kbd className="bg-retro-green text-retro-black px-1 rounded">Enter</kbd> Activate buttons</div>
-              <div><kbd className="bg-retro-green text-retro-black px-1 rounded">Esc</kbd> Close panels</div>
-              <div><kbd className="bg-retro-green text-retro-black px-1 rounded">↑↓</kbd> Navigate options</div>
+            <div className="text-xs text-primary-gray space-y-1">
+              <div><kbd className="bg-primary-green text-primary-lavender px-1 rounded">Tab</kbd> Navigate elements</div>
+              <div><kbd className="bg-primary-green text-primary-lavender px-1 rounded">Enter</kbd> Activate buttons</div>
+              <div><kbd className="bg-primary-green text-primary-lavender px-1 rounded">Esc</kbd> Close panels</div>
+              <div><kbd className="bg-primary-green text-primary-lavender px-1 rounded">↑↓</kbd> Navigate options</div>
             </div>
           </div>
 
           {/* Close Button */}
           <button
             onClick={togglePanel}
-            className="w-full mt-4 px-3 py-2 border border-retro-amber text-retro-amber hover:bg-retro-amber hover:text-retro-black focus:outline-none focus:ring-2 focus:ring-retro-amber transition-all duration-200 text-sm"
+            className="w-full mt-4 px-3 py-2 border border-primary-powder text-primary-powder hover:bg-primary-powder hover:text-primary-gunmetal focus:outline-none focus:ring-2 focus:ring-primary-powder transition-all duration-200 text-sm"
             aria-label="Close accessibility settings"
           >
             CLOSE

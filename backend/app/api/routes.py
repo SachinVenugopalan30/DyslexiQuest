@@ -1,14 +1,12 @@
 # API routes for DyslexiQuest
 
 import logging
-import asyncio
 import time
 from datetime import datetime
 from typing import Dict, Any
 from fastapi import APIRouter, HTTPException
 
 from app.models.game import (
-    GameStartRequest, GameStartResponse, 
     GameChoiceRequest, GameChallengeRequest, GameInteractionResponse,
     GameBacktrackRequest, GameBacktrackResponse,
     GameEndRequest, GameEndResponse, GameNextRequest, GameNextResponse,
@@ -16,9 +14,7 @@ from app.models.game import (
 )
 
 from app.core.llm import gemini_client
-from app.core.content_filter import validate_user_input, validate_ai_response
 from app.utils.session_manager import session_manager
-from app.utils.fallbacks import fallback_manager
 from app.core.config import settings, GAME_CONFIG
 
 logger = logging.getLogger(__name__)
@@ -32,10 +28,22 @@ async def start_game(request: dict):
     
     try:
         # Handle both traditional and educational request formats
-        genre = request.get('genre', 'fantasy')
+        raw_genre = request.get('genre', 'fantasy')
         difficulty_level = request.get('difficulty_level', 2)
         session_limit = request.get('session_limit', 8)
         text_to_speech = request.get('text_to_speech', False)
+        
+        # Map incoming genre to valid GameState genre values
+        genre_mapping = {
+            'fantasy': 'dungeon',
+            'adventure': 'forest', 
+            'sci-fi': 'space',
+            'mystery': 'mystery',
+            'forest': 'forest',
+            'space': 'space', 
+            'dungeon': 'dungeon'
+        }
+        genre = genre_mapping.get(raw_genre, 'forest')
         
         # Create new session
         game_state = session_manager.create_session(
@@ -58,17 +66,25 @@ async def start_game(request: dict):
         game_state.text_to_speech_enabled = text_to_speech
         game_state.adaptive_difficulty = True
         
-        # Generate first story segment using LLM when available
-        try:
-            first_segment = await story_generator.generate_segment_with_llm(
-                genre=genre,
+        # Generate first story segment using dynamic LLM generation
+        try:            
+            # Create a new unique story beginning - use the mapped genre directly
+            first_segment = await gemini_client.generate_new_story_beginning(genre)
+        except Exception as e:
+            logger.error(f"Failed to generate dynamic story beginning: {e}")
+            # Fall back to template generation
+            first_segment = story_generator.generate_segment(
+                genre=raw_genre,  # Use original genre for fallback compatibility
                 difficulty=difficulty_level,
                 segment_index=0
             )
-        except Exception:
-            # Fall back to template generation
+        
+        # Ensure we have a StorySegment object
+        if isinstance(first_segment, dict):
+            # Convert dict to StorySegment - this should not happen with the new system
+            logger.warning("Received dict instead of StorySegment, falling back to template generation")
             first_segment = story_generator.generate_segment(
-                genre=genre,
+                genre=raw_genre,
                 difficulty=difficulty_level,
                 segment_index=0
             )
@@ -142,8 +158,7 @@ async def handle_choice(request: GameChoiceRequest) -> GameInteractionResponse:
         # Update player progress
         if is_correct:
             game_state.player_progress.correct_choices += 1
-            reward = story_generator.generate_reward('correct_choice')
-            game_state.player_progress.rewards_earned.append(reward)
+            reward = None
         else:
             game_state.player_progress.incorrect_choices += 1
             reward = None
@@ -153,21 +168,43 @@ async def handle_choice(request: GameChoiceRequest) -> GameInteractionResponse:
         session_complete = False
         
         if is_correct:
-            # Move to next segment if not at session limit
-            if len(game_state.story_segments) < game_state.session_limit:
+            # Move to next segment if not at turn limit (stories should always go to 15 turns)
+            if game_state.turn < GAME_CONFIG["MAX_TURNS"] - 1:
                 # Collect previous choices and story context for LLM
-                previous_choices = [turn.player_choice for turn in game_state.history[-3:] if turn.player_choice]
+                previous_choices = [turn.user_input for turn in game_state.history[-3:] if turn.user_input]
                 story_context = [segment.text for segment in game_state.story_segments[-2:]] if game_state.story_segments else []
                 
+                # Map genre to adventure category for dynamic generation
+                genre_mapping = {
+                    'fantasy': 'dungeon',
+                    'adventure': 'forest', 
+                    'sci-fi': 'space',
+                    'mystery': 'mystery',
+                    'space': 'space',  # Add direct mapping for space
+                    'forest': 'forest',  # Add direct mapping for forest
+                    'dungeon': 'dungeon',  # Add direct mapping for dungeon
+                }
+                adventure_category = genre_mapping.get(game_state.genre, 'forest')
+                logger.info(f"Genre mapping: {game_state.genre} -> {adventure_category}")
+                
+                # Create adventure info for the theme
+                adventure_info = {
+                    'name': f'{adventure_category.title()} Adventure',
+                    'description': f'An exciting {adventure_category} adventure',
+                    'themes': [],
+                    'vocabulary_focus': []
+                }
+                
                 try:
-                    next_segment = await story_generator.generate_segment_with_llm(
-                        genre=game_state.genre,
-                        difficulty=game_state.player_progress.current_difficulty,
-                        segment_index=len(game_state.story_segments),
+                    next_segment = await gemini_client.generate_story_segment(
+                        segment_number=len(game_state.story_segments) + 1,
+                        adventure_category=adventure_category,
+                        adventure_info=adventure_info,
                         previous_choices=previous_choices,
                         story_context=story_context
                     )
-                except Exception:
+                except Exception as e:
+                    logger.error(f"Failed to generate dynamic story segment: {e}")
                     # Fall back to template generation
                     next_segment = story_generator.generate_segment(
                         genre=game_state.genre,
@@ -181,8 +218,7 @@ async def handle_choice(request: GameChoiceRequest) -> GameInteractionResponse:
             else:
                 session_complete = True
                 game_state.game_over = True
-                reward = story_generator.generate_reward('session_complete')
-                game_state.player_progress.rewards_earned.append(reward)
+                reward = None
         
         # Add turn to history
         from app.models.game import GameTurn
@@ -205,7 +241,7 @@ async def handle_choice(request: GameChoiceRequest) -> GameInteractionResponse:
         return GameInteractionResponse(
             is_correct=is_correct,
             feedback=feedback,
-            hint=None if is_correct else "Try thinking about what a kind person would do!",
+            hint=None,
             reward_earned=reward,
             next_segment=next_segment,
             player_progress=game_state.player_progress,
@@ -244,15 +280,12 @@ async def handle_challenge(request: GameChallengeRequest) -> GameInteractionResp
         is_correct = request.challenge_response.lower().strip() == challenge.correct_answer.lower().strip()
         
         # Process challenge result
-        from app.utils.story_generator import story_generator
-        
         if is_correct:
-            feedback = "Excellent! You solved the word puzzle! 🌟"
-            reward = story_generator.generate_reward('challenge_complete')
-            game_state.player_progress.rewards_earned.append(reward)
+            feedback = "Correct."
+            reward = None
             game_state.player_progress.challenges_completed += 1
         else:
-            feedback = f"Not quite right. {challenge.hint} Try again!"
+            feedback = f"Incorrect. {challenge.hint}"
             reward = None
         
         # Update session
@@ -307,7 +340,7 @@ async def backtrack_game(request: GameBacktrackRequest) -> GameBacktrackResponse
             raise HTTPException(status_code=400, detail="Failed to backtrack")
         
         # Generate backtrack message
-        message = f">>> TEMPORAL REWIND ACTIVATED >>> Returning to turn {request.target_turn}... Adventure data restored! Ready to try a different path, brave explorer?"
+        message = f"Returned to turn {request.target_turn}."
         
         logger.info(f"Backtracked session {request.session_id} to turn {request.target_turn}")
         
@@ -341,7 +374,7 @@ async def end_game(request: GameEndRequest) -> GameEndResponse:
         logger.info(f"Ended game session: {request.session_id}")
         
         return GameEndResponse(
-            message="Game ended successfully. Thanks for playing!"
+            message="Game ended."
         )
         
     except HTTPException:
@@ -390,41 +423,60 @@ async def next_turn(request: GameNextRequest) -> GameNextResponse:
         if choice_id < len(current_segment.multiple_choices):
             selected_choice = current_segment.multiple_choices[choice_id]
             is_correct = selected_choice.is_correct
-            feedback = selected_choice.feedback
         else:
             # Default to first choice if mapping fails
             selected_choice = current_segment.multiple_choices[0]
             is_correct = True
-            feedback = "You continue your adventure..."
         
         # Process the choice - all choices are valid story paths
         game_state.player_progress.correct_choices += 1  # Track all choices as progress
-        reward = story_generator.generate_reward('story_progress')
-        game_state.player_progress.rewards_earned.append(reward)
+        reward = None
         
-        # Generate encouraging feedback for the choice
-        choice_feedback = f"Great choice! {selected_choice.feedback}" if selected_choice.feedback else "Excellent decision! Let's see what happens next..."
+        # Generate feedback for the choice
+        choice_feedback = f"{selected_choice.feedback}" if selected_choice.feedback else ""
         
         # Generate next segment or end game based on turn limit
         next_segment = None
         session_complete = False
         
         # Continue story unless we've reached the turn limit
-        if game_state.turn < 15 and len(game_state.story_segments) < game_state.session_limit:
+        if game_state.turn < GAME_CONFIG["MAX_TURNS"] - 1:
             # Collect previous choices and story context for LLM
-            previous_choices = [turn.player_choice for turn in game_state.history[-3:] if turn.player_choice]
+            previous_choices = [turn.user_input for turn in game_state.history[-3:] if turn.user_input]
             previous_choices.append(request.user_input)  # Add current choice for context
             story_context = [segment.text for segment in game_state.story_segments[-2:]] if game_state.story_segments else []
             
+            # Map genre to adventure category for dynamic generation
+            genre_mapping = {
+                'fantasy': 'dungeon',
+                'adventure': 'forest', 
+                'sci-fi': 'space',
+                'mystery': 'mystery',
+                'space': 'space',  # Add direct mapping for space
+                'forest': 'forest',  # Add direct mapping for forest
+                'dungeon': 'dungeon',  # Add direct mapping for dungeon
+            }
+            adventure_category = genre_mapping.get(game_state.genre, 'forest')
+            logger.info(f"Genre mapping in /next: {game_state.genre} -> {adventure_category}")
+            
+            # Create adventure info for the theme
+            adventure_info = {
+                'name': f'{adventure_category.title()} Adventure',
+                'description': f'An exciting {adventure_category} adventure',
+                'themes': [],
+                'vocabulary_focus': []
+            }
+            
             try:
-                next_segment = await story_generator.generate_segment_with_llm(
-                    genre=game_state.genre,
-                    difficulty=game_state.player_progress.current_difficulty,
-                    segment_index=len(game_state.story_segments),
+                next_segment = await gemini_client.generate_story_segment(
+                    segment_number=len(game_state.story_segments) + 1,
+                    adventure_category=adventure_category,
+                    adventure_info=adventure_info,
                     previous_choices=previous_choices,
                     story_context=story_context
                 )
-            except Exception:
+            except Exception as e:
+                logger.error(f"Failed to generate dynamic story segment: {e}")
                 next_segment = story_generator.generate_segment(
                     genre=game_state.genre,
                     difficulty=game_state.player_progress.current_difficulty,
@@ -434,12 +486,10 @@ async def next_turn(request: GameNextRequest) -> GameNextResponse:
             game_state.story_segments.append(next_segment)
             game_state.player_progress.current_segment_id = next_segment.id
             game_state.current_segment_index += 1
-        elif game_state.turn >= 15 or len(game_state.story_segments) >= game_state.session_limit:
+        elif game_state.turn >= GAME_CONFIG["MAX_TURNS"] - 1:
             session_complete = True
             game_state.game_over = True
-            reward = story_generator.generate_reward('session_complete')
-            if reward:
-                game_state.player_progress.rewards_earned.append(reward)
+            reward = None
         
         # Add turn to history
         from app.models.game import GameTurn
@@ -462,12 +512,12 @@ async def next_turn(request: GameNextRequest) -> GameNextResponse:
         # Format response for traditional game frontend
         if next_segment:
             # Combine choice feedback with new story segment
-            response_text = f"{choice_feedback}\n\n{next_segment.text}"
+            response_text = f"{choice_feedback}\n\n{next_segment.text}" if choice_feedback else next_segment.text
         elif session_complete:
-            response_text = "🎉 Congratulations! You have completed your epic adventure! Your choices shaped a unique story. Well done, brave explorer!"
+            response_text = "Adventure complete."
         else:
             # End of game due to turn limit
-            response_text = f"{choice_feedback}\n\n🌟 Your adventure comes to a thrilling conclusion! You've made {game_state.turn} exciting choices that created your own unique story. What an amazing journey!"
+            response_text = f"{choice_feedback}\n\nAdventure complete." if choice_feedback else "Adventure complete."
             game_state.game_over = True
         
         # Convert to traditional GameNextResponse format

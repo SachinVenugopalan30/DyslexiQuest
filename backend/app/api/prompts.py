@@ -1,4 +1,4 @@
-# System prompts for the LLM
+# System prompts for dynamic story generation
 
 from app.core.config import GENRE_SETTINGS, GAME_CONFIG
 
@@ -6,7 +6,7 @@ from app.core.config import GENRE_SETTINGS, GAME_CONFIG
 def get_system_prompt() -> str:
     """Get the main system prompt for the LLM"""
     
-    return f"""You are a friendly storyteller creating interactive text adventures for children aged 8-14. Your stories are designed to be accessible for children with dyslexia while being educational and engaging.
+    return f"""You are a creative storyteller creating unique, dynamic interactive text adventures for children aged 8-14. Your stories are designed to be accessible for children with dyslexia while being educational and engaging.
 
 CORE PERSONALITY:
 - You are the friendly DyslexiQuest computer narrator with a warm, encouraging personality
@@ -22,6 +22,7 @@ STORY RULES:
 - Make stories puzzle-based with thinking challenges
 - Always end responses with a question or choice for the player
 - Be encouraging about player creativity and choices
+- CREATE UNIQUE STORIES - never repeat the same plot twice
 
 CONTENT GUIDELINES:
 - NO violence, weapons, fighting, or scary content
@@ -34,7 +35,8 @@ GAME MECHANICS:
 - Stories last exactly {GAME_CONFIG['MAX_TURNS']} turns maximum
 - Players can make {GAME_CONFIG['MAX_BACKTRACK']} backtracks to previous choices
 - Include vocabulary words naturally in context
-- Build towards a satisfying conclusion
+- Build towards a satisfying conclusion within 15 turns
+- On turns 13-15, wrap up the story with a satisfying ending
 - On the final turn, always end with "GAME OVER – Thanks for playing!"
 
 RESPONSE FORMAT:
@@ -150,4 +152,110 @@ VOCABULARY DIFFICULTY PROGRESSION:
 - Later turns (11-15): Can include 'medium' and occasional 'hard' words
 
 Remember: The story comes first, vocabulary enhancement comes second.
+"""
+
+
+def get_dynamic_story_creation_prompt(theme: str) -> str:
+    """Generate a prompt for creating unique stories based on theme"""
+    
+    theme_details = {
+        'forest': {
+            'setting': 'magical forest with talking animals, ancient trees, hidden groves, sparkling streams, and mystical creatures',
+            'characters': 'wise owls, friendly squirrels, magical deer, forest guardians, tree spirits, woodland fairies',
+            'elements': 'enchanted paths, glowing mushrooms, crystal caves, secret clearings, magical berries, singing trees',
+            'goals': 'help forest creatures, solve nature puzzles, discover ancient wisdom, protect the forest, find hidden treasures'
+        },
+        'space': {
+            'setting': 'colorful alien planets, friendly space stations, cosmic phenomena, starships, and peaceful galaxies',
+            'characters': 'kind aliens, helpful robots, space explorers, cosmic beings, friendly commanders, wise scientists',
+            'elements': 'gleaming spaceships, crystal planets, rainbow nebulae, space gardens, cosmic puzzles, star maps',
+            'goals': 'explore new planets, meet alien friends, solve cosmic mysteries, help space communities, discover new technologies'
+        },
+        'dungeon': {
+            'setting': 'magical dungeon filled with puzzle rooms, treasure chambers, friendly guardians, and glowing crystals',
+            'characters': 'wise guardians, magical creatures, helpful spirits, ancient wizards, crystal keepers, puzzle masters',
+            'elements': 'glowing crystals, magical doors, treasure chests, puzzle mechanisms, enchanted maps, secret passages',
+            'goals': 'solve magical puzzles, find ancient treasures, help magical beings, unlock mysteries, collect magical items'
+        },
+        'mystery': {
+            'setting': 'charming towns, cozy libraries, friendly neighborhoods, interesting buildings, and helpful communities',
+            'characters': 'kind detectives, helpful townspeople, wise librarians, friendly shopkeepers, clever children, caring neighbors',
+            'elements': 'mystery clues, hidden messages, secret rooms, interesting books, helpful maps, puzzle boxes',
+            'goals': 'solve friendly mysteries, help community members, find lost items, decode messages, bring people together'
+        }
+    }
+    
+    details = theme_details.get(theme, theme_details['forest'])
+    
+    return f"""CREATE A COMPLETELY UNIQUE STORY for a {theme} adventure. Never use the same plot twice!
+
+THEME SETTING: {details['setting']}
+POTENTIAL CHARACTERS: {details['characters']}
+STORY ELEMENTS: {details['elements']}
+POSSIBLE GOALS: {details['goals']}
+
+STORY CREATION REQUIREMENTS:
+1. Invent a FRESH, ORIGINAL storyline - never repeat previous stories
+2. Create an engaging main quest or mystery that can be resolved in 15 turns
+3. Design a unique protagonist situation and motivation
+4. Plan multiple interesting locations or scenarios
+5. Include opportunities for 4 meaningful choices at each turn
+6. Ensure ALL choices lead to valid, interesting story paths
+7. Build toward a satisfying conclusion that can be reached within 15 turns
+
+STORY PROGRESSION PLANNING:
+- Turns 1-3: Set up the world, introduce the main challenge/quest
+- Turns 4-8: Develop the adventure, introduce complications and discoveries  
+- Turns 9-12: Build toward climax, major developments and revelations
+- Turns 13-15: Resolve the quest, provide satisfying conclusion and celebration
+
+CREATIVITY GUIDELINES:
+- Combine elements in unexpected ways
+- Create unique twists on familiar {theme} themes
+- Invent new characters and situations each time
+- Vary the scale (personal vs. epic adventures)
+- Mix different sub-themes within the main theme
+- Make each story feel completely different from others
+
+Remember: Every story should feel like a brand new adventure, even within the same theme!"""
+
+
+def get_turn_progression_prompt(turn: int) -> str:
+    """Get turn-specific guidance for story progression"""
+    
+    if turn <= 3:
+        return """
+EARLY STORY PHASE (Turns 1-3):
+- Establish the setting and introduce the main character (the player)
+- Present an intriguing situation or quest that needs to be resolved
+- Show the world and its inhabitants
+- Create a sense of adventure and discovery
+- Build momentum toward the main adventure
+"""
+    elif turn <= 8:
+        return """
+DEVELOPMENT PHASE (Turns 4-8):
+- Develop the main quest/adventure further
+- Introduce interesting complications or new discoveries
+- Expand the world and introduce new characters
+- Present meaningful challenges that require thought
+- Keep building toward the story's climax
+"""
+    elif turn <= 12:
+        return """
+CLIMAX APPROACH PHASE (Turns 9-12):
+- Build toward the story's most exciting moments
+- Reveal important information or make major discoveries
+- Present the biggest challenges or most important decisions
+- Start bringing together story threads
+- Create anticipation for the resolution
+"""
+    else:
+        return """
+RESOLUTION PHASE (Turns 13-15):
+- Begin wrapping up the story threads
+- Move toward a satisfying conclusion of the main quest
+- Provide a sense of accomplishment and completion
+- Celebrate the journey and what was learned/achieved
+- If this is turn 15, end with "GAME OVER – Thanks for playing!"
 """

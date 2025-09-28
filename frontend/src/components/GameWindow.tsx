@@ -20,13 +20,15 @@ export const GameWindow: React.FC<GameWindowProps> = ({ gameState, settings, onS
 
   const currentTurn = gameState.gameState?.history[gameState.gameState.history.length - 1];
 
-  // Auto-scroll disabled for better reading experience with dyslexic children
-  // Children need to read at their own pace without distracting movement
-  // useEffect(() => {
-  //   if (endOfContentRef.current && !isTyping) {
-  //     endOfContentRef.current.scrollIntoView({ behavior: 'smooth' });
-  //   }
-  // }, [gameState.gameState?.history, isTyping]);
+  // Auto-scroll to show latest content when new responses are added
+  useEffect(() => {
+    if (endOfContentRef.current && !isTyping) {
+      // Use setTimeout to ensure content is fully rendered before scrolling
+      setTimeout(() => {
+        endOfContentRef.current?.scrollIntoView({ behavior: 'smooth' });
+      }, 100);
+    }
+  }, [gameState.gameState?.history.length, isTyping]);
 
   // Typewriter effect for AI responses
   useEffect(() => {
@@ -48,6 +50,10 @@ export const GameWindow: React.FC<GameWindowProps> = ({ gameState, settings, onS
       } else {
         clearInterval(typeInterval);
         setIsTyping(false);
+        // Scroll to show the complete response after typing finishes
+        setTimeout(() => {
+          endOfContentRef.current?.scrollIntoView({ behavior: 'smooth' });
+        }, 100);
       }
     }, 15); // Typing speed - faster animation (was 30ms, now 15ms)
 
@@ -111,6 +117,10 @@ export const GameWindow: React.FC<GameWindowProps> = ({ gameState, settings, onS
     if (currentTurn) {
       setDisplayedText(currentTurn.ai_response);
       setIsTyping(false);
+      // Scroll to show the complete response after skipping animation
+      setTimeout(() => {
+        endOfContentRef.current?.scrollIntoView({ behavior: 'smooth' });
+      }, 100);
     }
   };
 

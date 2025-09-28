@@ -212,7 +212,7 @@ export const EducationalGameWindow: React.FC<EducationalGameWindowProps> = ({
               }}
               onChoice={handleChoiceSelect}
               onChallenge={handleChallengeSubmit}
-              textToSpeechEnabled={settings.fontFamily === 'accessible'}
+              textToSpeechEnabled={settings.fontFamily === 'dyslexic'}
             />
           </div>
 

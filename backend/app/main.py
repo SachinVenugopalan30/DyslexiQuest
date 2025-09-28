@@ -6,11 +6,15 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
-from fastapi.staticfiles import StaticFiles
 
 from app.api.routes import router
 from app.core.config import settings, get_environment_info
 from app.utils.session_manager import session_manager
+
+# Rate limiting middleware (simple implementation)
+from collections import defaultdict
+import time
+
 
 # Configure logging
 logging.basicConfig(
@@ -70,10 +74,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
-# Rate limiting middleware (simple implementation)
-from collections import defaultdict
-import time
 
 request_counts = defaultdict(list)
 

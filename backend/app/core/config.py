@@ -14,7 +14,10 @@ class Settings(BaseSettings):
     log_level: str = "info"
     
     # CORS Settings
-    cors_origins: List[str] = ["http://localhost:3000", "http://127.0.0.1:3000"]
+    cors_origins: List[str] = [
+        "http://localhost:3000", "http://127.0.0.1:3000",
+        "http://localhost:3001", "http://127.0.0.1:3001"
+    ]
     
     # Gemini API Settings
     gemini_api_key: str = ""

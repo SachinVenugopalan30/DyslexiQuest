@@ -83,11 +83,11 @@ class ContentFilter:
         """Generate a safe alternative response when content is filtered"""
         
         safe_alternatives = [
-            "Let's try a different approach! How about exploring something new in our adventure?",
-            "That's quite creative! Let's think of a friendlier way to continue our story.",
-            "Interesting idea! Can you try describing what you want to do in a different way?",
-            "I love your imagination! Let's keep our adventure fun and safe for everyone.",
-            "Great thinking! How about we try something else that fits our magical world?",
+            "Try a different approach. Explore something new in the adventure.",
+            "Think of a different way to continue the story.",
+            "Describe what you want to do in a different way.",
+            "Keep the adventure safe for everyone.",
+            "Try something else that fits the world.",
         ]
         
         import random

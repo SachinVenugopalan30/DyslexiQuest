@@ -220,16 +220,8 @@ class StorySegmentGenerator:
     def _generate_feedback(self, is_correct: bool, difficulty: int) -> str:
         """Generate encouraging feedback for all choices"""
         encouraging_feedback = [
-            "Interesting choice! ⭐",
-            "What a creative idea! 🌟",
-            "That leads somewhere exciting! 👏",
-            "Your adventure continues! 🎉",
-            "Great thinking! 💫",
-            "I like how you think! 🤔",
-            "That's a brave decision! 🦸‍♀️",
-            "Excellent choice! 💡",
-            "Your story unfolds! ❤️",
-            "What happens next? ✨"
+            "",
+            "",
         ]
         return random.choice(encouraging_feedback)
     

@@ -61,36 +61,190 @@ class GeminiClient:
             logger.error(f"Gemini health check failed: {e}")
             return False
     
-    async def generate_story_segment(self, segment_number: int, theme: Optional[str] = None, adventure_category: Optional[str] = None, adventure_info: Optional[dict] = None, previous_choices: Optional[list] = None, story_context: Optional[list] = None) -> Dict[str, Any]:
-        """Generate an educational story segment with multiple-choice options"""
-        # Use new adventure system if provided, fall back to old theme system
+    async def generate_story_segment(self, segment_number: int, theme: Optional[str] = None, adventure_category: Optional[str] = None, adventure_info: Optional[dict] = None, previous_choices: Optional[list] = None, story_context: Optional[list] = None, story_state: Optional[dict] = None):
+        """Generate a dynamic educational story segment with multiple-choice options"""
+        
+        # Always use the new dynamic story generation system
         if adventure_category and adventure_info:
-            prompt = self._create_adventure_prompt(segment_number, adventure_category, adventure_info, previous_choices, story_context)
+            prompt = self._create_dynamic_adventure_prompt(segment_number, adventure_category, adventure_info, previous_choices, story_context, story_state)
         else:
-            prompt = self._create_segment_prompt(segment_number, theme or "adventure", previous_choices, story_context)
+            # Map old themes to new adventure categories
+            theme_mapping = {
+                'fantasy': 'dungeon',
+                'adventure': 'forest', 
+                'sci-fi': 'space',
+                'mystery': 'mystery'
+            }
+            safe_theme = theme or 'forest'  # Ensure theme is not None
+            mapped_theme = theme_mapping.get(safe_theme, 'forest')
+            
+            # Create basic adventure info for backward compatibility
+            basic_adventure_info = {
+                'name': f'{mapped_theme.title()} Adventure',
+                'description': f'An exciting {mapped_theme} adventure',
+                'themes': [],
+                'vocabulary_focus': []
+            }
+            prompt = self._create_dynamic_adventure_prompt(segment_number, mapped_theme, basic_adventure_info, previous_choices, story_context, story_state)
         
         try:
-            if not self.is_available:
-                return self._get_fallback_segment(segment_number, theme)
+            if not self.is_available or not self.model:
+                fallback_data = self._get_fallback_segment(segment_number, adventure_category or theme or "forest")
+                return self._convert_dict_to_story_segment(fallback_data)
             
             response = self.model.generate_content(prompt)
             
             if response and response.text:
-                # Parse the structured response
-                return self._parse_segment_response(response.text.strip(), segment_number, theme or "adventure")
+                # Parse the structured response and convert to StorySegment
+                segment_data = self._parse_segment_response(response.text.strip(), segment_number, adventure_category or theme or "forest")
+                return self._convert_dict_to_story_segment(segment_data)
             else:
-                return self._get_fallback_segment(segment_number, theme or "adventure")
+                fallback_data = self._get_fallback_segment(segment_number, adventure_category or theme or "forest")
+                return self._convert_dict_to_story_segment(fallback_data)
                 
         except Exception as e:
-            logger.error(f"Error generating story segment: {e}")
-            return self._get_fallback_segment(segment_number, theme or "adventure")
+            logger.error(f"Error generating dynamic story segment: {e}")
+            fallback_data = self._get_fallback_segment(segment_number, adventure_category or theme or "forest")
+            return self._convert_dict_to_story_segment(fallback_data)
+    
+    async def generate_new_story_beginning(self, theme: str):
+        """Generate a completely new story beginning for the specified theme"""
+        
+        from app.api.prompts import get_dynamic_story_creation_prompt, get_system_prompt, get_turn_progression_prompt
+        
+        try:
+            if not self.is_available or not self.model:
+                return self._get_fallback_segment(1, theme)
+            
+            # Create a comprehensive prompt for generating a brand new story
+            system_prompt = get_system_prompt()
+            theme_creation_prompt = get_dynamic_story_creation_prompt(theme)
+            progression_prompt = get_turn_progression_prompt(1)
+            
+            full_prompt = f"""{system_prompt}
+
+{theme_creation_prompt}
+
+{progression_prompt}
+
+TASK: Create the opening segment of a BRAND NEW {theme} adventure story.
+
+CRITICAL REQUIREMENTS:
+- This is turn 1 of 15 - set up an engaging beginning
+- Create 2-3 sentences that establish a unique scenario
+- Include visual emojis to make it engaging  
+- Present exactly 4 different choice options
+- Each choice should lead to a different but valid story path
+- All choices are correct - there are no wrong answers
+- Keep language simple and dyslexia-friendly
+- Include 1-2 vocabulary words naturally in context
+- End with a clear question about what to do first
+
+FORMAT YOUR RESPONSE EXACTLY AS:
+STORY: [Your 2-3 sentence story opening with emojis]
+CHOICE1: [Option A - 3-6 words with emoji]
+CHOICE2: [Option B - 3-6 words with emoji]  
+CHOICE3: [Option C - 3-6 words with emoji]
+CHOICE4: [Option D - 3-6 words with emoji]
+CHALLENGE_TYPE: completion
+CHALLENGE_WORD: [simple vocabulary word related to the theme]
+CHALLENGE_PROMPT: [Simple word completion challenge]
+
+Generate a completely unique {theme} adventure beginning now:"""
+
+            response = self.model.generate_content(full_prompt)
+            
+            if response and response.text:
+                logger.info(f"LLM Response for new story beginning: {response.text.strip()}")
+                segment_data = self._parse_segment_response(response.text.strip(), 1, theme)
+                logger.info(f"Parsed segment data: {segment_data}")
+                return self._convert_dict_to_story_segment(segment_data)
+            else:
+                logger.warning("No response from LLM, using fallback")
+                fallback_data = self._get_fallback_segment(1, theme)
+                return self._convert_dict_to_story_segment(fallback_data)
+                
+        except Exception as e:
+            logger.error(f"Error generating new story beginning: {e}")
+            fallback_data = self._get_fallback_segment(1, theme)
+            return self._convert_dict_to_story_segment(fallback_data)
+    
+    def _convert_dict_to_story_segment(self, segment_data: Dict[str, Any]):
+        """Convert dictionary data to StorySegment object"""
+        from app.models.game import StorySegment, MultipleChoice, WordChallenge, VisualCue
+        import uuid
+        
+        # Create multiple choice objects
+        choices = []
+        for choice_data in segment_data.get("choices", []):
+            visual_cue = None
+            if choice_data.get("text"):
+                # Extract emoji from choice text if present
+                visual_cue = VisualCue(
+                    icon="✨",
+                    description="Choice indicator",
+                    position="before"
+                )
+            
+            choice = MultipleChoice(
+                id=choice_data.get("id", "A"),
+                text=choice_data.get("text", "Continue"),
+                is_correct=choice_data.get("is_correct", True),
+                feedback=choice_data.get("feedback", ""),
+                visual_cue=visual_cue
+            )
+            choices.append(choice)
+        
+        # Create word challenge if available
+        word_challenge = None
+        if segment_data.get("challenge"):
+            challenge_data = segment_data["challenge"]
+            # Map challenge types to valid model values
+            raw_type = challenge_data.get("type", "completion")
+            
+            # Ensure we use valid literal types
+            if raw_type in ['word_completion', 'completion']:
+                challenge_type = 'completion'
+            elif raw_type in ['word_matching', 'matching']:
+                challenge_type = 'matching'
+            elif raw_type == 'spelling':
+                challenge_type = 'spelling'
+            elif raw_type == 'rhyme':
+                challenge_type = 'rhyme'
+            else:
+                challenge_type = 'completion'  # Default fallback
+                
+            target_word = challenge_data.get("target_word", "adventure")
+            
+            word_challenge = WordChallenge(
+                type=challenge_type,
+                instruction=challenge_data.get("prompt", "Complete this word"),
+                word=target_word,
+                correct_answer=target_word,
+                hint="Sound it out carefully!",
+                difficulty_level=1
+            )
+        
+        # Create story segment
+        story_segment = StorySegment(
+            id=str(uuid.uuid4()),
+            text=segment_data.get("story", "Your adventure begins!"),
+            multiple_choices=choices,
+            word_challenge=word_challenge,
+            visual_cues=[],
+            vocabulary_words=[],
+            difficulty_level=1,
+            estimated_reading_time=30
+        )
+        
+        return story_segment
     
     async def generate_adaptive_hint(self, challenge_type: str, difficulty: str, context: str) -> str:
         """Generate adaptive hints for word challenges based on player performance"""
         prompt = self._create_hint_prompt(challenge_type, difficulty, context)
         
         try:
-            if not self.is_available:
+            if not self.is_available or not self.model:
                 return self._get_fallback_hint(challenge_type)
             
             response = self.model.generate_content(prompt)
@@ -116,7 +270,7 @@ class GeminiClient:
         prompt = self._create_response_prompt(user_input, genre, turn, history)
         
         try:
-            if not self.is_available:
+            if not self.is_available or not self.model:
                 return self._get_fallback_response(user_input, genre, turn)
             
             response = self.model.generate_content(prompt)
@@ -164,77 +318,94 @@ THEMES: {', '.join(genre_info['themes'])}
 
 Create an engaging story introduction that starts the adventure. Include a clear situation and ask what the player wants to do first."""
 
-    def _create_adventure_prompt(self, segment_number: int, adventure_category: str, adventure_info: dict, previous_choices: Optional[list] = None, story_context: Optional[list] = None) -> str:
-        """Create prompt for new adventure-based story generation"""
+    def _create_dynamic_adventure_prompt(self, segment_number: int, adventure_category: str, adventure_info: dict, previous_choices: Optional[list] = None, story_context: Optional[list] = None, story_state: Optional[dict] = None) -> str:
+        """Create prompt for dynamic adventure-based story generation"""
         
-        vocab_sample = list(VOCABULARY_DATABASE.keys())[:10]
+        from app.api.prompts import get_system_prompt, get_turn_progression_prompt
+        
         context = ""
+        current_choice = ""
         if previous_choices:
             context = f"Previous choices made: {', '.join(previous_choices[-3:])}"
+            # Get the most recent choice the player just made
+            if len(previous_choices) > 0:
+                current_choice = f"PLAYER'S MOST RECENT CHOICE: \"{previous_choices[-1]}\""
         
         # Add story context for better continuity
         story_history = ""
         if story_context and len(story_context) > 0:
             story_history = f"\nPrevious story segments:\n{chr(10).join(story_context[-2:])}"
         
-        # Story progression guidance
-        progression_guidance = ""
-        if segment_number == 1:
-            progression_guidance = f"This is the beginning of the {adventure_info['name']}. Set up the adventure and introduce the main character/situation in this {adventure_info['description']}."
-        elif segment_number <= 3:
-            progression_guidance = f"Continue developing the {adventure_info['name']} from previous choices. Build on what happened before and introduce new challenges or discoveries."
-        elif segment_number <= 6:
-            progression_guidance = f"The {adventure_info['name']} is progressing well. Add complications, mysteries, or exciting discoveries that build toward a resolution."
-        else:
-            progression_guidance = f"The {adventure_info['name']} is nearing its conclusion. Start building toward a satisfying resolution of the adventure."
+        # Get turn-specific progression guidance
+        progression_prompt = get_turn_progression_prompt(segment_number)
         
-        themes_str = ', '.join(adventure_info['themes'])
-        vocab_focus_str = ', '.join(adventure_info['vocabulary_focus'])
+        # Theme-specific elements
+        theme_elements = {
+            'forest': {
+                'emojis': '🌲🦉🌿🦌✨🍄🌸🦋🐿️🌳',
+                'vocab_words': 'forest, trees, animals, nature, explore, discover, adventure, wisdom, harmony, magical'
+            },
+            'space': {
+                'emojis': '🚀🪐👽⭐🌌🛸💫🌟🔭🌠',
+                'vocab_words': 'space, planet, rocket, stars, explore, galaxy, cosmic, adventure, discovery, technology'
+            },
+            'dungeon': {
+                'emojis': '🏰✨💎🔮🗝️🚪💰🧙‍♂️🎭🏛️',
+                'vocab_words': 'magic, treasure, crystal, puzzle, explore, discover, mystery, ancient, enchanted, wisdom'
+            },
+            'mystery': {
+                'emojis': '🔍🕵️📚❓🔐💡📜🏛️🎯🧩',
+                'vocab_words': 'mystery, clues, detective, solve, help, discover, investigate, evidence, puzzle, solution'
+            }
+        }
         
-        return f"""Create an educational story segment for children aged 5-12 with dyslexia.
+        theme_info = theme_elements.get(adventure_category, theme_elements['forest'])
+        
+        return f"""{get_system_prompt()}
+
+{progression_prompt}
 
 ADVENTURE TYPE: {adventure_info['name']}
-ADVENTURE DESCRIPTION: {adventure_info['description']}
-SEGMENT NUMBER: {segment_number} of 7-10 total segments
-ADVENTURE THEMES: {themes_str}
+SEGMENT NUMBER: {segment_number} of 15 total segments
 {context}{story_history}
 
-STORY PROGRESSION: {progression_guidance}
+{current_choice}
 
-CRITICAL REQUIREMENTS:
-- CONTINUE THE STORY - don't restart or repeat previous content
-- Build directly on the player's previous choices
+DYNAMIC STORY GENERATION REQUIREMENTS:
+- CREATE A UNIQUE CONTINUATION - never repeat previous segments
+- Build directly on the player's previous choices and story context
+- CRITICAL: Respond specifically to the player's most recent choice - make it meaningful!
 - 2-3 short sentences maximum (dyslexia-friendly)
-- Focus on these adventure elements: {themes_str}
-- Include visual cues like ✨🌟🎯🦋🏰🌲🚀👽🔍 where appropriate
-- Use vocabulary focused on: {vocab_focus_str}
+- Focus on {adventure_category} adventure themes
+- Include visual emojis: {theme_info['emojis']}
+- Use vocabulary words naturally: {theme_info['vocab_words']}
 - Create EXACTLY 4 multiple-choice options (never less!)
 - Each choice should be 3-6 words maximum for easy reading
-- Include one embedded word challenge (completion, matching, or spelling)
-- Positive, encouraging tone - never scary or violent
+- Include one word challenge appropriate for the story
+- Neutral tone - never scary or violent, but avoid overly encouraging language
 - Clear visual descriptions with emojis
-- MAKE EACH SEGMENT DIFFERENT - advance the plot!
+- ADVANCE THE PLOT - make meaningful progress in the story
 - All 4 choices should lead to different but equally valid story paths
+- Ensure the story can conclude satisfactorily within 15 turns
+- NEVER include encouraging phrases like "Great choice!" or "Excellent!" - keep responses neutral and factual
 
-FORMAT YOUR RESPONSE AS:
-STORY: [2-3 sentences that continue from previous choices with visual cues and emojis focused on {adventure_category} adventure]
+FORMAT YOUR RESPONSE EXACTLY AS:
+STORY: [2-3 sentences that continue the adventure with emojis]
 CHOICE1: [Option A - 3-6 words with emoji]
 CHOICE2: [Option B - 3-6 words with emoji]  
 CHOICE3: [Option C - 3-6 words with emoji]
 CHOICE4: [Option D - 3-6 words with emoji]
-CHALLENGE_TYPE: [word_completion|word_matching|spelling]
-CHALLENGE_WORD: [target vocabulary word from {vocab_focus_str}]
-CHALLENGE_PROMPT: [What should the player do?]
+CHALLENGE_TYPE: completion
+CHALLENGE_WORD: [vocabulary word related to the theme]
+CHALLENGE_PROMPT: [Simple word completion challenge]
 
-EXAMPLE FOR FOREST ADVENTURE:
-STORY: You step into a magical forest 🌲 where friendly animals gather around a sparkling stream! A wise owl 🦉 perches on a branch and offers to be your guide.
-CHOICE1: Follow the owl deeper 🦉
-CHOICE2: Talk to forest animals 🦌
-CHOICE3: Explore the sparkling stream ✨
-CHOICE4: Climb the tallest tree 🌳
-CHALLENGE_TYPE: word_completion
-CHALLENGE_WORD: forest
-CHALLENGE_PROMPT: Complete this word: f_r_st (where many trees grow together)"""
+Generate the next unique segment of this {adventure_category} adventure:"""
+    
+    def _create_adventure_prompt(self, segment_number: int, adventure_category: str, adventure_info: dict, previous_choices: Optional[list] = None, story_context: Optional[list] = None) -> str:
+        """Create prompt for new adventure-based story generation (legacy method)"""
+        
+        # Use the new dynamic method
+        return self._create_dynamic_adventure_prompt(segment_number, adventure_category, adventure_info, previous_choices, story_context, None)
 
     def _create_segment_prompt(self, segment_number: int, theme: str, previous_choices: Optional[list] = None, story_context: Optional[list] = None) -> str:
         """Create prompt for educational story segment generation"""
@@ -287,7 +458,7 @@ CHOICE1: [Option A - 3-6 words with emoji]
 CHOICE2: [Option B - 3-6 words with emoji]  
 CHOICE3: [Option C - 3-6 words with emoji]
 CHOICE4: [Option D - 3-6 words with emoji]
-CHALLENGE_TYPE: [word_completion|word_matching|spelling]
+CHALLENGE_TYPE: [completion|matching|spelling|rhyme]
 CHALLENGE_WORD: [target vocabulary word]
 CHALLENGE_PROMPT: [What should the player do?]
 
@@ -297,7 +468,7 @@ CHOICE1: Follow the butterfly 🦋
 CHOICE2: Listen to singing flowers 🌺
 CHOICE3: Explore the sparkling pond ✨
 CHOICE4: Look for the treasure 💰
-CHALLENGE_TYPE: word_completion
+CHALLENGE_TYPE: completion
 CHALLENGE_WORD: garden
 CHALLENGE_PROMPT: Complete this word: g_rd_n (a place where flowers grow)"""
     
@@ -332,7 +503,8 @@ CRITICAL REQUIREMENTS:
 - All 4 choices should lead to different but equally interesting story paths
 - Each choice should be 3-6 words maximum
 - Make choices clear and different from each other
-- Include encouraging language
+- Keep language neutral - avoid encouraging phrases
+- NEVER include encouraging phrases like "Great choice!" or "Excellent!" - keep responses neutral and factual
 - If this is turn {turn} of 15, start building toward a satisfying conclusion
 - If this is turn 13-15, wrap up the story with a happy ending
 
@@ -364,7 +536,7 @@ REQUIREMENTS:
 - Use emojis to make it friendlier
 
 EXAMPLES:
-For word_completion: "Try sounding it out! 🔤 Think about the letters that make the 'ar' sound."
+For completion: "Try sounding it out! 🔤 Think about the letters that make the 'ar' sound."
 For spelling: "Remember, this word rhymes with 'start'! 🎵 What letters make that sound?"
 For matching: "Look for the word that means the same thing! 🔍 Think about what makes you happy."
 
@@ -383,6 +555,8 @@ Generate a similar hint for this challenge."""
         }
         
         challenge_data = {}
+        story_lines = []  # Collect story lines before first CHOICE
+        found_choices = False
         
         for line in lines:
             line = line.strip()
@@ -391,8 +565,10 @@ Generate a similar hint for this challenge."""
                 
             if line.startswith("STORY:"):
                 segment_data["story"] = line.replace("STORY:", "").strip()
+                found_choices = True  # Mark that we're now in structured mode
             elif line.startswith("CHOICE1:"):
                 segment_data["choices"].append({"id": "A", "text": line.replace("CHOICE1:", "").strip(), "is_correct": True})
+                found_choices = True
             elif line.startswith("CHOICE2:"):
                 segment_data["choices"].append({"id": "B", "text": line.replace("CHOICE2:", "").strip(), "is_correct": True})
             elif line.startswith("CHOICE3:"):
@@ -405,6 +581,13 @@ Generate a similar hint for this challenge."""
                 challenge_data["word"] = line.replace("CHALLENGE_WORD:", "").strip()
             elif line.startswith("CHALLENGE_PROMPT:"):
                 challenge_data["prompt"] = line.replace("CHALLENGE_PROMPT:", "").strip()
+            elif not found_choices:
+                # If we haven't found any structured elements yet, treat this as story text
+                story_lines.append(line)
+        
+        # If no explicit STORY: was found, use the collected story lines
+        if not segment_data["story"] and story_lines:
+            segment_data["story"] = " ".join(story_lines)
         
         # Create challenge object if we have the required data
         if all(key in challenge_data for key in ["type", "word", "prompt"]):
@@ -450,7 +633,7 @@ Generate a similar hint for this challenge."""
         elif any(word in user_lower for word in ["go", "move", "walk", "north", "south", "east", "west"]):
             responses = [
                 "You courageously move forward! The path leads to an enchanted garden with singing flowers. A friendly guardian appears to help you. What do you want to ask them?",
-                "Your adventure continues! You discover a sanctuary filled with glowing books. Each chronicle contains different stories. Which one interests you most?",
+                "You discover a sanctuary filled with glowing books. Each chronicle contains different stories. Which one interests you most?",
                 "You transform your journey by choosing a new direction! Ahead lies a magnificent labyrinth made of silver and gold. Do you want to solve its riddle?"
             ]
         elif any(word in user_lower for word in ["talk", "speak", "ask", "say"]):
@@ -461,9 +644,9 @@ Generate a similar hint for this challenge."""
             ]
         else:
             responses = [
-                "What an excellent idea! Your creative thinking leads to an unexpected discovery. The mysterious puzzle begins to make sense. You're making great progress on this adventure! What's your next brilliant move?",
-                "Your courage and wisdom guide you well! Something magnificent happens as a result of your actions. The ancient magic responds to your perseverance. How do you want to continue your expedition?",
-                "Brilliant choice, young explorer! Your actions transform the situation in a wonderful way. The enchanted surroundings seem to approve of your decision. What would you like to discover next?"
+                "Your action leads to an unexpected discovery. The mysterious puzzle begins to make sense. What's your next move?",
+                "Something happens as a result of your actions. The ancient magic responds. How do you want to continue?",
+                "Your actions transform the situation. The enchanted surroundings change. What would you like to discover next?"
             ]
         
         import random
@@ -471,7 +654,7 @@ Generate a similar hint for this challenge."""
         
         # Add ending if near max turns
         if turn >= GAME_CONFIG["MAX_TURNS"] - 1:
-            response += " Your amazing adventure is coming to an end. GAME OVER – Thanks for playing!"
+            response += " Adventure complete."
         
         # Extract vocabulary words from the response
         vocab_words = extract_vocabulary_from_text(response)
@@ -491,7 +674,7 @@ Generate a similar hint for this challenge."""
                     {"id": "D", "text": "Look for treasure 💰", "is_correct": False}
                 ],
                 "challenge": {
-                    "type": "word_completion",
+                    "type": "completion",
                     "target_word": "garden",
                     "prompt": "Complete this word: g_rd_n (a place where flowers grow)",
                     "difficulty": "easy"
@@ -506,7 +689,7 @@ Generate a similar hint for this challenge."""
                     {"id": "D", "text": "Sit by the water 🌊", "is_correct": False}
                 ],
                 "challenge": {
-                    "type": "word_matching",
+                    "type": "matching",
                     "target_word": "wisdom",
                     "prompt": "Match 'wisdom' with its meaning: knowledge, sadness, or hunger?",
                     "difficulty": "easy"
@@ -544,9 +727,10 @@ Generate a similar hint for this challenge."""
         """Get fallback hint when API is unavailable"""
         
         hints = {
-            "word_completion": "Try sounding out the missing letters! 🔤 Think about what sounds you hear in the word.",
-            "word_matching": "Think about what the word means! 🤔 Which choice has the same meaning?",
-            "spelling": "Say the word slowly and listen to each sound! 🎵 What letters make those sounds?"
+            "completion": "Try sounding out the missing letters! 🔤 Think about what sounds you hear in the word.",
+            "matching": "Think about what the word means! 🤔 Which choice has the same meaning?",
+            "spelling": "Say the word slowly and listen to each sound! 🎵 What letters make those sounds?",
+            "rhyme": "Think of words that sound similar! 🎵 What word rhymes with this one?"
         }
         
         return hints.get(challenge_type, "You're doing great! 🌟 Take your time and try your best!")

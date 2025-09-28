@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { GameSettings } from '../App';
 
 interface IntroScreenProps {
@@ -5,7 +6,8 @@ interface IntroScreenProps {
   settings: GameSettings;
 }
 
-export const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame, settings }) => {
+export const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
+  const [selectedGenre, setSelectedGenre] = useState<string | null>(null);
   const genres = [
     {
       id: 'forest' as const,
@@ -34,10 +36,12 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame, settings 
   ];
 
   const handleGenreSelect = async (genre: 'forest' | 'space' | 'dungeon' | 'mystery') => {
+    setSelectedGenre(genre); // Set selected genre immediately for visual feedback
     try {
       await onStartGame(genre);
     } catch (error) {
       console.error('Failed to start game:', error);
+      setSelectedGenre(null); // Reset if there's an error
     }
   };
 
@@ -115,7 +119,14 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame, settings 
               <button
                 key={genre.id}
                 onClick={() => handleGenreSelect(genre.id)}
-                className="p-6 bg-retro-black border-2 border-retro-green hover:bg-retro-green hover:text-retro-black focus:outline-none focus:ring-4 focus:ring-retro-green focus:ring-offset-2 focus:ring-offset-retro-black transition-all duration-300 text-left rounded group"
+                disabled={selectedGenre !== null} // Disable all buttons when one is selected
+                className={`p-6 border-2 focus:outline-none focus:ring-4 focus:ring-retro-green focus:ring-offset-2 focus:ring-offset-retro-black transition-all duration-300 text-left rounded group ${
+                  selectedGenre === genre.id
+                    ? 'bg-retro-green text-retro-black border-retro-green' // Selected state
+                    : selectedGenre !== null
+                    ? 'bg-retro-black border-gray-600 text-gray-600 opacity-50 cursor-not-allowed' // Disabled state
+                    : 'bg-retro-black border-retro-green hover:bg-retro-green hover:text-retro-black' // Normal state
+                }`}
                 aria-describedby={`${genre.id}-description`}
               >
                 <div className="flex items-start space-x-4">
@@ -123,8 +134,12 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame, settings 
                     {genre.icon}
                   </span>
                   <div className="flex-1">
-                    <h3 className="text-xl font-bold mb-2 text-retro-amber group-hover:text-retro-black">
-                      {genre.name}
+                    <h3 className={`text-xl font-bold mb-2 ${
+                      selectedGenre === genre.id 
+                        ? 'text-retro-black' 
+                        : 'text-retro-amber group-hover:text-retro-black'
+                    }`}>
+                      {selectedGenre === genre.id && '✓ '}{genre.name}
                     </h3>
                     <p 
                       id={`${genre.id}-description`}

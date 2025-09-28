@@ -2,8 +2,42 @@
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
 
-/* Import dyslexia-friendly fonts */
+/* Import fonts */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap');
+
+/* OpenDyslexic font face definitions */
+@font-face {
+  font-family: 'OpenDyslexic';
+  src: url('https://cdn.jsdelivr.net/npm/opendyslexic@1.0.3/fonts/opendyslexic-regular.woff2') format('woff2'),
+       url('https://cdn.jsdelivr.net/npm/opendyslexic@1.0.3/fonts/opendyslexic-regular.woff') format('woff');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'OpenDyslexic';
+  src: url('https://cdn.jsdelivr.net/npm/opendyslexic@1.0.3/fonts/opendyslexic-bold.woff2') format('woff2'),
+       url('https://cdn.jsdelivr.net/npm/opendyslexic@1.0.3/fonts/opendyslexic-bold.woff') format('woff');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Base styles with new color scheme */
+:root {
+  --color-primary-green: #5A7D7C;
+  --color-lavender: #DADFF7;
+  --color-gunmetal: #232C33;
+  --color-powder: #A0C1D1;
+  --color-gray: #B5B2C2;
+}
+
+/* Set Poppins as default font */
+body {
+  font-family: 'Poppins', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+}
 
 /* Screen reader only class */
 .sr-only {
@@ -21,9 +55,9 @@
 /* High contrast mode support */
 @media (prefers-contrast: high) {
   :root {
-    --text-color: #ffffff;
-    --bg-color: #000000;
-    --accent-color: #ffff00;
+    --text-color: #DADFF7;
+    --bg-color: #232C33;
+    --accent-color: #A0C1D1;
   }
 }
 
@@ -38,22 +72,23 @@
   }
 }
 
-/* Custom scrollbar for retro theme */
-.retro-scrollbar::-webkit-scrollbar {
+/* Custom scrollbar with new color scheme */
+.custom-scrollbar::-webkit-scrollbar {
   width: 12px;
 }
 
-.retro-scrollbar::-webkit-scrollbar-track {
-  background: #000000;
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #232C33;
 }
 
-.retro-scrollbar::-webkit-scrollbar-thumb {
-  background: #00ff00;
-  border: 1px solid #000000;
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #5A7D7C;
+  border: 1px solid #232C33;
+  border-radius: 6px;
 }
 
-.retro-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: #00cc00;
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #A0C1D1;
 }
 
 /* Typewriter effect */
@@ -86,25 +121,50 @@
     0 0 20px rgba(0, 255, 0, 0.2);
 }
 
-/* Accessible button styles */
+/* Accessible button styles with new color scheme */
 .btn-accessible {
-  @apply px-4 py-2 rounded-md font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2;
+  padding: 1rem 1.5rem;
+  border-radius: 0.375rem;
+  font-weight: 500;
+  font-family: 'Poppins', sans-serif;
+  transition: all 0.2s ease;
+  outline: none;
+}
+
+.btn-accessible:focus-visible {
+  outline: 2px solid #A0C1D1;
+  outline-offset: 2px;
 }
 
 .btn-primary {
-  @apply btn-accessible bg-retro-green text-retro-black hover:bg-retro-dark-green focus-visible:ring-retro-green;
+  background-color: #5A7D7C;
+  color: #DADFF7;
+  border: 2px solid #5A7D7C;
+}
+
+.btn-primary:hover {
+  background-color: #A0C1D1;
+  color: #232C33;
+  border-color: #A0C1D1;
 }
 
 .btn-secondary {
-  @apply btn-accessible border-2 border-retro-green text-retro-green hover:bg-retro-green hover:text-retro-black focus-visible:ring-retro-green;
+  background-color: transparent;
+  color: #5A7D7C;
+  border: 2px solid #5A7D7C;
 }
 
-/* Vocabulary word highlighting */
+.btn-secondary:hover {
+  background-color: #5A7D7C;
+  color: #DADFF7;
+}
+
+/* Vocabulary word highlighting with new colors */
 .vocabulary-word {
   position: relative;
   display: inline;
   cursor: help;
-  border-bottom: 2px dotted #fbbf24;
+  border-bottom: 2px dotted #A0C1D1;
   line-height: 1.5;
 }
 
@@ -115,11 +175,12 @@
   right: auto;
   top: auto;
   padding: 12px;
-  background: rgba(0, 0, 0, 0.95);
-  border: 1px solid #00ff00;
+  background: rgba(35, 44, 51, 0.95);
+  border: 1px solid #5A7D7C;
   border-radius: 6px;
-  color: #00ff00;
+  color: #DADFF7;
   font-size: 0.875rem;
+  font-family: 'Poppins', sans-serif;
   line-height: 1.4;
   opacity: 0;
   visibility: hidden;
@@ -133,8 +194,8 @@
   white-space: normal;
   word-wrap: break-word;
   box-shadow: 
-    0 8px 16px rgba(0, 0, 0, 0.4),
-    0 0 0 1px rgba(0, 255, 0, 0.3);
+    0 8px 16px rgba(35, 44, 51, 0.4),
+    0 0 0 1px rgba(90, 125, 124, 0.3);
 }
 
 .vocabulary-word:hover .vocabulary-tooltip {
@@ -172,10 +233,10 @@
   }
 }
 
-/* Loading spinner */
+/* Loading spinner with new colors */
 .loading-spinner {
-  border: 2px solid rgba(0, 255, 0, 0.3);
-  border-top: 2px solid #00ff00;
+  border: 2px solid rgba(90, 125, 124, 0.3);
+  border-top: 2px solid #5A7D7C;
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }
@@ -185,23 +246,42 @@
   100% { transform: rotate(360deg); }
 }
 
-/* Game progress bar */
+/* Game progress bar with new colors */
 .progress-bar {
-  @apply w-full bg-retro-black border border-retro-green rounded-full overflow-hidden;
+  width: 100%;
+  background-color: #232C33;
+  border: 1px solid #5A7D7C;
+  border-radius: 9999px;
+  overflow: hidden;
 }
 
 .progress-bar-fill {
-  @apply h-full bg-gradient-to-r from-retro-green to-retro-amber transition-all duration-500 ease-out;
+  height: 100%;
+  background: linear-gradient(to right, #5A7D7C, #A0C1D1);
+  transition: all 0.5s ease-out;
 }
 
-/* Breadcrumb navigation */
+/* Breadcrumb navigation with new colors */
 .breadcrumb-item {
-  @apply relative px-3 py-1 text-sm cursor-pointer transition-all duration-200 hover:bg-retro-green hover:text-retro-black;
+  position: relative;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.breadcrumb-item:hover {
+  background-color: #5A7D7C;
+  color: #DADFF7;
 }
 
 .breadcrumb-item::after {
   content: '>';
-  @apply absolute right-0 top-1/2 transform -translate-y-1/2 text-retro-amber;
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #A0C1D1;
 }
 
 .breadcrumb-item:last-child::after {
@@ -210,21 +290,33 @@
 
 /* Accessibility improvements for dyslexia */
 .dyslexia-friendly {
-  font-family: 'Atkinson Hyperlegible', 'OpenDyslexic', sans-serif;
+  font-family: 'OpenDyslexic', 'Poppins', sans-serif;
   line-height: 1.6;
   letter-spacing: 0.05em;
   word-spacing: 0.16em;
 }
 
-/* High contrast mode */
-.high-contrast {
-  --text-color: #ffffff;
-  --bg-color: #000000;
-  --accent-color: #ffff00;
-  --border-color: #ffffff;
+/* Font switching classes */
+.font-poppins {
+  font-family: 'Poppins', system-ui, sans-serif !important;
 }
 
-.high-contrast .retro-terminal {
+.font-dyslexic {
+  font-family: 'OpenDyslexic', 'Poppins', sans-serif !important;
+  line-height: 1.6;
+  letter-spacing: 0.05em;
+  word-spacing: 0.16em;
+}
+
+/* High contrast mode with new color scheme */
+.high-contrast {
+  --text-color: #DADFF7;
+  --bg-color: #232C33;
+  --accent-color: #A0C1D1;
+  --border-color: #5A7D7C;
+}
+
+.high-contrast .game-container {
   background: var(--bg-color);
   color: var(--text-color);
   border-color: var(--border-color);
@@ -233,6 +325,7 @@
 .high-contrast .btn-primary {
   background-color: var(--accent-color);
   color: var(--bg-color);
+  border-color: var(--accent-color);
 }
 
 .high-contrast .btn-secondary {

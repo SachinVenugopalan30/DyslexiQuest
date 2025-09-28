@@ -54,7 +54,7 @@ FALLBACK_RESPONSES: Dict[str, List[str]] = {
     "move_go": [
         "You courageously move forward! The path leads to an enchanted garden with singing flowers. A friendly guardian appears to help you. What do you want to ask them?",
         
-        "Your adventure continues! You discover a sanctuary filled with glowing books. Each chronicle contains different stories. Which one interests you most?",
+        "You discover a sanctuary filled with glowing books. Each chronicle contains different stories. Which one interests you most?",
         
         "You transform your journey by choosing a new direction! Ahead lies a magnificent labyrinth made of silver and gold. Do you want to solve its riddle?",
         

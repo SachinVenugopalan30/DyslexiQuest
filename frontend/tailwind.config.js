@@ -7,22 +7,33 @@ export default {
   theme: {
     extend: {
       fontFamily: {
+        'sans': ['Poppins', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Arial', 'sans-serif'],
+        'poppins': ['Poppins', 'system-ui', 'sans-serif'],
+        'dyslexic': ['OpenDyslexic', 'Poppins', 'sans-serif'],
         'mono': ['SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', 'Consolas', 'monospace'],
-        'dyslexic': ['OpenDyslexic', 'Atkinson Hyperlegible', 'sans-serif'],
-        'accessible': ['Atkinson Hyperlegible', 'OpenDyslexic', 'sans-serif'],
+        'accessible': ['Atkinson Hyperlegible', 'Poppins', 'sans-serif'],
       },
       colors: {
+        // New color scheme from the image
+        'primary': {
+          'green': '#5A7D7C',      // Hooker's green
+          'lavender': '#DADFF7',    // Lavender web
+          'gunmetal': '#232C33',    // Gunmetal
+          'powder': '#A0C1D1',      // Powder blue
+          'gray': '#B5B2C2',        // French gray
+        },
+        // Legacy retro theme (for backward compatibility)
         'retro': {
-          'black': '#000000',
-          'green': '#00ff00',
-          'amber': '#ffb000',
-          'dark-green': '#008000',
+          'black': '#232C33',       // Updated to use gunmetal instead of pure black
+          'green': '#5A7D7C',       // Updated to use hooker's green
+          'amber': '#A0C1D1',       // Updated to use powder blue
+          'dark-green': '#5A7D7C',  // Same as primary green
         },
         'accessible': {
-          'bg': '#1a1a1a',
-          'text': '#ffffff',
-          'accent': '#4a9eff',
-          'secondary': '#ffd700',
+          'bg': '#232C33',          // Gunmetal for better contrast
+          'text': '#DADFF7',        // Lavender for readability
+          'accent': '#A0C1D1',      // Powder blue
+          'secondary': '#B5B2C2',   // French gray
         }
       },
       animation: {
