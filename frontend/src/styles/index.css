@@ -343,6 +343,57 @@ body {
   animation: slideIn 0.3s ease-out;
 }
 
+.fade-in-up {
+  animation: fadeInUp 0.8s ease-out forwards;
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+.fade-in-up-delay-1 {
+  animation: fadeInUp 0.8s ease-out 0.5s forwards;
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+.fade-in-up-delay-2 {
+  animation: fadeInUp 0.8s ease-out 1s forwards;
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+.fade-in-up-delay-3 {
+  animation: fadeInUp 0.8s ease-out 1.5s forwards;
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+.glitch-effect {
+  position: relative;
+  animation: glitch 2s infinite;
+}
+
+.glitch-effect::before,
+.glitch-effect::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.glitch-effect::before {
+  animation: glitch-1 2s infinite;
+  color: #ff0000;
+  z-index: -1;
+}
+
+.glitch-effect::after {
+  animation: glitch-2 2s infinite;
+  color: #00ff00;
+  z-index: -2;
+}
+
 @keyframes slideIn {
   from {
     transform: translateY(20px);
@@ -351,5 +402,207 @@ body {
   to {
     transform: translateY(0);
     opacity: 1;
+  }
+}
+
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes glitch {
+  0%, 100% { transform: translate(0); }
+  20% { transform: translate(-2px, 2px); }
+  40% { transform: translate(-2px, -2px); }
+  60% { transform: translate(2px, 2px); }
+  80% { transform: translate(2px, -2px); }
+}
+
+@keyframes glitch-1 {
+  0%, 100% { transform: translate(0); }
+  20% { transform: translate(-1px, 1px); }
+  40% { transform: translate(-1px, -1px); }
+  60% { transform: translate(1px, 1px); }
+  80% { transform: translate(1px, -1px); }
+}
+
+@keyframes glitch-2 {
+  0%, 100% { transform: translate(0); }
+  20% { transform: translate(1px, -1px); }
+  40% { transform: translate(1px, 1px); }
+  60% { transform: translate(-1px, -1px); }
+  80% { transform: translate(-1px, 1px); }
+}
+
+/* Page transition animations */
+.page-transition {
+  transition: all var(--transition-duration, 400ms) cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.page-transition-enter {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+.page-transition-exit {
+  opacity: 0;
+  transform: translateY(20px) scale(0.98);
+}
+
+/* Smooth fade transitions */
+.smooth-fade-in {
+  animation: smoothFadeIn 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+.smooth-fade-out {
+  animation: smoothFadeOut 0.4s cubic-bezier(0.55, 0.085, 0.68, 0.53) forwards;
+}
+
+@keyframes smoothFadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(30px) scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes smoothFadeOut {
+  0% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-20px) scale(0.98);
+  }
+}
+
+/* Choice button animations */
+.choice-button {
+  transition: all 0.2s ease;
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.choice-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(90, 125, 124, 0.3);
+}
+
+.choice-button-enter {
+  animation: choiceButtonEnter 0.4s ease-out forwards;
+}
+
+.choice-button-loading {
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes choiceButtonEnter {
+  0% {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Story content animations */
+.story-content {
+  animation: storyContentEnter 0.6s ease-out forwards;
+}
+
+@keyframes storyContentEnter {
+  0% {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Loading state animations */
+.loading-transition {
+  transition: all 0.3s ease;
+}
+
+.loading-enter {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.loading-exit {
+  opacity: 0;
+  transform: scale(0.95);
+}
+
+/* Smooth typewriter cursor animation */
+@keyframes smoothBlink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}
+
+.smooth-blink {
+  animation: smoothBlink 1.2s ease-in-out infinite;
+}
+
+/* Component entrance animations */
+.component-enter {
+  animation: componentEnter 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+.component-enter-delay-1 {
+  animation: componentEnter 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.2s forwards;
+  opacity: 0;
+}
+
+.component-enter-delay-2 {
+  animation: componentEnter 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.4s forwards;
+  opacity: 0;
+}
+
+.component-enter-delay-3 {
+  animation: componentEnter 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.6s forwards;
+  opacity: 0;
+}
+
+@keyframes componentEnter {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .page-transition,
+  .component-enter,
+  .component-enter-delay-1,
+  .component-enter-delay-2,
+  .component-enter-delay-3,
+  .choice-button-enter,
+  .story-content,
+  .smooth-fade-in,
+  .smooth-fade-out {
+    animation: none !important;
+    transition: none !important;
+  }
+  
+  .page-transition-enter,
+  .page-transition-exit {
+    opacity: 1 !important;
+    transform: none !important;
   }
 }

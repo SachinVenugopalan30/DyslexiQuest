@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+
+# Sitemap (when available)
+# Sitemap: https://dyslexiquest.com/sitemap.xml
+
+# This is an educational game for children with dyslexia
+# We welcome search engines to help children find this resource

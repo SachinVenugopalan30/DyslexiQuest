@@ -69,32 +69,10 @@ async def start_game(request: dict):
         game_state.current_round = 1
         
         # Generate first educational round (Round 1 - Easy difficulty)
-        try:
-            if progressive_mode:
-                first_segment = await story_generator.generate_educational_round(
-                    round_number=1,
-                    theme=genre
-                )
-            else:
-                # Fall back to traditional story generation
-                first_segment = await gemini_client.generate_new_story_beginning(genre)
-        except Exception as e:
-            logger.error(f"Failed to generate educational round: {e}")
-            # Fall back to template generation
-            first_segment = story_generator.generate_segment(
-                genre=raw_genre,
-                difficulty=1,  # Start easy
-                segment_index=0
-            )
-        
-        # Ensure we have a StorySegment object
-        if isinstance(first_segment, dict):
-            logger.warning("Received dict instead of StorySegment, falling back to template generation")
-            first_segment = story_generator.generate_segment(
-                genre=raw_genre,
-                difficulty=1,
-                segment_index=0
-            )
+        first_segment = await story_generator.generate_educational_round(
+            round_number=1,
+            theme=genre
+        )
         
         game_state.story_segments.append(first_segment)
         game_state.player_progress.current_segment_id = first_segment.id
@@ -556,63 +534,19 @@ async def next_turn(request: GameNextRequest) -> GameNextResponse:
         
         # Continue story unless we've reached the appropriate turn limit
         if should_advance and game_state.current_round < turn_limit:
-            if game_state.progressive_mode:
-                # Generate next educational round (2-7)
-                next_round = game_state.current_round + 1
-                try:
-                    next_segment = await story_generator.generate_educational_round(
-                        round_number=next_round,
-                        theme=game_state.genre
-                    )
-                    game_state.current_round = next_round
-                except Exception as e:
-                    logger.error(f"Failed to generate educational round {next_round}: {e}")
-                    # End session if we can't generate next round
-                    session_complete = True
-                    game_state.game_over = True
-            else:
-                # Traditional story mode
-                # Collect previous choices and story context for LLM
-                previous_choices = [turn.user_input for turn in game_state.history[-3:] if turn.user_input]
-                previous_choices.append(request.user_input)  # Add current choice for context
-                story_context = [segment.text for segment in game_state.story_segments[-2:]] if game_state.story_segments else []
-                
-                # Map genre to adventure category for dynamic generation
-                genre_mapping = {
-                    'fantasy': 'dungeon',
-                    'adventure': 'forest', 
-                    'sci-fi': 'space',
-                    'mystery': 'mystery',
-                    'space': 'space',  # Add direct mapping for space
-                    'forest': 'forest',  # Add direct mapping for forest
-                    'dungeon': 'dungeon',  # Add direct mapping for dungeon
-                }
-                adventure_category = genre_mapping.get(game_state.genre, 'forest')
-                logger.info(f"Genre mapping in /next: {game_state.genre} -> {adventure_category}")
-                
-                # Create adventure info for the theme
-                adventure_info = {
-                    'name': f'{adventure_category.title()} Adventure',
-                    'description': f'An exciting {adventure_category} adventure',
-                    'themes': [],
-                    'vocabulary_focus': []
-                }
-                
-                try:
-                    next_segment = await gemini_client.generate_story_segment(
-                        segment_number=len(game_state.story_segments) + 1,
-                        adventure_category=adventure_category,
-                        adventure_info=adventure_info,
-                        previous_choices=previous_choices,
-                        story_context=story_context
-                    )
-                except Exception as e:
-                    logger.error(f"Failed to generate dynamic story segment: {e}")
-                    next_segment = story_generator.generate_segment(
-                        genre=game_state.genre,
-                        difficulty=game_state.player_progress.current_difficulty,
-                        segment_index=len(game_state.story_segments)
-                    )
+            # Generate next educational round (2-7)
+            next_round = game_state.current_round + 1
+            try:
+                next_segment = await story_generator.generate_educational_round(
+                    round_number=next_round,
+                    theme=game_state.genre
+                )
+                game_state.current_round = next_round
+            except Exception as e:
+                logger.error(f"Failed to generate educational round {next_round}: {e}")
+                # End session if we can't generate next round
+                session_complete = True
+                game_state.game_over = True
             
             if next_segment:
                 game_state.story_segments.append(next_segment)
@@ -646,10 +580,45 @@ async def next_turn(request: GameNextRequest) -> GameNextResponse:
             # Combine choice feedback with new story segment
             response_text = f"{choice_feedback}\n\n{next_segment.text}" if choice_feedback else next_segment.text
         elif session_complete:
-            response_text = "Adventure complete."
+            # Generate proper story completion
+            try:
+                # Build story context from recent history
+                story_context = ""
+                if game_state.history:
+                    recent_history = game_state.history[-3:]  # Last 3 turns for context
+                    story_context = "\n".join([turn.segment.text for turn in recent_history if turn.segment])
+                
+                # Collect player choices
+                player_choices = [turn.user_input for turn in game_state.history if turn.user_input]
+                
+                completion = await gemini_client.generate_story_completion(
+                    theme=game_state.genre,
+                    story_context=story_context,
+                    player_choices=player_choices
+                )
+                response_text = f"{choice_feedback}\n\n{completion}" if choice_feedback else completion
+            except Exception as e:
+                logger.error(f"Failed to generate story completion: {e}")
+                response_text = f"{choice_feedback}\n\nAdventure complete." if choice_feedback else "Adventure complete."
         else:
-            # End of game due to turn limit
-            response_text = f"{choice_feedback}\n\nAdventure complete." if choice_feedback else "Adventure complete."
+            # End of game due to turn limit - also generate proper completion
+            try:
+                story_context = ""
+                if game_state.history:
+                    recent_history = game_state.history[-3:]
+                    story_context = "\n".join([turn.segment.text for turn in recent_history if turn.segment])
+                
+                player_choices = [turn.user_input for turn in game_state.history if turn.user_input]
+                
+                completion = await gemini_client.generate_story_completion(
+                    theme=game_state.genre,
+                    story_context=story_context,
+                    player_choices=player_choices
+                )
+                response_text = f"{choice_feedback}\n\n{completion}" if choice_feedback else completion
+            except Exception as e:
+                logger.error(f"Failed to generate story completion: {e}")
+                response_text = f"{choice_feedback}\n\nAdventure complete." if choice_feedback else "Adventure complete."
             game_state.game_over = True
         
         # Convert to traditional GameNextResponse format

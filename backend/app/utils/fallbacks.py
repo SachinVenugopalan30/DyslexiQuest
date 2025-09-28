@@ -135,9 +135,9 @@ class FallbackManager:
         response = random.choice(responses)
         
         # Add ending if this is the final turn
-        if turn >= 14:  # Second to last turn
+        if turn >= 9:  # Second to last turn
             response += " Your amazing adventure is coming to an end soon!"
-        elif turn >= 15:  # Final turn
+        elif turn >= 10:  # Final turn
             response = random.choice(FALLBACK_ENDINGS)
         
         # Extract vocabulary words (common adventure vocabulary)

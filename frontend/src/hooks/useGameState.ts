@@ -24,7 +24,7 @@ export interface UseGameStateReturn {
 }
 
 const MAX_BACKTRACK_COUNT = 2;
-const MAX_TURNS = 15;
+const MAX_TURNS = 10;
 
 export const useGameState = (): UseGameStateReturn => {
   const [gameState, setGameState] = useState<GameState | null>(null);

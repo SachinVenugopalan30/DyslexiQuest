@@ -1,12 +1,13 @@
 import { useState } from 'react';
 import { GameSettings } from '../App';
+import { AnimatedAsciiArt } from './AnimatedAsciiArt';
 
 interface IntroScreenProps {
   onStartGame: (genre: 'forest' | 'space' | 'dungeon' | 'mystery') => Promise<void>;
   settings: GameSettings;
 }
 
-export const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
+export const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame, settings }) => {
   const [selectedGenre, setSelectedGenre] = useState<string | null>(null);
   const genres = [
     {
@@ -54,37 +55,29 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
       <div className="max-w-7xl w-full">
         {/* ASCII Art Header */}
         <div className="text-center mb-8 font-mono w-full overflow-x-auto">
-          <pre 
-            className="text-retro-green text-xs sm:text-sm md:text-base whitespace-pre inline-block min-w-max"
-            aria-hidden="true"
-          >
-{`
-██████╗  ██╗   ██╗ ███████╗ ██╗      ███████╗ ██╗  ██╗ ██╗  ██████╗  ██╗   ██╗ ███████╗ ███████╗ ████████╗
-██╔══██╗ ╚██╗ ██╔╝ ██╔════╝ ██║      ██╔════╝ ╚██╗██╔╝ ██║ ██╔═══██╗ ██║   ██║ ██╔════╝ ██╔════╝ ╚══██╔══╝
-██║  ██║  ╚████╔╝  ███████╗ ██║      █████╗    ╚███╔╝  ██║ ██║   ██║ ██║   ██║ █████╗   ███████╗    ██║   
-██║  ██║   ╚██╔╝   ╚════██║ ██║      ██╔══╝    ██╔██╗  ██║ ██║▄▄ ██║ ██║   ██║ ██╔══╝   ╚════██║    ██║   
-██████╔╝    ██║    ███████║ ███████╗ ███████╗ ██╔╝ ██╗ ██║ ╚██████╔╝ ╚██████╔╝ ███████╗ ███████║    ██║   
-╚═════╝     ╚═╝    ╚══════╝ ╚══════╝ ╚══════╝ ╚═╝  ╚═╝ ╚═╝  ╚══▀▀═╝   ╚═════╝  ╚══════╝ ╚══════╝    ╚═╝   
-`}
-          </pre>
+          <AnimatedAsciiArt skipAnimations={settings.skipAnimations} />
         </div>
 
         {/* Title */}
         <h1 
           id="intro-title"
-          className="text-3xl md:text-4xl font-bold text-center mb-4 text-retro-amber"
+          className={`text-3xl md:text-4xl font-bold text-center mb-4 text-retro-amber ${
+            settings.skipAnimations ? '' : 'fade-in-up-delay-1'
+          }`}
         >
           WELCOME, YOUNG ADVENTURER!
         </h1>
 
         {/* Subtitle */}
-        <p className="text-center text-lg mb-8 max-w-2xl mx-auto leading-relaxed">
+        <p className={`text-center text-lg mb-8 max-w-2xl mx-auto leading-relaxed ${
+          settings.skipAnimations ? '' : 'fade-in-up-delay-2'
+        }`}>
           Ready for an exciting text adventure? Choose your story type and begin 
           a journey full of puzzles, new words, and amazing discoveries!
         </p>
 
         {/* Genre Selection */}
-        <div className="space-y-4">
+        <div className={`space-y-4 ${settings.skipAnimations ? '' : 'fade-in-up-delay-2'}`}>
           <h2 className="text-2xl font-bold text-center mb-6 text-retro-green">
             CHOOSE YOUR ADVENTURE TYPE:
           </h2>
@@ -130,7 +123,9 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
         </div>
 
         {/* Instructions */}
-        <div className="mt-8 p-4 bg-retro-black border border-retro-amber rounded">
+        <div className={`mt-8 p-4 bg-retro-black border border-retro-amber rounded ${
+          settings.skipAnimations ? '' : 'fade-in-up-delay-3'
+        }`}>
           <h3 className="text-retro-amber font-bold mb-2">📖 HOW TO PLAY:</h3>
           <ul className="text-sm space-y-1 list-none">
             <li>• Choose an adventure type to begin your story</li>
@@ -138,12 +133,14 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
             <li>• Type what you want to do next</li>
             <li>• Click on highlighted words to learn their meanings</li>
             <li>• You can go back to previous choices if needed</li>
-            <li>• The game lasts up to 15 turns - make them count!</li>
+            <li>• The game lasts up to 10 turns - make them count!</li>
           </ul>
         </div>
 
         {/* Accessibility Notice */}
-        <div className="mt-6 text-center text-sm text-retro-green">
+        <div className={`mt-6 text-center text-sm text-retro-green ${
+          settings.skipAnimations ? '' : 'fade-in-up-delay-3'
+        }`}>
           <p>
             💡 Use the settings button (⚙️) in the top-right corner to adjust 
             text size, colors, and fonts for easier reading.

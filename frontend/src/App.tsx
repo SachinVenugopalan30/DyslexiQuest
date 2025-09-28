@@ -3,6 +3,7 @@ import { ErrorBoundary } from './components/ErrorBoundary';
 import { IntroScreen } from './components/IntroScreen';
 import { GameWindow } from './components/GameWindow';
 import { AccessibilityControls } from './components/AccessibilityControls';
+import { PageTransition } from './components/PageTransition';
 import { useGameState } from './hooks/useGameState';
 import { setupTooltipPositioning } from './utils/tooltipPositioning';
 
@@ -21,7 +22,21 @@ function App() {
     fontFamily: 'poppins'
   });
 
+  const [showGameWindow, setShowGameWindow] = useState(false);
   const gameState = useGameState();
+
+  // Handle smooth transition from loading to game
+  useEffect(() => {
+    if (gameState.isGameStarted && !gameState.isLoading) {
+      const timer = setTimeout(() => {
+        setShowGameWindow(true);
+      }, 300); // Small delay to ensure smooth transition
+      return () => clearTimeout(timer);
+    } else if (!gameState.isGameStarted) {
+      setShowGameWindow(false);
+    }
+    return undefined;
+  }, [gameState.isGameStarted, gameState.isLoading]);
 
   // Setup smart tooltip positioning on component mount
   useEffect(() => {
@@ -64,8 +79,13 @@ function App() {
               settings={gameSettings}
               onSettingChange={handleSettingChange}
             />
-            {gameState.isLoading ? (
-              // Loading screen when starting a new adventure
+            <PageTransition show={!gameState.isLoading} duration={400}>
+              <IntroScreen 
+                onStartGame={gameState.startGame}
+                settings={gameSettings}
+              />
+            </PageTransition>
+            <PageTransition show={gameState.isLoading} duration={400}>
               <div className="min-h-screen flex items-center justify-center">
                 <div className="text-center max-w-md mx-auto p-8">
                   <div className="mb-8">
@@ -95,19 +115,16 @@ function App() {
                   </p>
                 </div>
               </div>
-            ) : (
-              <IntroScreen 
-                onStartGame={gameState.startGame}
-                settings={gameSettings}
-              />
-            )}
+            </PageTransition>
           </>
         ) : (
-          <GameWindow 
-            gameState={gameState}
-            settings={gameSettings}
-            onSettingChange={handleSettingChange}
-          />
+          <PageTransition show={showGameWindow} duration={600}>
+            <GameWindow 
+              gameState={gameState}
+              settings={gameSettings}
+              onSettingChange={handleSettingChange}
+            />
+          </PageTransition>
         )}
         
         {/* Screen reader announcements */}

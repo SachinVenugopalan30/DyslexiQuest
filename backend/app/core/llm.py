@@ -130,7 +130,7 @@ class GeminiClient:
 TASK: Create the opening segment of a BRAND NEW {theme} adventure story.
 
 CRITICAL REQUIREMENTS:
-- This is turn 1 of 15 - set up an engaging beginning
+        - This is turn 1 of 10 - set up an engaging beginning
 - Create 2-3 sentences that establish a unique scenario
 - Include visual emojis to make it engaging  
 - Present exactly 4 different choice options
@@ -286,6 +286,28 @@ Generate a completely unique {theme} adventure beginning now:"""
             logger.error(f"Error generating hint: {e}")
             return self._get_fallback_hint_for_child(correct_answer)
 
+    async def generate_story_completion(self, theme: str, story_context: str, player_choices: list) -> str:
+        """Generate a satisfying story conclusion"""
+        
+        from app.api.prompts import get_story_completion_prompt
+        
+        prompt = get_story_completion_prompt(theme, story_context, player_choices)
+        
+        try:
+            if not self.is_available or not self.model:
+                return self._get_fallback_completion(theme)
+            
+            response = self.model.generate_content(prompt)
+            
+            if response and response.text:
+                return response.text.strip()
+            else:
+                return self._get_fallback_completion(theme)
+                
+        except Exception as e:
+            logger.error(f"Error generating story completion: {e}")
+            return self._get_fallback_completion(theme)
+
     async def generate_adaptive_hint(self, challenge_type: str, difficulty: str, context: str) -> str:
         """Generate adaptive hints for word challenges based on player performance"""
         prompt = self._create_hint_prompt(challenge_type, difficulty, context)
@@ -413,7 +435,7 @@ Create an engaging story introduction that starts the adventure. Include a clear
 {progression_prompt}
 
 ADVENTURE TYPE: {adventure_info['name']}
-SEGMENT NUMBER: {segment_number} of 15 total segments
+SEGMENT NUMBER: {segment_number} of 10 total segments
 {context}{story_history}
 
 {current_choice}
@@ -433,7 +455,7 @@ DYNAMIC STORY GENERATION REQUIREMENTS:
 - Clear visual descriptions with emojis
 - ADVANCE THE PLOT - make meaningful progress in the story
 - All 4 choices should lead to different but equally valid story paths
-- Ensure the story can conclude satisfactorily within 15 turns
+- Ensure the story can conclude satisfactorily within 10 turns
 - NEVER include encouraging phrases like "Great choice!" or "Excellent!" - keep responses neutral and factual
 
 FORMAT YOUR RESPONSE EXACTLY AS:
@@ -537,7 +559,7 @@ CHALLENGE_PROMPT: Complete this word: g_rd_n (a place where flowers grow)"""
                 for h in recent_history
             ])
         
-        return f"""You are continuing a {genre_info['name']} for children aged 5-12 with dyslexia. This is turn {turn} of maximum 15 turns.
+        return f"""You are continuing a {genre_info['name']} for children aged 5-12 with dyslexia. This is turn {turn} of maximum 10 turns.
 
 CONTEXT FROM RECENT STORY:
 {context}
@@ -555,10 +577,8 @@ CRITICAL REQUIREMENTS:
 - Make choices clear and different from each other
 - Keep language neutral - avoid encouraging phrases
 - NEVER include encouraging phrases like "Great choice!" or "Excellent!" - keep responses neutral and factual
-- If this is turn {turn} of 15, start building toward a satisfying conclusion
-- If this is turn 13-15, wrap up the story with a happy ending
-
-FORMAT EXAMPLE:
+        - If this is turn {turn} of 10, start building toward a satisfying conclusion
+        - If this is turn 8-10, wrap up the story with a happy endingFORMAT EXAMPLE:
 [Your 2-3 sentence story response that directly responds to their choice with emojis]
 
 What happens next in your adventure?
@@ -717,64 +737,15 @@ Generate a similar hint for this challenge."""
     def _get_fallback_segment(self, segment_number: int, theme: str) -> Dict[str, Any]:
         """Get fallback educational story segment when API is unavailable"""
         
-        fallback_segments = {
-            "magic_garden": {
-                "story": "You discover a ✨magical garden✨ with singing flowers! A friendly butterfly 🦋 shows you sparkling treasures hidden among the colorful petals.",
-                "choices": [
-                    {"id": "A", "text": "Follow the butterfly 🦋", "is_correct": True},
-                    {"id": "B", "text": "Listen to singing flowers 🌺", "is_correct": False},
-                    {"id": "C", "text": "Explore the sparkling pond ✨", "is_correct": False},
-                    {"id": "D", "text": "Look for treasure 💰", "is_correct": False}
-                ],
-                "challenge": {
-                    "type": "completion",
-                    "target_word": "garden",
-                    "prompt": "Complete this word: g_rd_n (a place where flowers grow)",
-                    "difficulty": "easy"
-                }
-            },
-            "forest_adventure": {
-                "story": "You enter a peaceful forest 🌲 where wise animals gather around a crystal stream. An owl 🦉 perches nearby, ready to share ancient secrets.",
-                "choices": [
-                    {"id": "A", "text": "Ask the owl for wisdom 🦉", "is_correct": True},
-                    {"id": "B", "text": "Follow the crystal stream 💎", "is_correct": False},
-                    {"id": "C", "text": "Meet the forest animals 🐿️", "is_correct": False},
-                    {"id": "D", "text": "Sit by the water 🌊", "is_correct": False}
-                ],
-                "challenge": {
-                    "type": "matching",
-                    "target_word": "wisdom",
-                    "prompt": "Match 'wisdom' with its meaning: knowledge, sadness, or hunger?",
-                    "difficulty": "easy"
-                }
-            },
-            "castle_mystery": {
-                "story": "You approach a friendly castle 🏰 where colorful flags wave in the breeze. A kind knight 🛡️ welcomes you with a warm smile and offers to show you around.",
-                "choices": [
-                    {"id": "A", "text": "Explore the castle towers 🏰", "is_correct": True},
-                    {"id": "B", "text": "Visit the royal garden 🌹", "is_correct": False},
-                    {"id": "C", "text": "Meet the castle pets 🐕", "is_correct": False},
-                    {"id": "D", "text": "Look at the flags 🏳️", "is_correct": False}
-                ],
-                "challenge": {
-                    "type": "spelling",
-                    "target_word": "castle",
-                    "prompt": "Spell the word for a big, strong building where kings and queens live",
-                    "difficulty": "easy"
-                }
-            }
+        # This function is deprecated and will be removed.
+        # For now, it returns a minimal structure to avoid breaking changes.
+        return {
+            "segment_number": segment_number,
+            "theme": theme,
+            "story": "The adventure continues...",
+            "choices": [],
+            "challenge": None
         }
-        
-        # Select appropriate segment based on theme or use default
-        if theme in fallback_segments:
-            segment_data = fallback_segments[theme].copy()
-        else:
-            segment_data = fallback_segments["magic_garden"].copy()
-        
-        segment_data["segment_number"] = segment_number
-        segment_data["theme"] = theme
-        
-        return segment_data
     
     def _get_fallback_hint(self, challenge_type: str) -> str:
         """Get fallback hint when API is unavailable"""
@@ -920,6 +891,22 @@ Generate a similar hint for this challenge."""
         
         import random
         return random.choice(encouraging_hints)
+
+    def _get_fallback_completion(self, theme: str) -> str:
+        """Get fallback completion when API is unavailable"""
+        
+        completions = {
+            "forest": "🌲✨ Your forest adventure comes to a wonderful end! The wise animals thank you for your kindness, and the magical trees share their ancient wisdom with you. You return home with new friends and amazing memories! 🦋🌟",
+            "space": "🚀🌌 What an incredible space adventure! You've explored distant planets and made friends with peaceful aliens. Your cosmic journey ends as you pilot your ship back to Earth, filled with wonder about the universe! ⭐💫",
+            "dungeon": "🏰💎 Your dungeon quest reaches a magical conclusion! The ancient puzzles are solved, and you've discovered the greatest treasure of all - knowledge and courage. The castle celebrates your wisdom! ✨🎉",
+            "mystery": "🔍💡 Mystery solved! Your detective skills have uncovered all the secrets and helped everyone involved. The grateful community celebrates your clever thinking and kind heart! 🎯🌟"
+        }
+        
+        return completions.get(theme, completions["forest"])
+
+
+# Global Gemini client instance
+gemini_client = GeminiClient()
 
 
 # Global Gemini client instance

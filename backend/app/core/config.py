@@ -25,7 +25,7 @@ class Settings(BaseSettings):
     # Game Settings
     max_sessions: int = 1000
     session_timeout_minutes: int = 60
-    max_turns_per_game: int = 15
+    max_turns_per_game: int = 10
     max_backtrack_count: int = 2
     
     # Rate Limiting

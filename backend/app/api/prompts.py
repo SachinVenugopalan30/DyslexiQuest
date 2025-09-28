@@ -148,7 +148,7 @@ VOCABULARY INTEGRATION GUIDELINES:
 VOCABULARY DIFFICULTY PROGRESSION:
 - Early turns (1-5): Focus on 'easy' difficulty words
 - Middle turns (6-10): Mix of 'easy' and 'medium' difficulty  
-- Later turns (11-15): Can include 'medium' and occasional 'hard' words
+- Later turns (8-10): Can include 'medium' and occasional 'hard' words
 
 Remember: The story comes first, vocabulary enhancement comes second.
 """
@@ -218,17 +218,10 @@ ROUND DETAILS:
 - Difficulty: {difficulty.upper()}
 - Theme: {theme} - {content['setting']}
 
-DIFFICULTY REQUIREMENTS FOR {difficulty.upper()}:
-- Word length: {guidelines['word_length']}
-- Concepts: {guidelines['concepts']}  
-- Instructions: {guidelines['instructions']}
-- Examples: {guidelines['examples']}
-
-THEME ELEMENTS:
-- Setting: {content['setting']}
-- Characters: {content['characters']}
-- Age-appropriate words: {', '.join(content['simple_words'][:6])}
-- Story focus: {content['story_elements']}
+INSTRUCTIONS:
+- Create a COMPLETELY UNIQUE and DYNAMIC story that has NOT been used before.
+- The story should be inspired by the theme, but not a repeat of any previous story.
+- Let the LLM decide the specifics of the story. Do not hardcode any plot points.
 
 CRITICAL REQUIREMENTS:
 - Create a 2-3 sentence mini-story with emojis
@@ -259,6 +252,37 @@ CHALLENGE_WORD: [The main vocabulary word being taught]
 IMPORTANT: Look at your STORY and QUESTION. Make sure the CORRECT letter (A, B, or C) points to the choice that ACTUALLY answers the question correctly based on what happens in the story.
 
 Generate a {difficulty} difficulty round {round_number} for {theme} theme now:"""
+
+def get_story_completion_prompt(theme: str, story_context: str, player_choices: list) -> str:
+    """Generate a prompt for creating a satisfying story conclusion"""
+    
+    choices_summary = ", ".join(player_choices[-5:]) if player_choices else "various adventures"
+    
+    return f"""Create a satisfying conclusion for this {theme} adventure story.
+
+STORY CONTEXT:
+{story_context}
+
+PLAYER'S JOURNEY:
+The player made these key choices: {choices_summary}
+
+CONCLUSION REQUIREMENTS:
+- Write 3-4 sentences that wrap up the adventure
+- Celebrate what the player accomplished 
+- Show the positive outcome of their choices
+- Include visual elements with emojis appropriate to {theme}
+- Make it feel rewarding and complete
+- Keep language simple for children aged 5-10
+- End with a sense of achievement and joy
+
+THEME-SPECIFIC ELEMENTS:
+- Forest: nature harmony, animal friends, discoveries
+- Space: cosmic discoveries, new planets, peaceful exploration  
+- Dungeon: treasure found, puzzles solved, magical rewards
+- Mystery: secrets revealed, problems solved, helpful discoveries
+
+Create a heartwarming conclusion that makes the child feel proud of their adventure!"""
+
 
 def get_hint_generation_prompt(question: str, correct_answer: str, wrong_answer: str, theme: str) -> str:
     """Generate a helpful hint when a child picks the wrong answer"""
@@ -326,18 +350,18 @@ POSSIBLE GOALS: {details['goals']}
 
 STORY CREATION REQUIREMENTS:
 1. Invent a FRESH, ORIGINAL storyline - never repeat previous stories
-2. Create an engaging main quest or mystery that can be resolved in 15 turns
+2. Create an engaging main quest or mystery that can be resolved in 10 turns
 3. Design a unique protagonist situation and motivation
 4. Plan multiple interesting locations or scenarios
 5. Include opportunities for 4 meaningful choices at each turn
 6. Ensure ALL choices lead to valid, interesting story paths
-7. Build toward a satisfying conclusion that can be reached within 15 turns
+7. Build toward a satisfying conclusion that can be reached within 10 turns
 
 STORY PROGRESSION PLANNING:
-- Turns 1-3: Set up the world, introduce the main challenge/quest
-- Turns 4-8: Develop the adventure, introduce complications and discoveries  
-- Turns 9-12: Build toward climax, major developments and revelations
-- Turns 13-15: Resolve the quest, provide satisfying conclusion and celebration
+- Turns 1-2: Set up the world, introduce the main challenge/quest
+- Turns 3-6: Develop the adventure, introduce complications and discoveries  
+- Turns 7-8: Build toward climax, major developments and revelations
+- Turns 9-10: Resolve the quest, provide satisfying conclusion and celebration
 
 CREATIVITY GUIDELINES:
 - Combine elements in unexpected ways
@@ -390,18 +414,18 @@ EARLY STORY PHASE (Turns 1-3):
 - Create a sense of adventure and discovery
 - Build momentum toward the main adventure
 """
-    elif turn <= 8:
+    elif turn <= 6:
         return """
-DEVELOPMENT PHASE (Turns 4-8):
+DEVELOPMENT PHASE (Turns 3-6):
 - Develop the main quest/adventure further
 - Introduce interesting complications or new discoveries
 - Expand the world and introduce new characters
 - Present meaningful challenges that require thought
 - Keep building toward the story's climax
 """
-    elif turn <= 12:
+    elif turn <= 8:
         return """
-CLIMAX APPROACH PHASE (Turns 9-12):
+CLIMAX APPROACH PHASE (Turns 7-8):
 - Build toward the story's most exciting moments
 - Reveal important information or make major discoveries
 - Present the biggest challenges or most important decisions
@@ -410,10 +434,11 @@ CLIMAX APPROACH PHASE (Turns 9-12):
 """
     else:
         return """
-RESOLUTION PHASE (Turns 13-15):
+RESOLUTION PHASE (Turns 9-10):
 - Begin wrapping up the story threads
 - Move toward a satisfying conclusion of the main quest
-- Provide a sense of accomplishment and completion
-- Celebrate the journey and what was learned/achieved
-- If this is turn 15, end with "GAME OVER – Thanks for playing!"
+- Show the positive outcomes of the player's choices
+- Celebrate what the player accomplished during their journey
+- If this is turn 10, create a definitive ending that wraps up the adventure
+- Focus on the reward or positive outcome the player has earned
 """

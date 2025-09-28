@@ -4,6 +4,8 @@ import { UseGameStateReturn } from '../hooks/useGameState';
 import { BreadcrumbTrail } from './BreadcrumbTrail';
 import { VocabularyTracker } from './VocabularyTracker';
 import { AccessibilityControls } from './AccessibilityControls';
+import { AnimatedChoiceButton } from './AnimatedChoiceButton';
+import { AnimatedComponent } from './AnimatedComponent';
 import { highlightVocabularyWords } from '../utils/vocabulary';
 
 interface GameWindowProps {
@@ -15,17 +17,31 @@ interface GameWindowProps {
 export const GameWindow: React.FC<GameWindowProps> = ({ gameState, settings, onSettingChange }) => {
   const [isTyping, setIsTyping] = useState(false);
   const [displayedText, setDisplayedText] = useState('');
+  const [showChoices, setShowChoices] = useState(false);
+  const [contentKey, setContentKey] = useState(0);
+  const [isGameWindowMounted, setIsGameWindowMounted] = useState(false);
   const outputRef = useRef<HTMLDivElement>(null);
   const endOfContentRef = useRef<HTMLDivElement>(null);
 
   const currentTurn = gameState.gameState?.history[gameState.gameState.history.length - 1];
 
+  // Mount animation trigger
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsGameWindowMounted(true);
+    }, 100);
+    return () => clearTimeout(timer);
+  }, []);
+
   // Auto-scroll to show latest content when new responses are added
   useEffect(() => {
-    if (endOfContentRef.current && !isTyping) {
+    if (endOfContentRef.current && !isTyping && outputRef.current) {
       // Use setTimeout to ensure content is fully rendered before scrolling
       setTimeout(() => {
-        endOfContentRef.current?.scrollIntoView({ behavior: 'smooth' });
+        if (outputRef.current && endOfContentRef.current) {
+          // Scroll within the terminal container instead of the entire page
+          outputRef.current.scrollTop = outputRef.current.scrollHeight;
+        }
       }, 100);
     }
   }, [gameState.gameState?.history.length, isTyping]);
@@ -34,11 +50,14 @@ export const GameWindow: React.FC<GameWindowProps> = ({ gameState, settings, onS
   useEffect(() => {
     if (!currentTurn || settings.skipAnimations) {
       setDisplayedText(currentTurn?.ai_response || '');
+      setShowChoices(true);
+      setContentKey(prev => prev + 1);
       return;
     }
 
     setIsTyping(true);
     setDisplayedText('');
+    setShowChoices(false);
     
     const text = currentTurn.ai_response;
     let index = 0;
@@ -50,10 +69,14 @@ export const GameWindow: React.FC<GameWindowProps> = ({ gameState, settings, onS
       } else {
         clearInterval(typeInterval);
         setIsTyping(false);
-        // Scroll to show the complete response after typing finishes
+        // Show choices after typing completes
         setTimeout(() => {
-          endOfContentRef.current?.scrollIntoView({ behavior: 'smooth' });
-        }, 100);
+          setShowChoices(true);
+          setContentKey(prev => prev + 1);
+          if (outputRef.current) {
+            outputRef.current.scrollTop = outputRef.current.scrollHeight;
+          }
+        }, 300);
       }
     }, 15); // Typing speed - faster animation (was 30ms, now 15ms)
 
@@ -117,9 +140,13 @@ export const GameWindow: React.FC<GameWindowProps> = ({ gameState, settings, onS
     if (currentTurn) {
       setDisplayedText(currentTurn.ai_response);
       setIsTyping(false);
+      setShowChoices(true);
+      setContentKey(prev => prev + 1);
       // Scroll to show the complete response after skipping animation
       setTimeout(() => {
-        endOfContentRef.current?.scrollIntoView({ behavior: 'smooth' });
+        if (outputRef.current) {
+          outputRef.current.scrollTop = outputRef.current.scrollHeight;
+        }
       }, 100);
     }
   };
@@ -138,14 +165,15 @@ export const GameWindow: React.FC<GameWindowProps> = ({ gameState, settings, onS
   return (
     <div className="min-h-screen flex flex-col">
       {/* Header with game info */}
-      <header className="border-b border-retro-green p-4">
+      <AnimatedComponent delay={0} skipAnimations={settings.skipAnimations}>
+        <header className="border-b border-retro-green p-4">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-2 sm:space-y-0">
           <div>
             <h1 className="text-xl font-bold text-retro-amber">
               {gameState.gameState.genre.charAt(0).toUpperCase() + gameState.gameState.genre.slice(1)} Adventure
             </h1>
             <p className="text-sm">
-              Turn {gameState.gameState.turn} of 15
+              Turn {gameState.gameState.turn} of 10
             </p>
           </div>
           
@@ -154,12 +182,12 @@ export const GameWindow: React.FC<GameWindowProps> = ({ gameState, settings, onS
             <div className="progress-bar w-24 h-2 hidden sm:block">
               <div 
                 className="progress-bar-fill"
-                style={{ width: `${(gameState.gameState.turn / 15) * 100}%` }}
+                style={{ width: `${(gameState.gameState.turn / 10) * 100}%` }}
                 role="progressbar"
                 aria-valuenow={gameState.gameState.turn}
                 aria-valuemin={0}
-                aria-valuemax={15}
-                aria-label={`Game progress: ${gameState.gameState.turn} of 15 turns`}
+                aria-valuemax={10}
+                aria-label={`Game progress: ${gameState.gameState.turn} of 10 turns`}
               />
             </div>
             
@@ -180,19 +208,22 @@ export const GameWindow: React.FC<GameWindowProps> = ({ gameState, settings, onS
             />
           </div>
         </div>
-      </header>
+        </header>
+      </AnimatedComponent>
 
       {/* Breadcrumb trail for backtracking */}
-      <BreadcrumbTrail 
-        gameState={gameState.gameState}
-        onBacktrack={gameState.backtrackToTurn}
-        isLoading={gameState.isLoading}
-      />
+      <AnimatedComponent delay={200} skipAnimations={settings.skipAnimations}>
+        <BreadcrumbTrail 
+          gameState={gameState.gameState}
+          onBacktrack={gameState.backtrackToTurn}
+          isLoading={gameState.isLoading}
+        />
+      </AnimatedComponent>
 
       {/* Main game content */}
       <main className="flex-1 flex flex-col lg:flex-row">
         {/* Story output area - always full width on top */}
-        <div className="w-full p-4">
+        <AnimatedComponent delay={400} skipAnimations={settings.skipAnimations} className="w-full p-4">
           {/* Wrapper for tooltip positioning context */}
           <div style={{ position: 'relative', zIndex: 100 }}>
             <div 
@@ -217,7 +248,7 @@ export const GameWindow: React.FC<GameWindowProps> = ({ gameState, settings, onS
                           }}
                         />
                         {isTyping && (
-                          <span className="inline-block w-2 h-5 bg-retro-green ml-1 animate-blink" aria-hidden="true">
+                          <span className="inline-block w-2 h-5 bg-retro-green ml-1 smooth-blink" aria-hidden="true">
                             │
                           </span>
                         )}
@@ -235,9 +266,9 @@ export const GameWindow: React.FC<GameWindowProps> = ({ gameState, settings, onS
 
                   {/* User Input for the choice that led to the NEXT turn's response */}
                   {/* This is not shown for the very last turn as the next response is pending */}
-                  {index < (gameState.gameState?.history.length ?? 0) - 1 && (
+                  {index < (gameState.gameState?.history.length ?? 0) - 1 && gameState.gameState?.history[index + 1] && (
                     <div className="text-retro-amber font-mono">
-                      &gt; You: {gameState.gameState.history[index + 1].user_input?.replace(/^\d+\.\s*/, '')}
+                      &gt; You: {gameState.gameState.history[index + 1]?.user_input?.replace(/^\d+\.\s*/, '') ?? ''}
                     </div>
                   )}
 
@@ -264,8 +295,11 @@ export const GameWindow: React.FC<GameWindowProps> = ({ gameState, settings, onS
           )}
 
           {/* Choice Selection Box - Below the story */}
-          {!gameState.gameState.game_over && !isTyping && (
-            <div className="mt-6 p-6 border-2 border-retro-amber rounded-lg bg-retro-black max-w-4xl mx-auto">
+          {!gameState.gameState.game_over && !isTyping && showChoices && (
+            <div 
+              key={contentKey}
+              className="mt-6 p-6 border-2 border-retro-amber rounded-lg bg-retro-black max-w-4xl mx-auto story-content"
+            >
               <h3 className="text-retro-amber text-xl font-semibold mb-6 text-center">
                 🤔 {gameState.gameState.current_question || "What do you want to do next?"}
               </h3>
@@ -278,31 +312,21 @@ export const GameWindow: React.FC<GameWindowProps> = ({ gameState, settings, onS
                   "3. Move forward slowly 👣",
                   "4. Stay where you are 🛑"
                 ]).map((choice, index) => (
-                  <button
-                    key={index}
+                  <AnimatedChoiceButton
+                    key={`${contentKey}-${index}`}
+                    choice={choice}
+                    index={index}
                     onClick={() => gameState.sendInput(choice)}
                     disabled={gameState.isLoading}
-                    className={`
-                      p-4 rounded border-2 border-retro-green text-left font-medium text-lg transition-all
-                      bg-retro-black text-retro-green hover:bg-retro-green hover:text-retro-black
-                      disabled:opacity-50 disabled:cursor-not-allowed
-                      focus:outline-none focus:ring-2 focus:ring-retro-amber
-                    `}
-                    aria-label={`Choice ${index + 1}`}
-                  >
-                    <div className="flex items-center space-x-3">
-                      <div className="w-8 h-8 rounded-full bg-retro-green text-retro-black flex items-center justify-center font-bold">
-                        {index + 1}
-                      </div>
-                      <span className="flex-1">{choice.replace(/^\d+\.\s*/, '')}</span>
-                    </div>
-                  </button>
+                    delay={index * 100}
+                    skipAnimations={settings.skipAnimations}
+                  />
                 ))}
               </div>
 
               {/* Loading indicator */}
               {gameState.isLoading && (
-                <div className="text-center mt-6">
+                <div className="text-center mt-6 loading-transition loading-enter">
                   <div className="inline-flex items-center space-x-2 text-retro-amber">
                     <div className="loading-spinner w-5 h-5" />
                     <span className="font-medium">Creating your next adventure...</span>
@@ -331,12 +355,12 @@ export const GameWindow: React.FC<GameWindowProps> = ({ gameState, settings, onS
               </div>
             </div>
           )}
-        </div>
+        </AnimatedComponent>
 
         {/* Vocabulary sidebar */}
-        <div className="lg:w-80 border-t lg:border-t-0 lg:border-l border-retro-green p-4">
+        <AnimatedComponent delay={600} skipAnimations={settings.skipAnimations} className="lg:w-80 border-t lg:border-t-0 lg:border-l border-retro-green p-4">
           <VocabularyTracker vocabularyManager={gameState.vocabularyManager} />
-        </div>
+        </AnimatedComponent>
       </main>
 
       {/* Error display */}
