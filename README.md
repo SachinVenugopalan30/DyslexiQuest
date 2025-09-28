@@ -3,6 +3,10 @@
 
 DyslexiQuest is an interactive text adventure game powered by Google's Gemini AI, specifically designed for children with dyslexia. This educational game combines storytelling, vocabulary learning, and problem-solving in an accessible, dyslexia-friendly interface.
 
+> **Repository:** [DyslexiQuest](https://github.com/SachinVenugopalan30/DyslexiQuest)  
+> **Live Demo:** Coming Soon  
+> **Version:** 1.0.0
+
 ## ✨ Features
 
 ### 🎯 Core Gameplay
@@ -36,7 +40,7 @@ DyslexiQuest is an interactive text adventure game powered by Google's Gemini AI
 ## 🏗️ Project Structure
 
 ```
-dyslexiquest/
+dyslexi-quest/
 │
 ├── frontend/                    # React + TypeScript + Vite
 │   ├── index.html
@@ -45,9 +49,13 @@ dyslexiquest/
 │   ├── tsconfig.json
 │   ├── tailwind.config.js
 │   ├── postcss.config.js
+│   ├── public/
+│   │   ├── fonts/                     # OpenDyslexic fonts
+│   │   └── manifest.json              # PWA manifest
 │   └── src/
 │       ├── main.tsx
 │       ├── App.tsx
+│       ├── assets/                    # Game theme backgrounds
 │       ├── components/
 │       │   ├── GameWindow.tsx         # Main game interface
 │       │   ├── InputBox.tsx           # User input handling
@@ -55,16 +63,18 @@ dyslexiquest/
 │       │   ├── IntroScreen.tsx        # Genre selection
 │       │   ├── BreadcrumbTrail.tsx    # Backtracking navigation
 │       │   ├── VocabularyTracker.tsx  # Educational progress
-│       │   └── ErrorBoundary.tsx      # Error handling
+│       │   ├── ErrorBoundary.tsx      # Error handling
+│       │   ├── WelcomeScreen.tsx      # Initial welcome
+│       │   ├── SettingsModal.tsx      # Accessibility settings
+│       │   └── AnimatedComponent.tsx  # Animations
 │       ├── styles/
 │       │   └── index.css              # Global styles + animations
 │       ├── utils/
-│       │   ├── api.ts                 # API communication
-│       │   ├── localStorage.ts        # State persistence
-│       │   ├── accessibility.ts       # A11y utilities
-│       │   └── vocabulary.ts          # Educational features
-│       └── hooks/
-│           └── useGameState.ts        # Game state management
+│       │   └── accessibility.ts       # A11y utilities
+│       ├── hooks/
+│       │   └── useGameState.ts        # Game state management
+│       └── types/
+│           └── adventure.ts           # TypeScript definitions
 │
 ├── backend/                     # FastAPI + Python
 │   ├── app/
@@ -81,7 +91,8 @@ dyslexiquest/
 │   │   │   └── content_filter.py      # Child safety
 │   │   └── utils/
 │   │       ├── session_manager.py     # Game state management
-│   │       └── fallbacks.py           # Offline story content
+│   │       ├── fallbacks.py           # Offline story content
+│   │       └── story_generator*.py    # Story generation utilities
 │   ├── requirements.txt
 │   └── .env.example
 │
@@ -96,11 +107,35 @@ dyslexiquest/
 - **Python** 3.9+ (for backend)
 - **Google Gemini API Key** (for AI storytelling)
 
+### ⚡ Quick Setup (For Development)
+
+For a quick development setup, you can run both servers with these commands:
+
+**Terminal 1 - Backend:**
+```bash
+cd backend
+python3 -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+pip install -r requirements.txt
+cp .env.example .env
+# Edit .env file and add your GEMINI_API_KEY
+python3 -m app.main
+```
+
+**Terminal 2 - Frontend:**
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+Then visit `http://localhost:5173` in your browser!
+
 ### 1. Clone Repository
 
 ```bash
-git clone <your-repo-url>
-cd dyslexiquest
+git clone https://github.com/SachinVenugopalan30/DyslexiQuest.git
+cd dyslexi-quest
 ```
 
 ### 2. Backend Setup
@@ -110,7 +145,7 @@ cd dyslexiquest
 cd backend
 
 # Create virtual environment
-python -m venv venv
+python3 -m venv venv
 
 # Activate virtual environment
 # On Windows:
@@ -126,7 +161,7 @@ cp .env.example .env
 # Edit .env and add your GEMINI_API_KEY
 
 # Start the backend server
-python -m app.main
+python3 -m app.main
 ```
 
 The backend will run on `http://localhost:8000`
@@ -144,7 +179,7 @@ npm install
 npm run dev
 ```
 
-The frontend will run on `http://localhost:3000`
+The frontend will run on `http://localhost:5173` (default Vite dev server port)
 
 ### 4. Get Gemini API Key
 
@@ -154,6 +189,24 @@ The frontend will run on `http://localhost:3000`
    ```
    GEMINI_API_KEY=your_actual_api_key_here
    ```
+
+## 📦 Dependencies
+
+### Backend Dependencies
+- **FastAPI** - Modern Python web framework
+- **Google Generative AI** - Gemini API integration
+- **Pydantic** - Data validation and serialization
+- **Uvicorn** - ASGI server
+- **Python-dotenv** - Environment variable management
+- **Aiofiles** - Async file operations
+
+### Frontend Dependencies
+- **React** 18+ - UI framework
+- **TypeScript** - Type-safe JavaScript
+- **Vite** - Fast build tool and dev server
+- **Tailwind CSS** - Utility-first CSS framework
+- **Lucide React** - Icon library
+- **clsx** - Conditional className utility
 
 ## 🎮 How to Play
 
@@ -206,6 +259,12 @@ End the current game
 
 #### `GET /api/health`
 Check API status
+
+#### `GET /health`
+Simple health check endpoint
+
+#### `GET /`
+Root endpoint with API information and available endpoints
 
 ### Response Format
 
@@ -265,12 +324,14 @@ pytest
 ```
 
 ### Manual Testing
-1. Start both servers
-2. Visit `http://localhost:3000`
-3. Test accessibility features:
+1. Start both servers (backend on :8000, frontend on :5173)
+2. Visit `http://localhost:5173`
+3. Test API endpoints at `http://localhost:8000/docs`
+4. Test accessibility features:
    - Keyboard navigation (Tab, Enter, Arrows)
    - Screen reader compatibility
    - Font and contrast adjustments
+5. Check browser console for any errors
 
 ## 🚀 Deployment
 
@@ -278,13 +339,17 @@ pytest
 
 **Backend (.env)**:
 ```
-GEMINI_API_KEY=your_gemini_api_key
-API_HOST=0.0.0.0
+GEMINI_API_KEY=your_gemini_api_key_here
+API_HOST=localhost
 API_PORT=8000
-CORS_ORIGINS=["http://localhost:3000"]
+CORS_ORIGINS=["http://localhost:5173","http://127.0.0.1:5173"]
+LOG_LEVEL=info
+MAX_SESSIONS=1000
+SESSION_TIMEOUT_MINUTES=60
+RATE_LIMIT_PER_MINUTE=30
 ```
 
-**Frontend**:
+**Frontend** (if needed):
 ```
 VITE_API_URL=http://localhost:8000
 ```
@@ -409,8 +474,9 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 **"Cannot connect to API"**
 - Ensure backend server is running on port 8000
-- Check CORS settings in backend configuration
+- Check CORS settings in backend configuration (should include http://localhost:5173)
 - Verify API_URL in frontend environment
+- Make sure both frontend and backend are running simultaneously
 
 **"Gemini API not working"**
 - Verify your API key in `.env` file
